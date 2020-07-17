@@ -10,6 +10,7 @@
     <properties>
         <maven.compiler.source>1.14</maven.compiler.source>
         <maven.compiler.target>1.14</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -26,17 +27,17 @@
         <dependency>
             <groupId>net.sf.extjwnl</groupId>
             <artifactId>extjwnl-data-wn30</artifactId>
-            <version>LATEST</version>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>LATEST</version>
+            <version>1.7.22</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>LATEST</version>
+            <version>1.7.22</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -49,7 +50,6 @@
             <version>14.0.1</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
