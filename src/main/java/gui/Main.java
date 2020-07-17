@@ -9,14 +9,11 @@ import javafx.stage.Stage;
 import logic.search.Search;
 
 public class Main extends Application {
-    // TODO: background threads
-
+    // TODO: background threads for searching?
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainView.fxml"));
         GridPane root = loader.load();
-
-        // TODO: no need for duplicate Source/Target classes if controllers are instantiated and assigned manually?
 
         Search semanticSearch = new Search();
         MainController mainController = loader.getController();

@@ -39,8 +39,9 @@ public class SourceController implements Initializable {
     }
 
     public void senseSelected(MouseEvent mouseEvent) {
-        this.mainController.sourceOneSelected(this.sourceModel.
-                getOffset(this.senseList.getSelectionModel().getSelectedIndex()));
+        this.mainController.sourceSelected(this.sourceModel.
+                getOffset(this.senseList.getSelectionModel().getSelectedIndex()),
+                this);
     }
 
     public SourceModel getSourceModel() {

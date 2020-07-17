@@ -15,7 +15,7 @@ public class Search {
             this.germaNet = new GermanetController();
             this.wordNet = new WordnetController();
         } catch (Exception e) {
-            e.printStackTrace();  // TODO
+            e.printStackTrace();  // TODO: better handling of germanet/wordnet exceptions
         }
     }
 

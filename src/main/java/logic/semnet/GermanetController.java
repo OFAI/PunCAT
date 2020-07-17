@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class GermanetController implements SemnetController<Synset> {
-    private static final String GermaNetLocation = "D:/git/puncat/GN_V150_XML";
+    private static final String GermaNetLocation = "C:/git/puncat/GN_V150_XML";
     private final GermaNet germanet;
 
     public GermanetController() throws IOException, XMLStreamException {

@@ -10,20 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TargetModel {  // TODO: base class or interface for source/target models
-    private final ObservableList<String> senseList; // TODO: fill with Properties instead
+    private final ObservableList<String> senseList;
     private List<Integer> ids;
 
     private Search search;
 
     public TargetModel() {
         this.senseList = FXCollections.observableArrayList();
-        this.ids = new ArrayList<Integer>();
+        this.ids = new ArrayList<>();
     }
 
     public void updateSenses(String word) {
         this.ids.clear();
         if (word == null) {
-            this.senseList.setAll(new ArrayList<String>());
+            this.senseList.setAll(new ArrayList<>());
             return;
         }
         List<Synset> synsets = search.getTargetSenses(word.toLowerCase());
