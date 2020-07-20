@@ -12,5 +12,5 @@
     </columnConstraints>
 
     <TextField fx:id="wordInput" GridPane.rowIndex="0" GridPane.columnIndex="0" onAction="#wordInputChanged"/>
-    <ListView fx:id="senseList" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <ListView fx:id="senseList" GridPane.rowIndex="1" GridPane.columnIndex="0" onMouseClicked="#senseSelected"/>
 </GridPane>

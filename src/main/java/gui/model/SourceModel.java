@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class SourceModel {
     private final ObservableList<String> senseList; // TODO: fill with Properties instead
-    private List<Long> offsets;
+    private final List<Long> offsets;
 
     private Search search;
 

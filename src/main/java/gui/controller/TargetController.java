@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -35,8 +36,9 @@ public class TargetController implements Initializable {
     }
 
     public void sourceWordChanged(Long offset) {
-        this.wordInput.setText(this.targetModel.getTextFromOffset(offset));
         this.targetModel.updateSensesBySourceOffset(offset);
+        this.wordInput.setText(this.targetModel.getTextFromOffset(offset));
+        this.senseList.getSelectionModel().selectIndices(this.targetModel.getMatchIndex());
     }
 
     public TargetModel getTargetModel() {
@@ -45,5 +47,9 @@ public class TargetController implements Initializable {
 
     public void wordInputChanged(ActionEvent actionEvent) {
         targetModel.updateSenses(wordInput.getText());
+    }
+
+    public void senseSelected(MouseEvent mouseEvent) {
+        this.senseList.getSelectionModel().getSelectedIndex();
     }
 }
