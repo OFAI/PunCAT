@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import logic.search.Search;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,7 +31,7 @@ public class TargetController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.targetModel = new TargetModel();
 
-        WrappingCell.setWrappingCell(this.senseList);
+        WrappingCell.configureWrappingCell(this.senseList);
 
         senseList.setItems(targetModel.getSenseList());
     }
@@ -50,6 +51,18 @@ public class TargetController implements Initializable {
     }
 
     public void senseSelected(MouseEvent mouseEvent) {
-        this.senseList.getSelectionModel().getSelectedIndex();
+        this.mainController.maybeCalculateSimilarity();
+    }
+
+    public void setSemanticSearch(Search search) {
+        this.targetModel.setSemanticSearch(search);
+    }
+
+    public int getSelectionIndex() {
+        return this.senseList.getSelectionModel().getSelectedIndex();
+    }
+
+    public int getSelectedId() {
+        return this.targetModel.getIds().get(this.getSelectionIndex());
     }
 }

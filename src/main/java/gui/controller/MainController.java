@@ -1,7 +1,10 @@
 package gui.controller;
 
+import gui.model.SimilarityModel;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import logic.search.Search;
 
@@ -19,6 +22,13 @@ public class MainController implements Initializable {
     public GridPane source2;
 
     @FXML
+    public Label semanticScore;
+    @FXML
+    public Label phoneticScore;
+
+    private SimilarityModel similarityModel;
+
+    @FXML
     private SourceController source1Controller;
     @FXML
     private SourceController source2Controller;
@@ -34,13 +44,18 @@ public class MainController implements Initializable {
         this.source2Controller.setReferences(this);
         this.target1Controller.setReferences(this);
         this.target2Controller.setReferences(this);
+
+        this.similarityModel = new SimilarityModel();
+
+        this.semanticScore.textProperty().bind(Bindings.convert(this.similarityModel.semanticSimilarityScoreProperty()));
     }
 
     public void setSemanticSearch(Search semanticSearch) {
-        source1Controller.getSourceModel().setSemanticSearch(semanticSearch);
-        source2Controller.getSourceModel().setSemanticSearch(semanticSearch);
-        target1Controller.getTargetModel().setSemanticSearch(semanticSearch);
-        target2Controller.getTargetModel().setSemanticSearch(semanticSearch);
+        this.source1Controller.setSemanticSearch(semanticSearch);
+        this.source2Controller.setSemanticSearch(semanticSearch);
+        this.target1Controller.setSemanticSearch(semanticSearch);
+        this.target2Controller.setSemanticSearch(semanticSearch);
+        this.similarityModel.setSemanticSearch(semanticSearch);
     }
 
     public void sourceSelected(Long offset, SourceController sourceController) {
@@ -49,6 +64,14 @@ public class MainController implements Initializable {
             this.target1Controller.sourceWordChanged(offset);
         } else {
             this.target2Controller.sourceWordChanged(offset);
+        }
+    }
+
+    public void maybeCalculateSimilarity() {
+        if (this.target1Controller.getSelectionIndex() != -1 && this.target2Controller.getSelectionIndex() != -1) {
+            int sense1 = this.target1Controller.getSelectedId();
+            int sense2 = this.target2Controller.getSelectedId();
+            this.similarityModel.calculateSimilarity(sense1, sense2);
         }
     }
 }

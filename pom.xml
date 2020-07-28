@@ -12,8 +12,55 @@
         <maven.compiler.target>1.14</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <repositories>
+        <repository>
+            <id>ukp-oss-releases</id>
+            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
+        </repository>
+    </repositories>
     <dependencies>
+        <!--
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.germanet-gpl</artifactId>
+            <version>0.8.2-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/de.tudarmstadt.ukp.dkpro.lexsemresource.germanet-gpl-0.8.2-SNAPSHOT.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.wordnet-asl</artifactId>
+            <version>0.8.2-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/de.tudarmstadt.ukp.dkpro.lexsemresource.wordnet-asl-0.8.2-SNAPSHOT.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.graph-asl</artifactId>
+            <version>0.8.2-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/de.tudarmstadt.ukp.dkpro.lexsemresource.graph-asl-0.8.2-SNAPSHOT.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.core-asl</artifactId>
+            <version>0.8.2-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/de.tudarmstadt.ukp.dkpro.lexsemresource.core-asl-0.8.2-SNAPSHOT.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.lexsemresource</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.lexsemresource.api-asl</artifactId>
+            <version>0.8.2-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/de.tudarmstadt.ukp.dkpro.lexsemresource.api-asl-0.8.2-SNAPSHOT.jar
+            </systemPath>
+        </dependency>
+-->
         <dependency>
             <groupId>de.tuebingen.uni.sfs.germanet</groupId>
             <artifactId>germanet-api</artifactId>
@@ -48,6 +95,21 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>14.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.decimal4j</groupId>
+            <artifactId>decimal4j</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>dkpro.similarity</groupId>
+            <artifactId>dkpro.similarity.algorithms.api-asl</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>dkpro.similarity</groupId>
+            <artifactId>dkpro.similarity.algorithms.lsr-asl</artifactId>
+            <version>2.1.0</version>
         </dependency>
     </dependencies>
     <build>

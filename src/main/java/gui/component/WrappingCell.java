@@ -5,7 +5,7 @@ import javafx.scene.control.ListView;
 
 public class WrappingCell {
     // TODO: dragging the scrollbar makes list items jump around
-    public static void setWrappingCell(ListView<String> listView) {
+    public static void configureWrappingCell(ListView<String> listView) {
         listView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {

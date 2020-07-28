@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import logic.search.Search;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -29,7 +30,7 @@ public class SourceController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.sourceModel = new SourceModel();
 
-        WrappingCell.setWrappingCell(this.senseList);
+        WrappingCell.configureWrappingCell(this.senseList);
 
         senseList.setItems(sourceModel.getSenseList());
     }
@@ -42,6 +43,14 @@ public class SourceController implements Initializable {
         this.mainController.sourceSelected(this.sourceModel.
                         getOffset(this.senseList.getSelectionModel().getSelectedIndex()),
                 this);
+    }
+
+    public void setSemanticSearch(Search search) {
+        this.sourceModel.setSemanticSearch(search);
+    }
+
+    public Long getSelectedWordOffset() {
+        return this.sourceModel.getOffset(this.senseList.getSelectionModel().getSelectedIndex());
     }
 
     public SourceModel getSourceModel() {

@@ -29,7 +29,7 @@ public class TargetModel {  // TODO: base class or interface for source/target m
             this.senseList.setAll(new ArrayList<>());
             return;
         }
-        List<Synset> synsets = search.getTargetSenses(word.toLowerCase());
+        List<Synset> synsets = search.getTargetSenses(word);
 
         for (Synset s : synsets) {
             this.ids.add(s.getId());

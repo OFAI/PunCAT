@@ -2,7 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <GridPane hgap="30.0" vgap="10.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml"
           fx:controller="gui.controller.MainController" alignment="TOP_CENTER">
 
@@ -11,20 +13,42 @@
     </padding>
 
     <columnConstraints>
-        <ColumnConstraints percentWidth="30" halignment="CENTER"/>
-        <ColumnConstraints percentWidth="35" halignment="CENTER"/>
-        <ColumnConstraints percentWidth="35" halignment="CENTER"/>
+        <ColumnConstraints percentWidth="30" halignment="CENTER" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="70" halignment="CENTER" hgrow="ALWAYS"/>
     </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
 
-    <Label text="Source" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-    <fx:include fx:id="source1" source="sourceView.fxml" GridPane.rowIndex="1"
-                GridPane.columnIndex="0"/>
-    <fx:include fx:id="source2" source="sourceView.fxml" GridPane.rowIndex="2"
-                GridPane.columnIndex="0"/>
+    <GridPane GridPane.rowIndex="0" GridPane.columnIndex="0" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+        </columnConstraints>
 
-    <Label text="Target" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-    <fx:include fx:id="target1" source="targetView.fxml" GridPane.rowIndex="1"
-                GridPane.columnIndex="1"/>
-    <fx:include fx:id="target2" source="targetView.fxml" GridPane.rowIndex="1"
-                GridPane.columnIndex="2"/>
+        <Label text="Source" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <fx:include fx:id="source1" source="sourceView.fxml" GridPane.rowIndex="1"
+                    GridPane.columnIndex="0"/>
+        <fx:include fx:id="source2" source="sourceView.fxml" GridPane.rowIndex="2"
+                    GridPane.columnIndex="0"/>
+    </GridPane>
+
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" hgap="10">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+            <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+        </columnConstraints>
+        <Label text="Target" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+        <Label text="Semantic similarity:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="semanticScore" text="0" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Phonetic similarity:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label fx:id="phoneticScore" text="0" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <fx:include fx:id="target1" source="targetView.fxml" GridPane.rowIndex="3"
+                    GridPane.columnIndex="0"/>
+        <fx:include fx:id="target2" source="targetView.fxml" GridPane.rowIndex="3"
+                    GridPane.columnIndex="1"/>
+    </GridPane>
+
 </GridPane>
