@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class WordnetController implements SemnetController<Synset> {
-    // TODO: maybe no need for semnet "controller" classes
     private final Dictionary wordnet;
 
     public WordnetController() throws JWNLException {
@@ -52,15 +51,6 @@ public class WordnetController implements SemnetController<Synset> {
             } catch (JWNLException e) {
                 e.printStackTrace();
             }
-        }
-        return words;
-    }
-
-    public List<String> getWordsByOffsetList(List<Long> offsets) {
-        List<String> words = new ArrayList<>();
-        for (Long o : offsets) {
-            System.out.println(o);
-            words.addAll(this.getWordsByOffset(o));
         }
         return words;
     }

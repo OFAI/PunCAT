@@ -10,7 +10,7 @@ public class SimilarityModel {
     private final DoubleProperty semanticSimilarityScore = new SimpleDoubleProperty(this, "semantic_similarity");
 
 
-    public void setSemanticSearch(Search semanticSearch) {
+    public void setSearch(Search semanticSearch) {
         this.search = semanticSearch;
         this.semanticSimilarityScore.set(0);
     }

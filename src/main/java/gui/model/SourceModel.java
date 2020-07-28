@@ -1,56 +1,79 @@
 package gui.model;
 
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import logic.search.Search;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class SourceModel {
-    private final ObservableList<String> senseList; // TODO: fill with Properties instead
-    private final List<Long> offsets;
+public class SourceModel implements SenseModel {
+    private final StringProperty pronunciation = new SimpleStringProperty();
+    private final ListProperty<String> synonyms = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final StringProperty description = new SimpleStringProperty();
+    private final LongProperty offset = new SimpleLongProperty();
 
-    private Search search;
+    public SourceModel(Synset synset) {
+        this.setPronunciation("-");
+        this.setDescription(synset.getGloss());
+        this.setOffset(synset.getOffset());
 
-    public SourceModel() {
-        this.senseList = FXCollections.observableArrayList();
-        this.offsets = new ArrayList<>();
+        ObservableList<String> synonyms = FXCollections.observableArrayList();
+        synonyms.setAll(synset.getWords().stream().map(Word::getLemma).collect(Collectors.toList()));
+        this.setSynonyms(synonyms);
     }
 
-    public void updateSenses(String word) {
-        List<Synset> synsets = search.getSourceSenses(word.toLowerCase());
-
-        this.offsets.clear();
-        for (Synset s : synsets) {
-            this.offsets.add(s.getOffset());
-        }
-        this.senseList.setAll(this.formatSenseList(synsets));
+    public String getPronunciation() {
+        return pronunciation.get();
     }
 
-    private List<String> formatSenseList(List<Synset> synsets) {
-        List<String> formattedSenses = new ArrayList<>();
-        for (Synset s : synsets) {
-            formattedSenses.add(String.format("(%s)\n%s",
-                    s.getWords().stream().map(Word::getLemma).collect(Collectors.joining(", ")),
-                    s.getGloss()));
-        }
-        return formattedSenses;
+    public StringProperty pronunciationProperty() {
+        return pronunciation;
     }
 
-    public ObservableList<String> getSenseList() {
-        return senseList;
+    public void setPronunciation(String pronunciation) {
+        this.pronunciation.set(pronunciation);
     }
 
-    public void setSemanticSearch(Search semanticSearch) {
-        this.search = semanticSearch;
+    public ObservableList<String> getSynonyms() {
+        return synonyms.get();
     }
 
-    public Long getOffset(int index) {
-        return this.offsets.get(index);
+    public ListProperty<String> synonymsProperty() {
+        return synonyms;
     }
 
+    public void setSynonyms(ObservableList<String> synonyms) {
+        this.synonyms.set(synonyms);
+    }
+
+    public String getDescription() {
+        return description.get();
+    }
+
+    public StringProperty descriptionProperty() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description.set(description);
+    }
+
+    public long getOffset() {
+        return offset.get();
+    }
+
+    public LongProperty offsetProperty() {
+        return offset;
+    }
+
+    public void setOffset(long offset) {
+        this.offset.set(offset);
+    }
 }

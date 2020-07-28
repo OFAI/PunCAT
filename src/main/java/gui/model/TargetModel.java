@@ -2,113 +2,78 @@ package gui.model;
 
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import logic.search.Search;
 
-import java.util.ArrayList;
-import java.util.List;
+public class TargetModel implements SenseModel {
+    private final StringProperty pronunciation = new SimpleStringProperty();
+    private final ListProperty<String> synonyms = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final StringProperty description = new SimpleStringProperty();
+    private final IntegerProperty id = new SimpleIntegerProperty();
 
-public class TargetModel {  // TODO: base class or interface for source/target models
-    private final ObservableList<String> senseList;
-    private List<Integer> ids;
-    private final IntegerProperty matchIndex;
+    public TargetModel(Synset synset) {
+        this.setPronunciation("-");
+        this.setDescription(String.join("; ", synset.getParaphrases()));
+        this.setId(synset.getId());
 
-    private Search search;
-
-    public TargetModel() {
-        this.senseList = FXCollections.observableArrayList();
-        this.ids = new ArrayList<>();
-        this.matchIndex = new SimpleIntegerProperty();
+        ObservableList<String> synonyms = FXCollections.observableArrayList();
+        synonyms.setAll(synset.getAllOrthForms());
+        this.setSynonyms(synonyms);
     }
 
-    public void updateSenses(String word) {
-        this.ids.clear();
-        if (word == null) {
-            this.senseList.setAll(new ArrayList<>());
-            return;
-        }
-        List<Synset> synsets = search.getTargetSenses(word);
-
-        for (Synset s : synsets) {
-            this.ids.add(s.getId());
-        }
-        this.senseList.setAll(this.formatSenseList(synsets));
+    @Override
+    public String getPronunciation() {
+        return pronunciation.get();
     }
 
-    public void updateSensesBySourceOffset(Long offset) {
-        Synset synset = search.mapToGermanet(offset);
-
-        if (synset != null) {
-            this.updateSenses(synset.getAllOrthForms().get(0));
-            this.setSelectionBySynset(synset);
-        } else {
-            this.updateSenses(null);
-        }
+    public StringProperty pronunciationProperty() {
+        return pronunciation;
     }
 
-    private List<String> formatSenseList(List<Synset> synsets) {
-        List<String> formattedSenses = new ArrayList<>();
-        for (Synset s : synsets) {
-            String description = String.join("; ", s.getParaphrases());
-
-            formattedSenses.add(String.format("(%s (%s))\n%s",
-                    String.join(", ", s.getAllOrthForms()),
-                    s.getWordCategory().toString(),
-                    description));
-        }
-        return formattedSenses;
+    public void setPronunciation(String pronunciation) {
+        this.pronunciation.set(pronunciation);
     }
 
-    public String getTextFromOffset(Long offset) {
-        Synset synset = this.search.mapToGermanet(offset);
-        if (synset == null) {
-            return "";
-        } else return synset.getAllOrthForms().get(0);
+    @Override
+    public ObservableList<String> getSynonyms() {
+        return synonyms.get();
     }
 
-    private void setSelectionBySynset(Synset synset) {
-        for (int i = 0; i < this.ids.size(); i++) {
-            if (this.ids.get(i) == synset.getId()) {
-                this.matchIndex.setValue(i);
-            }
-        }
+    public ListProperty<String> synonymsProperty() {
+        return synonyms;
     }
 
-    public void setSemanticSearch(Search semanticSearch) {
-        this.search = semanticSearch;
+    public void setSynonyms(ObservableList<String> synonyms) {
+        this.synonyms.set(synonyms);
     }
 
-    public ObservableList<String> getSenseList() {
-        return senseList;
+    @Override
+    public String getDescription() {
+        return description.get();
     }
 
-    public List<Integer> getIds() {
-        return ids;
+    public StringProperty descriptionProperty() {
+        return description;
     }
 
-    public void setIds(List<Integer> ids) {
-        this.ids = ids;
+    public void setDescription(String description) {
+        this.description.set(description);
     }
 
-    public Search getSearch() {
-        return search;
+    public int getId() {
+        return id.get();
     }
 
-    public void setSearch(Search search) {
-        this.search = search;
+    public IntegerProperty idProperty() {
+        return id;
     }
 
-    public int getMatchIndex() {
-        return matchIndex.get();
-    }
-
-    public IntegerProperty matchIndexProperty() {
-        return matchIndex;
-    }
-
-    public void setMatchIndex(int matchIndex) {
-        this.matchIndex.set(matchIndex);
+    public void setId(int id) {
+        this.id.set(id);
     }
 }

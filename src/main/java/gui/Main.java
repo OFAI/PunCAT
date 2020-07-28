@@ -15,9 +15,9 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainView.fxml"));
         GridPane root = loader.load();
 
-        Search semanticSearch = new Search();
+        Search search = new Search();
         MainController mainController = loader.getController();
-        mainController.setSemanticSearch(semanticSearch);
+        mainController.setSearch(search);
 
         Scene scene = new Scene(root);
         primaryStage.setTitle("PunCat");

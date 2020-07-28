@@ -50,20 +50,20 @@ public class MainController implements Initializable {
         this.semanticScore.textProperty().bind(Bindings.convert(this.similarityModel.semanticSimilarityScoreProperty()));
     }
 
-    public void setSemanticSearch(Search semanticSearch) {
-        this.source1Controller.setSemanticSearch(semanticSearch);
-        this.source2Controller.setSemanticSearch(semanticSearch);
-        this.target1Controller.setSemanticSearch(semanticSearch);
-        this.target2Controller.setSemanticSearch(semanticSearch);
-        this.similarityModel.setSemanticSearch(semanticSearch);
+    public void setSearch(Search search) {
+        this.source1Controller.setSearch(search);
+        this.source2Controller.setSearch(search);
+        this.target1Controller.setSearch(search);
+        this.target2Controller.setSearch(search);
+        this.similarityModel.setSearch(search);
     }
 
     public void sourceSelected(Long offset, SourceController sourceController) {
         // TODO: there has to be a better way to do this
         if (sourceController == this.source1Controller) {
-            this.target1Controller.sourceWordChanged(offset);
+            this.target1Controller.sourceSelected(offset);
         } else {
-            this.target2Controller.sourceWordChanged(offset);
+            this.target2Controller.sourceSelected(offset);
         }
     }
 

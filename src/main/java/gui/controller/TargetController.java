@@ -1,7 +1,11 @@
 package gui.controller;
 
-import gui.component.WrappingCell;
+import de.tuebingen.uni.sfs.germanet.api.Synset;
+import gui.component.SenseCell;
+import gui.model.SenseModel;
 import gui.model.TargetModel;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,17 +15,21 @@ import javafx.scene.input.MouseEvent;
 import logic.search.Search;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 // TODO: base class or interface for source/target controllers
 public class TargetController implements Initializable {
     @FXML
     public TextField wordInput;
     @FXML
-    public ListView<String> senseList;
+    public ListView<SenseModel> senseList;
 
+    private ObservableList<SenseModel> targets;
     private MainController mainController;
-    private TargetModel targetModel;
+    private Search search;
 
     public void setReferences(MainController mc) {
         this.mainController = mc;
@@ -29,33 +37,53 @@ public class TargetController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.targetModel = new TargetModel();
+        this.targets = FXCollections.observableArrayList();
 
-        WrappingCell.configureWrappingCell(this.senseList);
-
-        senseList.setItems(targetModel.getSenseList());
+        this.senseList.setCellFactory(sl -> new SenseCell());
+        this.senseList.setItems(this.targets);
     }
 
-    public void sourceWordChanged(Long offset) {
-        this.targetModel.updateSensesBySourceOffset(offset);
-        this.wordInput.setText(this.targetModel.getTextFromOffset(offset));
-        this.senseList.getSelectionModel().selectIndices(this.targetModel.getMatchIndex());
+    public void sourceSelected(Long offset) {
+        Synset synset = search.mapToGermanet(offset);
+        if (synset != null) {
+            this.populateSynsetList(synset.getAllOrthForms().get(0));
+            this.wordInput.setText(synset.getAllOrthForms().get(0));
+            this.setSelectionBySynset(synset);
+        } else {
+            this.populateSynsetList(null);
+        }
     }
 
-    public TargetModel getTargetModel() {
-        return targetModel;
+    public void populateSynsetList(String word) {
+        if (word == null) {
+            this.targets.setAll(new ArrayList<>());
+            return;
+        }
+
+        List<Synset> synsets = search.getTargetSenses(word);
+        this.targets.setAll(synsets.stream().map(TargetModel::new).collect(Collectors.toList()));
+    }
+
+    private void setSelectionBySynset(Synset synset) {
+        // TODO: not very nice
+        for (SenseModel tm : this.targets) {
+            if (((TargetModel) tm).getId() == synset.getId()) {
+                this.senseList.getSelectionModel().select(synset.getId());
+                break;
+            }
+        }
     }
 
     public void wordInputChanged(ActionEvent actionEvent) {
-        targetModel.updateSenses(wordInput.getText());
+        this.populateSynsetList(wordInput.getText());
     }
 
     public void senseSelected(MouseEvent mouseEvent) {
         this.mainController.maybeCalculateSimilarity();
     }
 
-    public void setSemanticSearch(Search search) {
-        this.targetModel.setSemanticSearch(search);
+    public void setSearch(Search search) {
+        this.search = search;
     }
 
     public int getSelectionIndex() {
@@ -63,6 +91,7 @@ public class TargetController implements Initializable {
     }
 
     public int getSelectedId() {
-        return this.targetModel.getIds().get(this.getSelectionIndex());
+        TargetModel selection = (TargetModel) this.senseList.getSelectionModel().getSelectedItem();
+        return selection.getId();
     }
 }
