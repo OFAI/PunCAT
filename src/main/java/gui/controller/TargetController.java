@@ -3,7 +3,7 @@ package gui.controller;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 import gui.component.SenseCell;
 import gui.model.SenseModel;
-import gui.model.TargetModel;
+import gui.model.SenseModelTarget;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -61,17 +61,25 @@ public class TargetController implements Initializable {
         }
 
         List<Synset> synsets = search.getTargetSenses(word);
-        this.targets.setAll(synsets.stream().map(TargetModel::new).collect(Collectors.toList()));
+        this.targets.setAll(synsets.stream().map(SenseModelTarget::new).collect(Collectors.toList()));
     }
 
     private void setSelectionBySynset(Synset synset) {
         // TODO: not very nice
-        for (SenseModel tm : this.targets) {
-            if (((TargetModel) tm).getId() == synset.getId()) {
-                this.senseList.getSelectionModel().select(synset.getId());
+        for (int i = 0; i < this.targets.size(); i++) {
+            if (((SenseModelTarget) this.targets.get(i)).getId() == synset.getId()) {
+                this.senseList.getSelectionModel().select(i);
                 break;
             }
         }
+        /*
+        for (SenseModel tm : this.targets) {
+            if (((SenseModelTarget) tm).getId() == synset.getId()) {
+                this.senseList.getSelectionModel().select(synset.getId());
+                this.senseList.getFocusModel().focus(synset.getId());
+                break;
+            }
+        } */
     }
 
     public void wordInputChanged(ActionEvent actionEvent) {
@@ -91,7 +99,7 @@ public class TargetController implements Initializable {
     }
 
     public int getSelectedId() {
-        TargetModel selection = (TargetModel) this.senseList.getSelectionModel().getSelectedItem();
+        SenseModelTarget selection = (SenseModelTarget) this.senseList.getSelectionModel().getSelectedItem();
         return selection.getId();
     }
 }
