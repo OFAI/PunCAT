@@ -20,7 +20,8 @@ public class Main extends Application {
         mainController.setSearch(search);
 
         Scene scene = new Scene(root);
-        primaryStage.setTitle("PunCat");
+        scene.getStylesheets().add("/styles.css");
+        primaryStage.setTitle("PunCAT");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();

@@ -39,6 +39,9 @@ public class TargetController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.targets = FXCollections.observableArrayList();
 
+        this.senseList.getSelectionModel().selectedItemProperty().addListener((observableValue, senseModel, t1) ->
+            this.senseSelected()
+        );
         this.senseList.setCellFactory(sl -> new SenseCell());
         this.senseList.setItems(this.targets);
     }
@@ -72,22 +75,16 @@ public class TargetController implements Initializable {
                 break;
             }
         }
-        /*
-        for (SenseModel tm : this.targets) {
-            if (((SenseModelTarget) tm).getId() == synset.getId()) {
-                this.senseList.getSelectionModel().select(synset.getId());
-                this.senseList.getFocusModel().focus(synset.getId());
-                break;
-            }
-        } */
     }
 
     public void wordInputChanged(ActionEvent actionEvent) {
         this.populateSynsetList(wordInput.getText());
     }
 
-    public void senseSelected(MouseEvent mouseEvent) {
-        this.mainController.maybeCalculateSimilarity();
+    public void senseSelected() {
+        if (this.senseList.getSelectionModel().getSelectedItem() != null) {
+            this.mainController.maybeCalculateSimilarity();
+        }
     }
 
     public void setSearch(Search search) {

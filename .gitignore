@@ -1,5 +1,3 @@
 .idea
 *.iml
-
-target/
-GN_V150_XML
+target

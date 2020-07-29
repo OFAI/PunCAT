@@ -1,32 +1,34 @@
 package gui.model;
 
-import de.tuebingen.uni.sfs.germanet.api.Synset;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import net.sf.extjwnl.data.Synset;
+import net.sf.extjwnl.data.Word;
 
-public class TargetModel implements SenseModel {
+import java.util.stream.Collectors;
+
+public class SenseModelSource implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
     private final ListProperty<String> synonyms = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty description = new SimpleStringProperty();
-    private final IntegerProperty id = new SimpleIntegerProperty();
+    private final LongProperty offset = new SimpleLongProperty();
 
-    public TargetModel(Synset synset) {
+    public SenseModelSource(Synset synset) {
         this.setPronunciation("-");
-        this.setDescription(String.join("; ", synset.getParaphrases()));
-        this.setId(synset.getId());
+        this.setDescription(synset.getGloss());
+        this.setOffset(synset.getOffset());
 
         ObservableList<String> synonyms = FXCollections.observableArrayList();
-        synonyms.setAll(synset.getAllOrthForms());
+        synonyms.setAll(synset.getWords().stream().map(Word::getLemma).collect(Collectors.toList()));
         this.setSynonyms(synonyms);
     }
 
-    @Override
     public String getPronunciation() {
         return pronunciation.get();
     }
@@ -39,7 +41,6 @@ public class TargetModel implements SenseModel {
         this.pronunciation.set(pronunciation);
     }
 
-    @Override
     public ObservableList<String> getSynonyms() {
         return synonyms.get();
     }
@@ -52,7 +53,6 @@ public class TargetModel implements SenseModel {
         this.synonyms.set(synonyms);
     }
 
-    @Override
     public String getDescription() {
         return description.get();
     }
@@ -65,15 +65,15 @@ public class TargetModel implements SenseModel {
         this.description.set(description);
     }
 
-    public int getId() {
-        return id.get();
+    public long getOffset() {
+        return offset.get();
     }
 
-    public IntegerProperty idProperty() {
-        return id;
+    public LongProperty offsetProperty() {
+        return offset;
     }
 
-    public void setId(int id) {
-        this.id.set(id);
+    public void setOffset(long offset) {
+        this.offset.set(offset);
     }
 }

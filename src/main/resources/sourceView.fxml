@@ -14,5 +14,5 @@
 
     <TextField fx:id="wordInput" promptText="Search for an English word…" GridPane.rowIndex="0" GridPane.columnIndex="0"
                onAction="#wordInputChanged"/>
-    <ListView fx:id="senseList" GridPane.rowIndex="1" GridPane.columnIndex="0" onMouseClicked="#senseSelected"/>
+    <ListView fx:id="senseList" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
 </GridPane>
