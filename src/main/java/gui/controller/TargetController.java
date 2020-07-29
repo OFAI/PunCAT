@@ -99,4 +99,12 @@ public class TargetController implements Initializable {
         SenseModelTarget selection = (SenseModelTarget) this.senseList.getSelectionModel().getSelectedItem();
         return selection.getId();
     }
+
+    public boolean hasSelection() {
+        return !this.senseList.getSelectionModel().selectedItemProperty().isNull().get();
+    }
+
+    public String getSearchWord() {
+        return this.wordInput.getText();
+    }
 }

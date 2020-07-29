@@ -1,10 +1,14 @@
 package gui.controller;
 
+import gui.model.CandidateModel;
 import gui.model.SimilarityModel;
 import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import logic.search.Search;
 
@@ -25,6 +29,10 @@ public class MainController implements Initializable {
     public Label semanticScore;
     @FXML
     public Label phoneticScore;
+    @FXML
+    public TableView<CandidateModel> candidate;
+    @FXML
+    public Button addCandidateButton;
 
     private SimilarityModel similarityModel;
 
@@ -36,6 +44,8 @@ public class MainController implements Initializable {
     private TargetController target1Controller;
     @FXML
     private TargetController target2Controller;
+    @FXML
+    private CandidateController candidateController;
 
 
     @Override
@@ -72,6 +82,17 @@ public class MainController implements Initializable {
             int sense1 = this.target1Controller.getSelectedId();
             int sense2 = this.target2Controller.getSelectedId();
             this.similarityModel.calculateSimilarity(sense1, sense2);
+        }
+    }
+
+    public void addToCandidates(ActionEvent actionEvent) {
+        if (target1Controller.hasSelection() && target2Controller.hasSelection()) {
+            candidateController.newCandidate(
+                    this.target1Controller.getSearchWord(),
+                    this.target2Controller.getSearchWord(),
+                    Double.parseDouble(this.semanticScore.getText()),
+                    Double.parseDouble(this.phoneticScore.getText())
+            );
         }
     }
 }
