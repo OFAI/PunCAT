@@ -13,6 +13,7 @@ public class SenseCell extends ListCell<SenseModel> {
     Text synonyms = new Text();
 
     public SenseCell() {
+        this.getStyleClass().add("sense-cell");
         this.synonyms.setStyle("-fx-font-weight: bold");
         this.textFlow.getChildren().addAll(this.pronunciation, this.synonyms, this.description);
         this.setPrefWidth(0);

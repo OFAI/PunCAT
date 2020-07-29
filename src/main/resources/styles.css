@@ -1,0 +1,4 @@
+
+.sense-cell:filled:selected:focused, .sense-cell:filled:selected {
+    -fx-background-color: #d3d3d3;
+}
