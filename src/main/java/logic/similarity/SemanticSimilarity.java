@@ -20,6 +20,6 @@ public class SemanticSimilarity {
     public double calculateSemanticSimilarity(int senseId1, int senseId2) {
         Synset sense1 = this.germaNet.getSynsetByID(senseId1);
         Synset sense2 = this.germaNet.getSynsetByID(senseId2);
-        return this.semanticUtils.getSimilarity(SemRelMeasure.Resnik, sense1, sense2, 1);
+        return this.semanticUtils.getSimilarity(SemRelMeasure.JiangAndConrath, sense1, sense2, 1);
     }
 }
