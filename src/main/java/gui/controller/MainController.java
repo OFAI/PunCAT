@@ -1,6 +1,7 @@
 package gui.controller;
 
 import gui.model.CandidateModel;
+import gui.model.SenseModelTarget;
 import gui.model.SimilarityModel;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -10,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import logic.search.Search;
 
 import java.net.URL;
@@ -33,6 +35,8 @@ public class MainController implements Initializable {
     public TableView<CandidateModel> candidate;
     @FXML
     public Button addCandidateButton;
+    @FXML
+    public StackPane graph;
 
     private SimilarityModel similarityModel;
 
@@ -46,6 +50,8 @@ public class MainController implements Initializable {
     private TargetController target2Controller;
     @FXML
     private CandidateController candidateController;
+    @FXML
+    private GraphController graphController;
 
 
     @Override
@@ -70,26 +76,54 @@ public class MainController implements Initializable {
 
     public void sourceSelected(Long offset, SourceController sourceController) {
         // TODO: there has to be a better way to do this
+        TargetController targetController;
         if (sourceController == this.source1Controller) {
-            this.target1Controller.sourceSelected(offset);
+            targetController = this.target1Controller;
         } else {
-            this.target2Controller.sourceSelected(offset);
+            targetController = this.target2Controller;
         }
+
+        targetController.sourceSelected(offset);
+        SenseModelTarget selection = (SenseModelTarget) targetController
+                .senseList
+                .getSelectionModel()
+                .getSelectedItem();
+        this.graphController.updateGraphData(
+                selection,
+                targetController.getHypernyms(selection),
+                targetController.getHyponyms(selection)
+        );
     }
 
     public void maybeCalculateSimilarity() {
-        if (this.target1Controller.getSelectionIndex() != -1 && this.target2Controller.getSelectionIndex() != -1) {
+        if (this.allSenseFieldsHaveSelection()) {
+            long sSense1 = this.source1Controller.getSelectedId();
+            long sSense2 = this.source2Controller.getSelectedId();
+            int tSense1 = this.target1Controller.getSelectedId();
+            int tSense2 = this.target2Controller.getSelectedId();
+            this.similarityModel.calculateSimilarity(sSense1, sSense2, tSense1, tSense2);
+        }
+        /*
+        if (this.target1Controller.hasSelection() && this.target2Controller.hasSelection()) {
             int sense1 = this.target1Controller.getSelectedId();
             int sense2 = this.target2Controller.getSelectedId();
             this.similarityModel.calculateSimilarity(sense1, sense2);
         }
+         */
+    }
+
+    private boolean allSenseFieldsHaveSelection() {
+        return this.source1Controller.hasSelection() &&
+                this.source2Controller.hasSelection() &&
+                this.target1Controller.hasSelection() &&
+                this.target2Controller.hasSelection();
     }
 
     public void addToCandidates(ActionEvent actionEvent) {
         if (target1Controller.hasSelection() && target2Controller.hasSelection()) {
             candidateController.newCandidate(
-                    this.target1Controller.getSearchWord(),
-                    this.target2Controller.getSearchWord(),
+                    this.target1Controller.getWordInputText(),
+                    this.target2Controller.getWordInputText(),
                     Double.parseDouble(this.semanticScore.getText()),
                     Double.parseDouble(this.phoneticScore.getText())
             );

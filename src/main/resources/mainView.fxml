@@ -8,9 +8,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<GridPane hgap="30.0" vgap="10.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml"
-          fx:controller="gui.controller.MainController" alignment="TOP_CENTER">
-
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="gui.controller.MainController"
+          hgap="30.0" vgap="10.0"
+          alignment="TOP_CENTER">
+    <!-- TODO: this file is a bit of a mess - move node settings to .java files? -->
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
@@ -28,19 +30,30 @@
             <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
         </columnConstraints>
 
-        <Label text="Source" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <fx:include fx:id="source1" source="sourceView.fxml" GridPane.rowIndex="1"
-                    GridPane.columnIndex="0"/>
-        <fx:include fx:id="source2" source="sourceView.fxml" GridPane.rowIndex="2"
-                    GridPane.columnIndex="0"/>
+        <Label styleClass="lang-header" text="Source" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <fx:include fx:id="source1"
+                    source="sourceView.fxml"
+                    GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <fx:include fx:id="source2"
+                    source="sourceView.fxml"
+                    GridPane.rowIndex="2" GridPane.columnIndex="0"/>
     </GridPane>
 
-    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" hgap="10">
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" hgap="10" vgap="10">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" halignment="CENTER" percentWidth="50"/>
             <ColumnConstraints hgrow="ALWAYS" halignment="CENTER" percentWidth="50"/>
         </columnConstraints>
-        <Label text="Target" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <rowConstraints>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints vgrow="NEVER" percentHeight="45"/>
+            <RowConstraints percentHeight="25"/>
+        </rowConstraints>
+
+        <Label styleClass="lang-header"
+               text="Target"
+               GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
 
         <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
             <HBox spacing="10">
@@ -52,16 +65,22 @@
                 <Label fx:id="phoneticScore" text="0"/>
             </HBox>
         </VBox>
-        <Button fx:id="addCandidateButton" onAction="#addToCandidates" text="Add to candidates" GridPane.rowIndex="1" GridPane.columnIndex="0"
-                GridPane.columnSpan="2"/>
-        <fx:include fx:id="target1" source="targetView.fxml" GridPane.rowIndex="3"
-                    GridPane.columnIndex="0"/>
-        <fx:include fx:id="target2" source="targetView.fxml" GridPane.rowIndex="3"
-                    GridPane.columnIndex="1"/>
+        <Button fx:id="addCandidateButton"
+                onAction="#addToCandidates"
+                text="Add to candidates"
+                GridPane.rowIndex="1"  GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <fx:include
+                fx:id="graph"
+                source="graphView.fxml"
+                GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
+        <fx:include fx:id="target1"
+                    source="targetView.fxml"
+                    GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <fx:include fx:id="target2"
+                    source="targetView.fxml"
+                    GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <fx:include fx:id="candidate"
+                    source="candidateView.fxml"
+                    GridPane.rowIndex="4" GridPane.columnIndex="0" />
     </GridPane>
-
-    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1" hgap="10">
-        <fx:include fx:id="candidate" source="candidateView.fxml" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-    </GridPane>
-
 </GridPane>

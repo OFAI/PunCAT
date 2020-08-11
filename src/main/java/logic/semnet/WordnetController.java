@@ -54,4 +54,8 @@ public class WordnetController implements SemnetController<Synset> {
         }
         return words;
     }
+
+    public Dictionary getObject() {
+        return this.wordnet;
+    }
 }

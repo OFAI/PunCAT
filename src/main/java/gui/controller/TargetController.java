@@ -1,5 +1,6 @@
 package gui.controller;
 
+import de.tuebingen.uni.sfs.germanet.api.OrthFormVariant;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 import gui.component.SenseCell;
 import gui.model.SenseModel;
@@ -11,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import logic.search.Search;
 
 import java.net.URL;
@@ -49,11 +49,12 @@ public class TargetController implements Initializable {
     public void sourceSelected(Long offset) {
         Synset synset = search.mapToGermanet(offset);
         if (synset != null) {
-            this.populateSynsetList(synset.getAllOrthForms().get(0));
-            this.wordInput.setText(synset.getAllOrthForms().get(0));
+            this.populateSynsetList(synset.getOrthForms(OrthFormVariant.orthForm).get(0));
+            this.wordInput.setText(synset.getOrthForms(OrthFormVariant.orthForm).get(0));
             this.setSelectionBySynset(synset);
         } else {
             this.populateSynsetList(null);
+            this.wordInput.setText("");
         }
     }
 
@@ -104,7 +105,17 @@ public class TargetController implements Initializable {
         return !this.senseList.getSelectionModel().selectedItemProperty().isNull().get();
     }
 
-    public String getSearchWord() {
+    public String getWordInputText() {
         return this.wordInput.getText();
+    }
+
+    public List<SenseModelTarget> getHypernyms(SenseModelTarget selection) {
+        List<Synset> hypernyms = this.search.getTargetHypernyms(selection.getId());
+        return hypernyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
+    }
+
+    public List<SenseModelTarget> getHyponyms(SenseModelTarget selection) {
+        List<Synset> hyponyms = this.search.getTargetHyponyms(selection.getId());
+        return hyponyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
     }
 }

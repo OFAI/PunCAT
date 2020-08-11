@@ -59,4 +59,13 @@ public class SourceController implements Initializable {
     public void setSearch(Search search) {
         this.search = search;
     }
+
+    public boolean hasSelection() {
+        return !this.senseList.getSelectionModel().selectedItemProperty().isNull().get();
+    }
+
+    public long getSelectedId() {
+        SenseModelSource selection = (SenseModelSource) this.senseList.getSelectionModel().getSelectedItem();
+        return selection.getOffset();
+    }
 }
