@@ -28,7 +28,7 @@ public class SenseCell extends ListCell<SenseModel> {
             setGraphic(null);
         } else {
             setText(null);
-            this.pronunciation.setText("/-/ ");
+            this.pronunciation.setText("/" + item.getPronunciation() + "/");
             this.synonyms.setText(" (" + String.join(", ", item.getSynonyms()) + ") ");
             this.description.setText(item.getDescription());
             setGraphic(this.textFlow);

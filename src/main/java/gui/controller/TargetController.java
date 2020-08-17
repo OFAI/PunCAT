@@ -52,6 +52,7 @@ public class TargetController implements Initializable {
             this.populateSynsetList(synset.getOrthForms(OrthFormVariant.orthForm).get(0));
             this.wordInput.setText(synset.getOrthForms(OrthFormVariant.orthForm).get(0));
             this.setSelectionBySynset(synset);
+            this.setPronunciations();
         } else {
             this.populateSynsetList(null);
             this.wordInput.setText("");
@@ -80,6 +81,14 @@ public class TargetController implements Initializable {
 
     public void wordInputChanged(ActionEvent actionEvent) {
         this.populateSynsetList(wordInput.getText());
+        this.setPronunciations();
+    }
+
+    private void setPronunciations() {
+        String ipa = this.search.getIpaTranscription(this.wordInput.getText().toLowerCase(), "de");
+        for (SenseModel sm : this.senseList.getItems()) {
+            sm.setPronunciation(ipa);
+        }
     }
 
     public void senseSelected() {

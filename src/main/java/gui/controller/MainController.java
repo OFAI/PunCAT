@@ -63,7 +63,12 @@ public class MainController implements Initializable {
 
         this.similarityModel = new SimilarityModel();
 
-        this.semanticScore.textProperty().bind(Bindings.convert(this.similarityModel.semanticSimilarityScoreProperty()));
+        this.semanticScore
+                .textProperty()
+                .bind(Bindings.convert(this.similarityModel.semanticSimilarityScoreProperty()));
+        this.phoneticScore
+                .textProperty()
+                .bind(Bindings.convert(this.similarityModel.phoneticSimilarityScoreProperty()));
     }
 
     public void setSearch(Search search) {
@@ -101,15 +106,11 @@ public class MainController implements Initializable {
             long sSense2 = this.source2Controller.getSelectedId();
             int tSense1 = this.target1Controller.getSelectedId();
             int tSense2 = this.target2Controller.getSelectedId();
-            this.similarityModel.calculateSimilarity(sSense1, sSense2, tSense1, tSense2);
+            String word1 = this.target1Controller.wordInput.getText();
+            String word2 = this.target2Controller.wordInput.getText();
+
+            this.similarityModel.calculateSimilarity(sSense1, sSense2, tSense1, tSense2, word1, word2);
         }
-        /*
-        if (this.target1Controller.hasSelection() && this.target2Controller.hasSelection()) {
-            int sense1 = this.target1Controller.getSelectedId();
-            int sense2 = this.target2Controller.getSelectedId();
-            this.similarityModel.calculateSimilarity(sense1, sense2);
-        }
-         */
     }
 
     private boolean allSenseFieldsHaveSelection() {

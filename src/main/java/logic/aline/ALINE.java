@@ -28,6 +28,7 @@ public class ALINE {
     }
 
     public static double similarity(String str1, String str2, double epsilon) {
+        // TODO: not very nice
         ALINE aline = new ALINE();
         aline.align(str1, str2, epsilon);
         double score12 = score(aline.S);
@@ -41,7 +42,6 @@ public class ALINE {
         double score22 = score(aline22.S);
 
         return score12 / Math.max(score11, score22);
-
     }
 
     private static double score(SimpleMatrix S) {
@@ -86,7 +86,6 @@ public class ALINE {
             }
         }
 
-        // TODO
         double maxV = Double.NEGATIVE_INFINITY;
         int maxC = S.getMatrix().getNumCols();
         int maxR = S.getMatrix().getNumRows();

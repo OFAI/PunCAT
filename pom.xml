@@ -14,10 +14,6 @@
     </properties>
     <repositories>
         <repository>
-            <id>ukp-oss-releases</id>
-            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -37,11 +33,6 @@
             <groupId>net.sf.extjwnl</groupId>
             <artifactId>extjwnl-data-wn30</artifactId>
             <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.dmeoli</groupId>
-            <artifactId>WS4J</artifactId>
-            <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -69,14 +60,9 @@
             <version>1.0.3</version>
         </dependency>
         <dependency>
-            <groupId>dkpro.similarity</groupId>
-            <artifactId>dkpro.similarity.algorithms.api-asl</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>dkpro.similarity</groupId>
-            <artifactId>dkpro.similarity.algorithms.lsr-asl</artifactId>
-            <version>2.1.0</version>
+            <groupId>org.ejml</groupId>
+            <artifactId>ejml-all</artifactId>
+            <version>0.39</version>
         </dependency>
         <dependency>
             <groupId>com.github.graphstream</groupId>
@@ -87,13 +73,6 @@
             <groupId>com.github.graphstream</groupId>
             <artifactId>gs-ui-javafx</artifactId>
             <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.brunomnsilva</groupId>
-            <artifactId>smartgraph</artifactId>
-            <version>0.9.2</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/JavaFXSmartGraph-0.9.2.jar</systemPath>
         </dependency>
     </dependencies>
     <build>

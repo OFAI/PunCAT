@@ -7,9 +7,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
-import org.graphstream.ui.fx_viewer.util.DefaultApplication;
 import org.graphstream.ui.javafx.FxGraphRenderer;
-import org.graphstream.ui.view.Viewer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,8 +36,9 @@ public class SenseGraph {
         // this.graph.setAttribute("ui.stylesheet", getClass().getResource("/graphStyles.css"));
 
         FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        viewer.enableAutoLayout();
+
         this.panel = (FxViewPanel) viewer.addView(FxViewer.DEFAULT_VIEW_ID, new FxGraphRenderer());
+        viewer.enableAutoLayout();
     }
 
     public void updateGraph() {

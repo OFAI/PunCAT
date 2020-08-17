@@ -3,22 +3,55 @@ package logic.search;
 import de.tuebingen.uni.sfs.germanet.api.OrthFormVariant;
 import logic.semnet.GermanetController;
 import logic.semnet.WordnetController;
+import logic.similarity.PhoneticSimilarity;
 import logic.similarity.SemanticSimilarity;
 import net.sf.extjwnl.data.Synset;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Search {
     private GermanetController germaNet;
     private WordnetController wordNet;
-    private SemanticSimilarity similarity;
+    private SemanticSimilarity semSimilarity;
+    private PhoneticSimilarity phonSimilarity;
+    private final Map<String, String> word2ipaDE = new HashMap<>();
+    private final Map<String, String> word2ipaEN = new HashMap<>();
 
     public Search() {
+        var csvFile = getClass().getResourceAsStream("/ipa/germanet2ipaLowercase.csv");  // TODO: paths to separate file
+        String line;
+        String cvsSplitBy = ",";
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
+            while ((line = br.readLine()) != null) {
+                String[] pair = line.split(cvsSplitBy);
+                this.word2ipaDE.put(pair[0], pair[1]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        csvFile = getClass().getResourceAsStream("/ipa/wordnet2ipaLowercase.csv");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
+            while ((line = br.readLine()) != null) {
+                String[] pair = line.split(cvsSplitBy);
+                this.word2ipaEN.put(pair[0], pair[1]);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
         try {
             this.wordNet = new WordnetController();
             this.germaNet = new GermanetController();
-            // TODO: either delete semnet controllers or pass those
-            this.similarity = new SemanticSimilarity(this.germaNet.getObject());
+            this.semSimilarity = new SemanticSimilarity(this.germaNet.getObject());
+            this.phonSimilarity = new PhoneticSimilarity(word2ipaDE);
         } catch (Exception e) {
             e.printStackTrace();  // TODO: better handling of germanet/wordnet exceptions
         }
@@ -28,15 +61,25 @@ public class Search {
         var soureAsTargetSynset = this.germaNet.equivalentByWordnetOffset(sSense);
         var targetSynset = this.germaNet.getSynsetById(tSense);
         if (soureAsTargetSynset != null && targetSynset != null) {
-            System.out.printf("%s --  %s%n",
-                    soureAsTargetSynset.getOrthForms(OrthFormVariant.orthForm).get(0),
-                    targetSynset.getOrthForms(OrthFormVariant.orthForm).get(0));
-            return this.similarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset);
+            return this.semSimilarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset);
         } else {
             // TODO: implement this
             return 0;
         }
+    }
 
+    public double calculatePhoneticSimilarity(String word1, String word2) {
+        return this.phonSimilarity.calculatePhoneticSimilarity(word1, word2);
+    }
+
+    public String getIpaTranscription(String word, String lang) {
+        String result = null;
+        if (lang.equals("en")) {
+            result = this.word2ipaEN.get(word.toLowerCase());
+        } else if (lang.equals("de")) {
+            result = this.word2ipaDE.get(word.toLowerCase());
+        }
+        return result != null ? result : "";
     }
 
     public List<Synset> getSourceSenses(String word) {

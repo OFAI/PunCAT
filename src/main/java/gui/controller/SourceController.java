@@ -47,12 +47,20 @@ public class SourceController implements Initializable {
         String word = wordInput.getText();
         List<Synset> synsets = search.getSourceSenses(word.toLowerCase());
         this.sources.setAll(synsets.stream().map(SenseModelSource::new).collect(Collectors.toList()));
+        this.setPronunciations();
     }
 
     public void senseSelected() {
         SenseModelSource selection = (SenseModelSource) this.senseList.getSelectionModel().getSelectedItem();
         if (selection != null) {
             this.mainController.sourceSelected(selection.getOffset(), this);
+        }
+    }
+
+    private void setPronunciations() {
+        String ipa = this.search.getIpaTranscription(this.wordInput.getText().toLowerCase(), "en");
+        for (SenseModel sm : this.senseList.getItems()) {
+            sm.setPronunciation(ipa);
         }
     }
 
