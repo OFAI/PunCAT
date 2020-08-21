@@ -7,6 +7,7 @@ import de.tuebingen.uni.sfs.germanet.api.GermaNet;
 import de.tuebingen.uni.sfs.germanet.api.IliRecord;
 import de.tuebingen.uni.sfs.germanet.api.RelDirection;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
+import logic.util.Consts;
 import logic.util.GermanetFrequencies;
 
 import javax.xml.stream.XMLStreamException;
@@ -16,18 +17,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class GermanetController implements SemnetController<Synset> {
-
-    private static final String basePath = "c:/dkpro_res/LexSemResources/";
-    private static final String germaNetLocation = basePath + "GN_V150_XML";
-    private static final String nounFreq = basePath + "freq/noun_freqs_decow14_16.txt";
-    private static final String verbFreq = basePath + "freq/verb_freqs_decow14_16.txt";
-    private static final String adjFreq = basePath + "freq/adj_freqs_decow14_16.txt";
     private final GermaNet germanet;
     private final GermanetFrequencies frequencies;
 
     public GermanetController() throws IOException, XMLStreamException {
-        this.germanet = new GermaNet(germaNetLocation, nounFreq, verbFreq, adjFreq);
-        this.frequencies = GermanetFrequencies.loadFrequencies(nounFreq, verbFreq, adjFreq);
+        this.germanet = new GermaNet(Consts.germaNetLocation, Consts.nounFreq, Consts.verbFreq, Consts.adjFreq);
+        this.frequencies = GermanetFrequencies.loadFrequencies(Consts.nounFreq, Consts.verbFreq, Consts.adjFreq);
     }
 
     @Override

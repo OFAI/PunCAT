@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class Consts {
+public class ALINEconsts {
     public static final List<String> consonants = new ArrayList<>();
     static {
         consonants.add("B");

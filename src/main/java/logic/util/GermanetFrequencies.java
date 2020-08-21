@@ -10,20 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GermanetFrequencies {
-    private final Map<String, Long> adjFreq;
-    private final Map<String, Long> nomenFreq;
-    private final Map<String, Long> verbenFreq;
     private final Map<String, Map<String, Long>> wordCatMap;
 
     public GermanetFrequencies(Map<String, Long> nomenFreq, Map<String, Long> verbenFreq, Map<String, Long> adjFreq) {
-        this.nomenFreq = nomenFreq;
-        this.verbenFreq = verbenFreq;
-        this.adjFreq = adjFreq;
-        this.wordCatMap = new HashMap<>() {{
-            put("nomen", nomenFreq);
-            put("verben", verbenFreq);
-            put("adj", adjFreq);
-        }};
+        this.wordCatMap = new HashMap<>();
+        this.wordCatMap.put("nomen", nomenFreq);
+        this.wordCatMap.put("verben", verbenFreq);
+        this.wordCatMap.put("adj", adjFreq);
     }
 
     public static GermanetFrequencies loadFrequencies(String nomenPath, String verbenPath, String adjPath) {

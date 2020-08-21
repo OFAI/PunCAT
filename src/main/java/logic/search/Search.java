@@ -1,14 +1,13 @@
 package logic.search;
 
-import de.tuebingen.uni.sfs.germanet.api.OrthFormVariant;
 import logic.semnet.GermanetController;
 import logic.semnet.WordnetController;
 import logic.similarity.PhoneticSimilarity;
 import logic.similarity.SemanticSimilarity;
+import logic.util.Consts;
 import net.sf.extjwnl.data.Synset;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class Search {
     private final Map<String, String> word2ipaEN = new HashMap<>();
 
     public Search() {
-        var csvFile = getClass().getResourceAsStream("/ipa/germanet2ipaLowercase.csv");  // TODO: paths to separate file
+        var csvFile = getClass().getResourceAsStream(Consts.germanet2ipaPath);
         String line;
         String cvsSplitBy = ",";
 
@@ -37,7 +36,7 @@ public class Search {
             e.printStackTrace();
         }
 
-        csvFile = getClass().getResourceAsStream("/ipa/wordnet2ipaLowercase.csv");
+        csvFile = getClass().getResourceAsStream(Consts.wordnet2ipaPath);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] pair = line.split(cvsSplitBy);
@@ -63,7 +62,7 @@ public class Search {
         if (soureAsTargetSynset != null && targetSynset != null) {
             return this.semSimilarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset);
         } else {
-            // TODO: implement this
+            System.err.println("Source or target null in calculateSemanticSimilarity()");
             return 0;
         }
     }

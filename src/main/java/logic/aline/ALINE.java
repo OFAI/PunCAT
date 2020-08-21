@@ -211,16 +211,16 @@ public class ALINE {
         var features = R(p, q);
         double total = 0;
         for (String f : features) {
-            total += this.diff(p, q, f) * Consts.salience.get(f);
+            total += this.diff(p, q, f) * ALINEconsts.salience.get(f);
         }
         return total;
     }
 
     private double diff(String p, String q, String f) {
-        var p_features = Consts.featureMatrix.get(p);
-        var q_features = Consts.featureMatrix.get(q);
+        var p_features = ALINEconsts.featureMatrix.get(p);
+        var q_features = ALINEconsts.featureMatrix.get(q);
         try {
-            return Math.abs(Consts.similarityMatrix.get(p_features.get(f)) - Consts.similarityMatrix.get(q_features.get(f)));
+            return Math.abs(ALINEconsts.similarityMatrix.get(p_features.get(f)) - ALINEconsts.similarityMatrix.get(q_features.get(f)));
         } catch (NullPointerException e) {
             return 0;
         }
@@ -228,14 +228,14 @@ public class ALINE {
     }
 
     private HashSet<String> R(String p, String q) {
-        if (Consts.consonants.contains(p) || Consts.consonants.contains(q)) {
-            return Consts.R_c;
+        if (ALINEconsts.consonants.contains(p) || ALINEconsts.consonants.contains(q)) {
+            return ALINEconsts.R_c;
         }
-        return Consts.R_v;
+        return ALINEconsts.R_v;
     }
 
     private double V(String p) {
-        if (Consts.consonants.contains(p)) { // TODO: in consonants
+        if (ALINEconsts.consonants.contains(p)) {
             return 0;
         }
         return C_vwl;

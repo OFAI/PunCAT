@@ -9,9 +9,6 @@ public class SimilarityModel {
     private Search search;
     private final DoubleProperty semanticSimilarityScore = new SimpleDoubleProperty(this, "semantic_similarity");
     private final DoubleProperty phoneticSimilarityScore = new SimpleDoubleProperty(this, "phonetic_similarity");
-    private double pair1Similarity;
-    private double pair2Similarity;
-
 
     public void setSearch(Search semanticSearch) {
         this.search = semanticSearch;

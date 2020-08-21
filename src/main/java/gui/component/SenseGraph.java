@@ -24,7 +24,7 @@ public class SenseGraph {
             "edge.hyponym { fill-color: green; } " +
             "node { fill-mode: plain; fill-color: white; stroke-mode: plain; stroke-color: black; " +
             "padding: 10px; size-mode: fit; shape: circle; " +
-            "text-alignment: center; text-size: 11; } " +
+            "text-alignment: center; text-size: 11;} " +
             "node.root { text-style: bold; } ";
 
     public SenseGraph() {

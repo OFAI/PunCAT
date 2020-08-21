@@ -37,8 +37,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        System.setProperty("org.graphstream.ui", "org.graphstream.ui.j2dviewer.J2DGraphRenderer" );
-        System.setProperty("org.graphstream.ui", "javafx");
+        // System.setProperty("org.graphstream.ui", "org.graphstream.ui.javafx.util.Display");
         launch(args);
     }
 }
