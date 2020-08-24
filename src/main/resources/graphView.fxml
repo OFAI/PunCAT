@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:id="graphPane"
-          fx:controller="gui.controller.GraphController" gridLinesVisible="true" alignment="CENTER">
+<?import javafx.scene.layout.Pane?>
+<Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gui.controller.GraphController"
+      fx:id="graphPane">
 
-    <columnConstraints>
-        <ColumnConstraints halignment="CENTER"/>
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints vgrow="NEVER" percentHeight="90" valignment="CENTER"/>
-        <RowConstraints vgrow="NEVER" percentHeight="10" valignment="CENTER"/>
-    </rowConstraints>
-
-</GridPane>
+</Pane>

@@ -5,98 +5,100 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.HBox?>
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="gui.controller.MainController"
-          hgap="30.0" vgap="10.0"
-          alignment="TOP_CENTER">
-    <!-- TODO: this file is a bit of a mess - move node settings to .java files? -->
+          hgap="10.0" vgap="10.0">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
 
     <columnConstraints>
-        <ColumnConstraints percentWidth="30" halignment="CENTER" hgrow="ALWAYS"/>
-        <ColumnConstraints percentWidth="70" halignment="CENTER" hgrow="ALWAYS"/>
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="25"/>
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
     </columnConstraints>
     <rowConstraints>
         <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="ALWAYS"/>
     </rowConstraints>
 
-    <GridPane GridPane.rowIndex="0" GridPane.columnIndex="0" vgap="10">
+    <Label text="Source" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+    <Label text="Target" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+    <!-- Source pane (left side) -->
+    <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1" vgap="10">
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS" percentHeight="50"/>
+            <RowConstraints vgrow="ALWAYS"/>
+        </rowConstraints>
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
 
-        <Label styleClass="lang-header" text="Source" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <fx:include fx:id="source1"
                     source="sourceView.fxml"
-                    GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         <fx:include fx:id="source2"
                     source="sourceView.fxml"
-                    GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     </GridPane>
 
-    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" hgap="10" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" halignment="CENTER" percentWidth="50"/>
-            <ColumnConstraints hgrow="ALWAYS" halignment="CENTER" percentWidth="50"/>
-        </columnConstraints>
-        <rowConstraints>cat
+    <!-- Target pane (right side) -->
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1" hgap="10" vgap="10">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
 
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
             <RowConstraints/>
-            <RowConstraints/>
-            <RowConstraints vgrow="NEVER" percentHeight="45"/>
-            <RowConstraints/>
-            <RowConstraints percentHeight="25"/>
+            <RowConstraints percentHeight="20"/>
         </rowConstraints>
 
-        <Label styleClass="lang-header"
-               text="Target"
-               GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <!-- Target header (scores + Add button) -->
+        <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="25"/>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="25" halignment="CENTER"/>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="25"/>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="25"/>
+            </columnConstraints>
 
-        <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
-            <HBox spacing="10">
-                <Label text="Semantic similarity:"/>
-                <Label fx:id="semanticScore" text="0"/>
-            </HBox>
-            <HBox spacing="12">
-                <Label text="Phonetic similarity:"/>
-                <Label fx:id="phoneticScore" text="0"/>
-            </HBox>
-        </VBox>
-        <Button fx:id="addCandidateButton"
-                onAction="#addToCandidates"
-                text="Add to candidates"
-                GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <fx:include
-                fx:id="graph1"
-                source="graphView.fxml"
-                GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.halignment="CENTER"/>
-        <fx:include
-                fx:id="graph2"
-                source="graphView.fxml"
-                GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.halignment="CENTER"/>
+            <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <HBox>
+                    <Label text="Semantic similarity: "/>
+                    <Label fx:id="semanticScore"/>
+                </HBox>
+                <HBox>
+                    <Label text="Phonetic similarity:  "/>
+                    <Label fx:id="phoneticScore"/>
+                </HBox>
+            </VBox>
 
-        <HBox GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-            <Button
-                    onAction="#prevGraph"
-                    text="Previous"/>
-            <Button
-                    onAction="#nextGraph"
-                    text="Next"/>
-        </HBox>
+            <Button text="Add to candidates" fx:id="addCandidateButton" onAction="#addToCandidates"
+                GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2"/>
+        </GridPane>
 
+        <!-- left graph + list -->
         <fx:include fx:id="target1"
                     source="targetView.fxml"
-                    GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+        <!-- right graph + list -->
         <fx:include fx:id="target2"
                     source="targetView.fxml"
-                    GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-        <fx:include fx:id="candidate"
+                    GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <!-- candidate list -->
+        <fx:include fx:id="candidates"
                     source="candidateView.fxml"
-                    GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                    GridPane.columnIndex="0" GridPane.rowIndex="2"/>
     </GridPane>
 </GridPane>

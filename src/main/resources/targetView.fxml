@@ -4,14 +4,33 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="gui.controller.TargetController"
->
+          vgap="10" hgap="10">
+
     <columnConstraints>
         <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
     </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS" percentHeight="60"/>
+        <RowConstraints vgrow="ALWAYS"/>
+    </rowConstraints>
 
-    <TextField fx:id="wordInput" GridPane.rowIndex="0" GridPane.columnIndex="0" onAction="#wordInputChanged"/>
-    <ListView fx:id="senseList" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <fx:include fx:id="graph"
+                source="graphView.fxml"
+                GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+
+    <!-- TODO: buttons to graphView? -->
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER">
+        <Button text="Prev" onAction="#prevGraph"/>
+        <Button text="Next" onAction="#nextGraph"/>
+    </HBox>
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <TextField fx:id="wordInput"/>
+        <ListView fx:id="senseList"/>
+    </VBox>
 </GridPane>

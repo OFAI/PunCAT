@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import logic.search.Search;
 
 import java.net.URL;
@@ -26,6 +27,10 @@ public class TargetController implements Initializable {
     public TextField wordInput;
     @FXML
     public ListView<SenseModel> senseList;
+    @FXML
+    public Pane graph;
+    @FXML
+    private GraphController graphController;
 
     private ObservableList<SenseModel> targets;
     private MainController mainController;
@@ -37,6 +42,7 @@ public class TargetController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.graphController.setReferences(this);
         this.targets = FXCollections.observableArrayList();
 
         this.wordInput.textProperty().addListener((observableValue, s, t1) -> this.wordInputChanged(new ActionEvent()));
@@ -55,6 +61,7 @@ public class TargetController implements Initializable {
             this.wordInput.setText(synset.getOrthForms(OrthFormVariant.orthForm).get(0));
             this.setSelectionBySynset(synset);
             this.setPronunciations();
+            this.updateGraph();
         } else {
             this.populateSynsetList(null);
             this.wordInput.setText("");
@@ -96,7 +103,7 @@ public class TargetController implements Initializable {
     public void senseSelected() {
         if (this.senseList.getSelectionModel().getSelectedItem() != null) {
             this.mainController.maybeCalculateSimilarity();
-            this.mainController.updateGraph(this);
+            this.updateGraph();
         }
     }
 
@@ -147,5 +154,25 @@ public class TargetController implements Initializable {
         }
 
         this.senseList.getSelectionModel().select(s);
+    }
+
+    public void updateGraph() {
+        SenseModelTarget selection = (SenseModelTarget) this.senseList
+                .getSelectionModel()
+                .getSelectedItem();
+
+        graphController.updateGraphData(
+                selection,
+                this.getHypernyms(selection),
+                this.getHyponyms(selection)
+        );
+    }
+
+    public void prevGraph(ActionEvent actionEvent) {
+        this.graphController.prevGraph();
+    }
+
+    public void nextGraph(ActionEvent actionEvent) {
+        this.graphController.nextGraph();
     }
 }

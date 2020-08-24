@@ -2,17 +2,12 @@
 
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<GridPane xmlns:fx="http://javafx.com/fxml"
-          xmlns="http://javafx.com/javafx"
-          fx:controller="gui.controller.SourceController"
->
-    <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS" halignment="CENTER"/>
-    </columnConstraints>
+<?import javafx.scene.layout.VBox?>
 
-    <TextField fx:id="wordInput" promptText="Search for an English word…" GridPane.rowIndex="0" GridPane.columnIndex="0"
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gui.controller.SourceController">
+
+    <TextField fx:id="wordInput" promptText="Search for an English word…"
                onAction="#wordInputChanged"/>
-    <ListView fx:id="senseList" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-</GridPane>
+    <ListView fx:id="senseList"/>
+</VBox>

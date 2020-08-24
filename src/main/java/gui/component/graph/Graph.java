@@ -15,16 +15,12 @@ public class Graph extends Group {
     public static final int maxNodesPerHalf = 6;
 
     private final GraphController controller;
-    private Node rootNode;
     private final int distance = 100;
     private double rootX;
     private double rootY;
 
-    public Graph(GraphController controller, double width, double height) {
-        // TODO
+    public Graph(GraphController controller) {
         this.controller = controller;
-        this.maxWidth(width-5);
-        this.maxHeight(height-5);
     }
 
     public void buildGraph(SenseModelTarget root, List<SenseModelTarget> hypernyms, List<SenseModelTarget> hyponyms) {
@@ -41,7 +37,6 @@ public class Graph extends Group {
         if (labels.isEmpty()) return;
 
         if (labels.size() > maxNodesPerHalf) {
-            // todo: Graph class should handle pagination
             throw new UnsupportedOperationException("Got more nodes than I can chew!");
         }
         double offset = above ? 10 + 180 : 10;
@@ -92,11 +87,10 @@ public class Graph extends Group {
     }
 
     public void addRootNode(String rootLabel) {
-        var x = this.getBoundsInParent().getCenterX();
-        var y = this.getBoundsInParent().getCenterY();
-        Node root = new Node(rootLabel, x, y);
+        this.rootX = this.getBoundsInParent().getCenterX();
+        this.rootY = this.getBoundsInParent().getCenterY();
+        Node root = new Node(rootLabel, rootX, rootY);
         root.setRootStyle();
-        this.rootNode = root;
         this.getChildren().add(root);
     }
 

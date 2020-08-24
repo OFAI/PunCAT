@@ -31,10 +31,7 @@ public class Node extends Group {
 
         this.getChildren().addAll(ellipse, label);
 
-        this.setOnMouseClicked(event -> {
-            var graph = (Graph) this.getParent();
-            graph.nodeSelected(this.getId());
-        });
+        this.setOnMouseClicked(event -> ((Graph) this.getParent()).nodeSelected(this.getId()));
 
         this.setOnMouseEntered(event -> this.toFront());
     }
