@@ -44,10 +44,12 @@
             <ColumnConstraints hgrow="ALWAYS" halignment="CENTER" percentWidth="50"/>
             <ColumnConstraints hgrow="ALWAYS" halignment="CENTER" percentWidth="50"/>
         </columnConstraints>
-        <rowConstraints>
+        <rowConstraints>cat
+
             <RowConstraints/>
             <RowConstraints/>
             <RowConstraints vgrow="NEVER" percentHeight="45"/>
+            <RowConstraints/>
             <RowConstraints percentHeight="25"/>
         </rowConstraints>
 
@@ -68,19 +70,33 @@
         <Button fx:id="addCandidateButton"
                 onAction="#addToCandidates"
                 text="Add to candidates"
-                GridPane.rowIndex="1"  GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
         <fx:include
-                fx:id="graph"
+                fx:id="graph1"
                 source="graphView.fxml"
-                GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
+                GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.halignment="CENTER"/>
+        <fx:include
+                fx:id="graph2"
+                source="graphView.fxml"
+                GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.halignment="CENTER"/>
+
+        <HBox GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Button
+                    onAction="#prevGraph"
+                    text="Previous"/>
+            <Button
+                    onAction="#nextGraph"
+                    text="Next"/>
+        </HBox>
+
         <fx:include fx:id="target1"
                     source="targetView.fxml"
-                    GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <fx:include fx:id="target2"
                     source="targetView.fxml"
-                    GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    GridPane.rowIndex="4" GridPane.columnIndex="1"/>
         <fx:include fx:id="candidate"
                     source="candidateView.fxml"
-                    GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                    GridPane.rowIndex="5" GridPane.columnIndex="0" />
     </GridPane>
 </GridPane>

@@ -47,17 +47,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>14.0.1</version>
+            <version>14.0.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>14.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
-            <version>14.0.1</version>
+            <version>14.0.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.decimal4j</groupId>
@@ -68,23 +63,6 @@
             <groupId>org.ejml</groupId>
             <artifactId>ejml-all</artifactId>
             <version>0.39</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.graphstream</groupId>
-            <artifactId>gs-core</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.graphstream</groupId>
-            <artifactId>gs-ui-javafx</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mxgraph</groupId>
-            <artifactId>jgraphx</artifactId>
-            <version>4.2.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/jgraphx-4.2.0.jar</systemPath>
         </dependency>
     </dependencies>
     <build>

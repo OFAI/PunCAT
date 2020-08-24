@@ -100,4 +100,8 @@ public class Search {
     public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetHyponyms(int synsetId) {
         return this.germaNet.getHyponyms(synsetId);
     }
+
+    public de.tuebingen.uni.sfs.germanet.api.Synset getTargetSynsetById(int id) {
+        return this.germaNet.getSynsetById(id);
+    }
 }

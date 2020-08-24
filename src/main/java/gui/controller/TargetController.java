@@ -39,6 +39,8 @@ public class TargetController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.targets = FXCollections.observableArrayList();
 
+        this.wordInput.textProperty().addListener((observableValue, s, t1) -> this.wordInputChanged(new ActionEvent()));
+
         this.senseList.getSelectionModel().selectedItemProperty().addListener((observableValue, senseModel, t1) ->
             this.senseSelected()
         );
@@ -94,6 +96,7 @@ public class TargetController implements Initializable {
     public void senseSelected() {
         if (this.senseList.getSelectionModel().getSelectedItem() != null) {
             this.mainController.maybeCalculateSimilarity();
+            this.mainController.updateGraph(this);
         }
     }
 
@@ -118,6 +121,10 @@ public class TargetController implements Initializable {
         return this.wordInput.getText();
     }
 
+    public void setWordInputText(String text) {
+        this.wordInput.setText(text);
+    }
+
     public List<SenseModelTarget> getHypernyms(SenseModelTarget selection) {
         List<Synset> hypernyms = this.search.getTargetHypernyms(selection.getId());
         return hypernyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
@@ -126,5 +133,19 @@ public class TargetController implements Initializable {
     public List<SenseModelTarget> getHyponyms(SenseModelTarget selection) {
         List<Synset> hyponyms = this.search.getTargetHyponyms(selection.getId());
         return hyponyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
+    }
+
+    public void setWordInputFromNode(String stringId) {
+        int id = Integer.parseInt(stringId);
+        var synset = this.search.getTargetSynsetById(id);
+        this.wordInput.setText(synset.getLexUnits().get(0).getOrthForm());
+
+        SenseModel s = this.targets.stream().filter(t -> id == ((SenseModelTarget)t).getId()).findAny().orElse(null);
+        if (s == null) {
+            // TODO
+            throw new RuntimeException();
+        }
+
+        this.senseList.getSelectionModel().select(s);
     }
 }

@@ -10,15 +10,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import logic.search.Search;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
+    private SimilarityModel similarityModel;
+
     @FXML
     public GridPane source1;
     @FXML
@@ -37,9 +37,13 @@ public class MainController implements Initializable {
     @FXML
     public Button addCandidateButton;
     @FXML
-    public StackPane graph;
-
-    private SimilarityModel similarityModel;
+    public GridPane graph1;
+    @FXML
+    public GridPane graph2;
+    @FXML
+    public Button prevGraphButton;
+    @FXML
+    public Button nextGraphButton;
 
     @FXML
     private SourceController source1Controller;
@@ -52,7 +56,9 @@ public class MainController implements Initializable {
     @FXML
     private CandidateController candidateController;
     @FXML
-    private GraphController graphController;
+    private GraphController graph1Controller;
+    @FXML
+    private GraphController graph2Controller;
 
 
     @Override
@@ -61,6 +67,8 @@ public class MainController implements Initializable {
         this.source2Controller.setReferences(this);
         this.target1Controller.setReferences(this);
         this.target2Controller.setReferences(this);
+        this.graph1Controller.setReferences(this);
+        this.graph2Controller.setReferences(this);
 
         this.similarityModel = new SimilarityModel();
 
@@ -83,22 +91,39 @@ public class MainController implements Initializable {
     public void sourceSelected(Long offset, SourceController sourceController) {
         // TODO: there has to be a better way to do this
         TargetController targetController;
+        GraphController graphController;
         if (sourceController == this.source1Controller) {
             targetController = this.target1Controller;
+            graphController = this.graph1Controller;
         } else {
             targetController = this.target2Controller;
+            graphController = this.graph2Controller;
         }
 
         targetController.sourceSelected(offset);
-        SenseModelTarget selection = (SenseModelTarget) targetController
+        this.updateGraph(targetController, graphController);
+    }
+
+    public void updateGraph(TargetController tc, GraphController gc) {
+        SenseModelTarget selection = (SenseModelTarget) tc
                 .senseList
                 .getSelectionModel()
                 .getSelectedItem();
-        this.graphController.updateGraphData(
+        gc.updateGraphData(
                 selection,
-                targetController.getHypernyms(selection),
-                targetController.getHyponyms(selection)
+                tc.getHypernyms(selection),
+                tc.getHyponyms(selection)
         );
+    }
+
+    public void updateGraph(TargetController tc) {
+        GraphController gc;
+        if (tc == this.target1Controller) {
+            gc = this.graph1Controller;
+        } else {
+            gc = this.graph2Controller;
+        }
+        this.updateGraph(tc, gc);
     }
 
     public void maybeCalculateSimilarity() {
@@ -129,6 +154,22 @@ public class MainController implements Initializable {
                     Double.parseDouble(this.semanticScore.getText()),
                     Double.parseDouble(this.phoneticScore.getText())
             );
+        }
+    }
+
+    public void prevGraph(ActionEvent actionEvent) {
+        this.graph1Controller.prevGraph();
+    }
+
+    public void nextGraph(ActionEvent actionEvent) {
+        this.graph1Controller.nextGraph();
+    }
+
+    public void nodeSelected(String id, GraphController gc) {
+        if (gc == this.graph1Controller) {
+            this.target1Controller.setWordInputFromNode(id);
+        } else {
+            this.target2Controller.setWordInputFromNode(id);
         }
     }
 }
