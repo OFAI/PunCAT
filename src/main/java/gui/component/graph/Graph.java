@@ -72,7 +72,7 @@ public class Graph extends Group {
             var x = rootX + distance * Math.cos(Math.toRadians(25/2.0 + degrees.get(i)));
             var y = rootY + distance * Math.sin(Math.toRadians(25/2.0 + degrees.get(i)));
 
-            var node = new Node(labels.get(i), x, y);
+            var node = new Node(labels.get(i), x, y, false);
             node.setId(String.valueOf(senses.get(i).getId()));
             var edge = new Line(rootX, rootY, x, y);
             this.getChildren().addAll(node, edge);
@@ -87,10 +87,9 @@ public class Graph extends Group {
     }
 
     public void addRootNode(String rootLabel) {
-        this.rootX = this.getBoundsInParent().getCenterX();
-        this.rootY = this.getBoundsInParent().getCenterY();
-        Node root = new Node(rootLabel, rootX, rootY);
-        root.setRootStyle();
+        // this.rootX = this.getBoundsInParent().getCenterX();
+        // this.rootY = this.getBoundsInParent().getCenterY();
+        Node root = new Node(rootLabel, 0, 0, true);
         this.getChildren().add(root);
     }
 

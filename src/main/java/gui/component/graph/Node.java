@@ -1,5 +1,6 @@
 package gui.component.graph;
 
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -14,13 +15,18 @@ public class Node extends Group {
     private final Ellipse ellipse;
     private final Text label;
 
-    public Node(String text, double x, double y) {
+    public Node(String text, double x, double y, boolean isRoot) {
         this.label = new Text(text);
         this.label.setTextAlignment(TextAlignment.CENTER);
+        if (isRoot) {
+            this.label.setFont(Font.font(Font.getDefault().getName(), FontWeight.BOLD, Font.getDefault().getSize()));
+        }
+
         double labelX = this.label.getLayoutBounds().getCenterX();
         double labelY = this.label.getLayoutBounds().getCenterY();
         this.label.setX(x - labelX);
         this.label.setY(y - labelY);
+
 
         double radiusX = Math.max(labelX + 15, 25);
         double radiusY = Math.max(labelY + 20, 15.5);
@@ -62,10 +68,5 @@ public class Node extends Group {
 
     public double getCenterY() {
         return this.ellipse.getCenterY();
-    }
-
-    public void setRootStyle() {
-        this.label.setFont(Font.font(Font.getDefault().getName(), FontWeight.BOLD, Font.getDefault().getSize()));
-        this.ellipse.setStrokeWidth(3);
     }
 }
