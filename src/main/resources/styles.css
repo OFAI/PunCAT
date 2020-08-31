@@ -2,6 +2,18 @@
     -fx-background-color: #d3d3d3;
 }
 
-.lang-header {
-    -fx-font-weight: bold;
+#candidate-table .table-column {
+    -fx-alignment: CENTER;
 }
+
+#candidate-table {
+    -fx-selection-bar: #d3d3d3;
+    -fx-selection-bar-non-focused: #d3d3d3;
+}
+
+#firstRow {
+    -fx-border-style: hidden hidden solid hidden;
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+}
+

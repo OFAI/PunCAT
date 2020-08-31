@@ -104,4 +104,8 @@ public class Search {
     public de.tuebingen.uni.sfs.germanet.api.Synset getTargetSynsetById(int id) {
         return this.germaNet.getSynsetById(id);
     }
+
+    public String getLexUnitById(int lexUnitId) {
+        return this.germaNet.getLexUnitById(lexUnitId);
+    }
 }

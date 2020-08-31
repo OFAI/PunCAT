@@ -51,12 +51,16 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.similarityModel = new SimilarityModel();
         this.source1Controller.setReferences(this);
         this.source2Controller.setReferences(this);
         this.target1Controller.setReferences(this);
         this.target2Controller.setReferences(this);
-
-        this.similarityModel = new SimilarityModel();
+        this.candidatesController.setReferences(
+                this.target1Controller.selectedWordProperty(),
+                this.target2Controller.selectedWordProperty(),
+                this.similarityModel.semanticSimilarityScoreProperty(),
+                this.similarityModel.phoneticSimilarityScoreProperty());
 
         this.semanticScore
                 .textProperty()
@@ -75,7 +79,6 @@ public class MainController implements Initializable {
     }
 
     public void sourceSelected(Long offset, SourceController sourceController) {
-        // TODO: there has to be a better way to do this
         TargetController targetController;
         if (sourceController == this.source1Controller) {
             targetController = this.target1Controller;
@@ -84,7 +87,6 @@ public class MainController implements Initializable {
         }
 
         targetController.sourceSelected(offset);
-        targetController.updateGraph();
     }
 
     public void maybeCalculateSimilarity() {
@@ -93,8 +95,8 @@ public class MainController implements Initializable {
             long sSense2 = this.source2Controller.getSelectedId();
             int tSense1 = this.target1Controller.getSelectedId();
             int tSense2 = this.target2Controller.getSelectedId();
-            String word1 = this.target1Controller.wordInput.getText();
-            String word2 = this.target2Controller.wordInput.getText();
+            String word1 = this.target1Controller.getSelectedWord();
+            String word2 = this.target2Controller.getSelectedWord();
 
             this.similarityModel.calculateSimilarity(sSense1, sSense2, tSense1, tSense2, word1, word2);
         }
@@ -109,12 +111,7 @@ public class MainController implements Initializable {
 
     public void addToCandidates(ActionEvent actionEvent) {
         if (target1Controller.hasSelection() && target2Controller.hasSelection()) {
-            candidatesController.newCandidate(
-                    this.target1Controller.getWordInputText(),
-                    this.target2Controller.getWordInputText(),
-                    Double.parseDouble(this.semanticScore.getText()),
-                    Double.parseDouble(this.phoneticScore.getText())
-            );
+            candidatesController.newCandidate();
         }
     }
 }

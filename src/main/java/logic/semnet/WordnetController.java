@@ -35,7 +35,7 @@ public class WordnetController implements SemnetController<Synset> {
         } catch (JWNLException e) {
             System.out.println(e.getMessage());
         }
-        return results;  // TODO: check if empty
+        return results;
     }
 
     public List<String> getWordsByOffset(Long offset) {

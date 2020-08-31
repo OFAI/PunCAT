@@ -1,6 +1,7 @@
 package gui.component;
 
 import gui.model.SenseModel;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.ListCell;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -28,8 +29,11 @@ public class SenseCell extends ListCell<SenseModel> {
             setGraphic(null);
         } else {
             setText(null);
-            this.pronunciation.setText("/" + item.getPronunciation() + "/");
-            this.synonyms.setText(" (" + String.join(", ", item.getSynonyms()) + ") ");
+            this.pronunciation.textProperty().bind(
+                    new SimpleStringProperty("/")
+                            .concat(item.pronunciationProperty())
+                            .concat(new SimpleStringProperty("/")));
+            this.synonyms.setText(" (" + String.join(", ", item.getSynonyms().values()) + ") ");
             this.description.setText(item.getDescription());
             setGraphic(this.textFlow);
         }

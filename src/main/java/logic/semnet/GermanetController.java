@@ -21,8 +21,15 @@ public class GermanetController implements SemnetController<Synset> {
     private final GermanetFrequencies frequencies;
 
     public GermanetController() throws IOException, XMLStreamException {
-        this.germanet = new GermaNet(Consts.germaNetLocation, Consts.nounFreq, Consts.verbFreq, Consts.adjFreq);
-        this.frequencies = GermanetFrequencies.loadFrequencies(Consts.nounFreq, Consts.verbFreq, Consts.adjFreq);
+        this.germanet = new GermaNet(
+                getClass().getResource(Consts.germaNetLocation).getPath(),
+                getClass().getResource(Consts.nounFreq).getPath(),
+                getClass().getResource(Consts.verbFreq).getPath(),
+                getClass().getResource(Consts.adjFreq).getPath());
+        this.frequencies = GermanetFrequencies.loadFrequencies(
+                getClass().getResource(Consts.nounFreq).getPath(),
+                getClass().getResource(Consts.verbFreq).getPath(),
+                getClass().getResource(Consts.adjFreq).getPath());
     }
 
     @Override
@@ -49,7 +56,7 @@ public class GermanetController implements SemnetController<Synset> {
                 return germanet.getLexUnitByID(ir.getLexUnitId()).getSynset();
             }
         }
-        return null; // TODO: better handling of no result
+        return null; // TODO: return closely related synset if no result
     }
 
     public List<Long> getOffsetFromID(int id) {
@@ -81,5 +88,9 @@ public class GermanetController implements SemnetController<Synset> {
 
     public Synset getSynsetById(int id) {
         return this.germanet.getSynsetByID(id);
+    }
+
+    public String getLexUnitById(int lexUnitId) {
+        return this.germanet.getLexUnitByID(lexUnitId).getOrthForm();
     }
 }

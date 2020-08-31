@@ -1,32 +1,32 @@
 package gui.model;
 
-import javafx.beans.property.ListProperty;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 
-import java.util.stream.Collectors;
-
 public class SenseModelSource implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
-    private final ListProperty<String> synonyms = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty description = new SimpleStringProperty();
     private final LongProperty offset = new SimpleLongProperty();
+    private final BiMap<Integer, String> synonyms = HashBiMap.create();
 
     public SenseModelSource(Synset synset) {
         this.setPronunciation("-");
         this.setDescription(synset.getGloss());
         this.setOffset(synset.getOffset());
+        
+        for (Word w : synset.getWords()) {
+            this.synonyms.put(w.getLexId(), w.getLemma());
+        }
+    }
 
-        ObservableList<String> synonyms = FXCollections.observableArrayList();
-        synonyms.setAll(synset.getWords().stream().map(Word::getLemma).collect(Collectors.toList()));
-        this.setSynonyms(synonyms);
+    public BiMap<Integer, String> getSynonyms() {
+        return synonyms;
     }
 
     public String getPronunciation() {
@@ -39,18 +39,6 @@ public class SenseModelSource implements SenseModel {
 
     public void setPronunciation(String pronunciation) {
         this.pronunciation.set(pronunciation);
-    }
-
-    public ObservableList<String> getSynonyms() {
-        return synonyms.get();
-    }
-
-    public ListProperty<String> synonymsProperty() {
-        return synonyms;
-    }
-
-    public void setSynonyms(ObservableList<String> synonyms) {
-        this.synonyms.set(synonyms);
     }
 
     public String getDescription() {

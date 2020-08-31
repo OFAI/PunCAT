@@ -1,29 +1,33 @@
 package gui.model;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import de.tuebingen.uni.sfs.germanet.api.LexUnit;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class SenseModelTarget implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
-    private final ListProperty<String> synonyms = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty description = new SimpleStringProperty();
     private final IntegerProperty id = new SimpleIntegerProperty();
+    private final BiMap<Integer, String> synonyms = HashBiMap.create();
 
     public SenseModelTarget(Synset synset) {
         this.setPronunciation("-");
         this.setDescription(String.join("; ", synset.getParaphrases()));
         this.setId(synset.getId());
 
-        ObservableList<String> synonyms = FXCollections.observableArrayList();
-        synonyms.setAll(synset.getAllOrthForms());
-        this.setSynonyms(synonyms);
+        for (LexUnit lu : synset.getLexUnits()) {
+            synonyms.put(lu.getId(), lu.getOrthForm());
+        }
+
+    }
+
+    public BiMap<Integer, String> getSynonyms() {
+        return synonyms;
     }
 
     @Override
@@ -37,19 +41,6 @@ public class SenseModelTarget implements SenseModel {
 
     public void setPronunciation(String pronunciation) {
         this.pronunciation.set(pronunciation);
-    }
-
-    @Override
-    public ObservableList<String> getSynonyms() {
-        return synonyms.get();
-    }
-
-    public ListProperty<String> synonymsProperty() {
-        return synonyms;
-    }
-
-    public void setSynonyms(ObservableList<String> synonyms) {
-        this.synonyms.set(synonyms);
     }
 
     @Override

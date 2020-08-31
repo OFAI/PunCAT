@@ -20,7 +20,7 @@
         <RowConstraints vgrow="ALWAYS"/>
     </rowConstraints>
 
-    <fx:include fx:id="graph"
+    <fx:include fx:id="graphPane"
                 source="graphView.fxml"
                 GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 
@@ -30,7 +30,7 @@
         <Button text="Next" onAction="#nextGraph"/>
     </HBox>
     <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
-        <TextField fx:id="wordInput"/>
+        <TextField fx:id="wordInput" onAction="#wordInputChanged"/>
         <ListView fx:id="senseList"/>
     </VBox>
 </GridPane>

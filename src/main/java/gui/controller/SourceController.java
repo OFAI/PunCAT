@@ -48,6 +48,7 @@ public class SourceController implements Initializable {
         List<Synset> synsets = search.getSourceSenses(word.toLowerCase());
         this.sources.setAll(synsets.stream().map(SenseModelSource::new).collect(Collectors.toList()));
         this.setPronunciations();
+        this.senseList.getSelectionModel().select(0);
     }
 
     public void senseSelected() {

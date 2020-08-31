@@ -19,7 +19,7 @@ public class PhoneticSimilarity {
         String ipa1 = this.word2ipa.get(word1.toLowerCase());
         String ipa2 = this.word2ipa.get(word2.toLowerCase());
 
-        // remove the character not handled by the ALINE class
+        // remove character not handled by the ALINE class
         var sb = new StringBuilder(ipa1);
         while (sb.indexOf("ː") != -1) {
             sb.deleteCharAt(sb.indexOf("ː"));
