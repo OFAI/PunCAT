@@ -2,7 +2,7 @@
 
 <?import javafx.scene.layout.Pane?>
 <Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="gui.controller.GraphController"
+      fx:controller="at.ofai.punderstanding.puncat.gui.controller.GraphController"
       fx:id="graphPane">
 
 </Pane>

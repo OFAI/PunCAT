@@ -9,7 +9,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-          fx:controller="gui.controller.TargetController"
+          fx:controller="at.ofai.punderstanding.puncat.gui.controller.TargetController"
           vgap="10" hgap="10">
 
     <columnConstraints>

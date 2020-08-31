@@ -4,5 +4,5 @@
 <TableView xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:id="candidateTable"
-           fx:controller="gui.controller.CandidateController">
+           fx:controller="at.ofai.punderstanding.puncat.gui.controller.CandidateController">
 </TableView>

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="gui.controller.SourceController">
+      fx:controller="at.ofai.punderstanding.puncat.gui.controller.SourceController">
 
     <TextField fx:id="wordInput" promptText="Search for an English word…"
                onAction="#wordInputChanged"/>
