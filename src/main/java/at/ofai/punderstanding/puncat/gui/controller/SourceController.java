@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
@@ -44,7 +43,7 @@ public class SourceController implements Initializable {
         this.senseList.setItems(this.sources);
     }
 
-    public void wordInputChanged(ActionEvent actionEvent) {
+    public void wordInputChanged() {
         String word = wordInput.getText();
         List<Synset> synsets = search.getSourceSenses(word.toLowerCase());
         this.sources.setAll(synsets.stream().map(SenseModelSource::new).collect(Collectors.toList()));
@@ -55,7 +54,9 @@ public class SourceController implements Initializable {
     public void senseSelected() {
         SenseModelSource selection = (SenseModelSource) this.senseList.getSelectionModel().getSelectedItem();
         if (selection != null) {
-            this.mainController.sourceSelected(selection.getOffset(), this);
+            this.mainController.sourceSelected(selection.getSynsetIdentifier(), this);
+        } else {
+            this.mainController.sourceSelected(null, this);
         }
     }
 
@@ -76,6 +77,6 @@ public class SourceController implements Initializable {
 
     public long getSelectedId() {
         SenseModelSource selection = (SenseModelSource) this.senseList.getSelectionModel().getSelectedItem();
-        return selection.getOffset();
+        return selection.getSynsetIdentifier();
     }
 }

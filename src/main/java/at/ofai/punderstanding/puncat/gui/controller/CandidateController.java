@@ -3,8 +3,6 @@ package at.ofai.punderstanding.puncat.gui.controller;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -22,8 +20,8 @@ public class CandidateController implements Initializable {
     private final ObservableList<CandidateModel> candidateData = FXCollections.observableArrayList();
     private final StringProperty punCandidate = new SimpleStringProperty();
     private final StringProperty targetCandidate = new SimpleStringProperty();
-    private final DoubleProperty semanticScore = new SimpleDoubleProperty();
-    private final DoubleProperty phoneticScore = new SimpleDoubleProperty();
+    private final StringProperty semanticScore = new SimpleStringProperty();
+    private final StringProperty phoneticScore = new SimpleStringProperty();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -31,7 +29,7 @@ public class CandidateController implements Initializable {
     }
 
     public void setReferences(StringProperty punProperty, StringProperty targetProperty,
-                              DoubleProperty semanticSimilarityScoreProperty, DoubleProperty phoneticSimilarityScoreProperty) {
+                              StringProperty semanticSimilarityScoreProperty, StringProperty phoneticSimilarityScoreProperty) {
         this.punCandidate.bind(punProperty);
         this.targetCandidate.bind(targetProperty);
         this.semanticScore.bind(semanticSimilarityScoreProperty);
@@ -69,22 +67,18 @@ public class CandidateController implements Initializable {
         TableColumn<CandidateModel, String> punColumn = new TableColumn<>("Pun");
         punColumn.setCellValueFactory(new PropertyValueFactory<>("pun"));
         this.candidateTable.getColumns().add(punColumn);
-        //punColumn.prefWidthProperty().bind(this.candidateTable.widthProperty().multiply(0.4).subtract(2));
 
         TableColumn<CandidateModel, String> targetColumn = new TableColumn<>("Target");
         targetColumn.setCellValueFactory(new PropertyValueFactory<>("target"));
         this.candidateTable.getColumns().add(targetColumn);
-        //targetColumn.prefWidthProperty().bind(this.candidateTable.widthProperty().multiply(0.4).subtract(2));
 
         TableColumn<CandidateModel, String> semColumn = new TableColumn<>("~sem");
         semColumn.setCellValueFactory(new PropertyValueFactory<>("sem"));
         this.candidateTable.getColumns().add(semColumn);
-        //semColumn.prefWidthProperty().bind(this.candidateTable.widthProperty().multiply(0.1).subtract(2));
 
         TableColumn<CandidateModel, String> phonColumn = new TableColumn<>("~phon");
         phonColumn.setCellValueFactory(new PropertyValueFactory<>("phon"));
         this.candidateTable.getColumns().add(phonColumn);
-        //phonColumn.prefWidthProperty().bind(this.candidateTable.widthProperty().multiply(0.1).subtract(2));
 
         this.candidateData.add(new CandidateModel(this.punCandidate, this.targetCandidate, this.semanticScore, this.phoneticScore));
         this.candidateTable.setItems(this.candidateData);

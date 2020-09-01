@@ -121,7 +121,7 @@ public class Graph extends Group {
             var y = 0 + childNodeDistanceY * Math.sin(Math.toRadians(25/2.0 + degrees.get(i)));
 
             var node = new Node(labelValues.get(i), x, y, false);
-            node.setId(String.valueOf(senses.get(i).getId()));
+            node.setId(String.valueOf(senses.get(i).getSynsetIdentifier()));
             var edge = new Line(0, 0, x, y);
 
             childGroup.getChildren().addAll(node, edge);

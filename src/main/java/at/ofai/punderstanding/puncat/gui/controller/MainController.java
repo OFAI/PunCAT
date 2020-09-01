@@ -3,7 +3,6 @@ package at.ofai.punderstanding.puncat.gui.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -28,10 +27,6 @@ public class MainController implements Initializable {
     @FXML
     public VBox source2;
 
-    @FXML
-    public Label semanticScore;
-    @FXML
-    public Label phoneticScore;
     @FXML
     public TableView<CandidateModel> candidates;
     @FXML
@@ -61,13 +56,6 @@ public class MainController implements Initializable {
                 this.target2Controller.selectedWordProperty(),
                 this.similarityModel.semanticSimilarityScoreProperty(),
                 this.similarityModel.phoneticSimilarityScoreProperty());
-
-        this.semanticScore
-                .textProperty()
-                .bind(Bindings.convert(this.similarityModel.semanticSimilarityScoreProperty()));
-        this.phoneticScore
-                .textProperty()
-                .bind(Bindings.convert(this.similarityModel.phoneticSimilarityScoreProperty()));
     }
 
     public void setSearch(Search search) {
@@ -78,7 +66,7 @@ public class MainController implements Initializable {
         this.similarityModel.setSearch(search);
     }
 
-    public void sourceSelected(Long offset, SourceController sourceController) {
+    public void sourceSelected(Long wordnetOffset, SourceController sourceController) {
         TargetController targetController;
         if (sourceController == this.source1Controller) {
             targetController = this.target1Controller;
@@ -86,7 +74,7 @@ public class MainController implements Initializable {
             targetController = this.target2Controller;
         }
 
-        targetController.sourceSelected(offset);
+        targetController.sourceSelected(wordnetOffset);
     }
 
     public void maybeCalculateSimilarity() {
@@ -99,6 +87,8 @@ public class MainController implements Initializable {
             String word2 = this.target2Controller.getSelectedWord();
 
             this.similarityModel.calculateSimilarity(sSense1, sSense2, tSense1, tSense2, word1, word2);
+        } else {
+            this.similarityModel.clearSimilarity();
         }
     }
 
@@ -109,7 +99,7 @@ public class MainController implements Initializable {
                 this.target2Controller.hasSelection();
     }
 
-    public void addToCandidates(ActionEvent actionEvent) {
+    public void addToCandidates() {
         if (target1Controller.hasSelection() && target2Controller.hasSelection()) {
             candidatesController.newCandidate();
         }

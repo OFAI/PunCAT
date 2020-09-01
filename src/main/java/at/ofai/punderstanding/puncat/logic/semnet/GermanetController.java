@@ -57,7 +57,7 @@ public class GermanetController implements SemnetController<Synset> {
                 return germanet.getLexUnitByID(ir.getLexUnitId()).getSynset();
             }
         }
-        return null; // TODO: return closely related synset if no result
+        return null; // TODO: return closely related synset if no result?
     }
 
     public List<Long> getOffsetFromID(int id) {
@@ -72,10 +72,18 @@ public class GermanetController implements SemnetController<Synset> {
         return this.germanet;
     }
 
+    public Long getSynsetCumulativeFrequency(Synset synset) {
+        return this.frequencies.getSynsetCumulativeFrequency(synset);
+    }
+
+    public String getMostFrequentOrthForm(Synset synset) {
+        return this.frequencies.getMostFrequentOrthForm(synset);
+    }
+
     public List<Synset> getHypernyms(int synsetId) {
         Synset synset = this.germanet.getSynsetByID(synsetId);
         List<Synset> relations = synset.getRelatedSynsets(ConRel.has_hypernym, RelDirection.incoming);
-        relations.sort(Comparator.comparing(frequencies::getFrequency));
+        relations.sort(Comparator.comparing(frequencies::getSynsetCumulativeFrequency));
         return relations;
 
     }
@@ -83,7 +91,7 @@ public class GermanetController implements SemnetController<Synset> {
     public List<Synset> getHyponyms(int synsetId) {
         Synset synset = this.germanet.getSynsetByID(synsetId);
         List<Synset> relations = synset.getRelatedSynsets(ConRel.has_hyponym, RelDirection.incoming);
-        relations.sort(Comparator.comparing(frequencies::getFrequency));
+        relations.sort(Comparator.comparing(frequencies::getSynsetCumulativeFrequency));
         return relations;
     }
 

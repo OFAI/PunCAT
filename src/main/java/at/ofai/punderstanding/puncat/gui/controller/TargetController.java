@@ -2,6 +2,7 @@ package at.ofai.punderstanding.puncat.gui.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -14,7 +15,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -30,8 +30,12 @@ import at.ofai.punderstanding.puncat.gui.model.SenseModel;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 
+
 // TODO: base class or interface for source/target controllers
 public class TargetController implements Initializable {
+    private final StringProperty selectedWord = new SimpleStringProperty();
+    private final Label noResultLabel = new Label("No known equivalent in GermaNet.\nTry searching manually.");
+    private final BooleanProperty noEquivalentInGermanet = new SimpleBooleanProperty(false);
     @FXML
     public TextField wordInput;
     @FXML
@@ -40,14 +44,10 @@ public class TargetController implements Initializable {
     public Pane graphPane;
     @FXML
     private GraphController graphPaneController;  // TODO: graph should observe senseList?
-
     private ObservableList<SenseModel> targets;
-    private final StringProperty selectedWord = new SimpleStringProperty();
     private MainController mainController;
     private Search search;
-    private final Label noResultLabel = new Label("No known equivalent in GermaNet.\nTry searching manually.");
     private BooleanBinding targetsEmptyProperty;
-    private final BooleanProperty noEquivalentInGermanet = new SimpleBooleanProperty(false);
 
     public void setReferences(MainController mc) {
         this.mainController = mc;
@@ -56,13 +56,6 @@ public class TargetController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.noResultLabel.setTextAlignment(TextAlignment.CENTER);
-
-        this.selectedWord.addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.equals("")) {
-                this.mainController.maybeCalculateSimilarity();
-            }
-        });
-
         this.graphPaneController.setReferences(this);
         this.targets = FXCollections.observableArrayList();
         IntegerBinding targetsSizeProperty = Bindings.size(targets);
@@ -71,8 +64,9 @@ public class TargetController implements Initializable {
         this.setupNoResultLabel();
 
         this.senseList.getSelectionModel().selectedItemProperty().addListener((observableValue, senseModel, t1) ->
-            this.senseSelected()
+                this.senseSelected()
         );
+
         this.senseList.setCellFactory(sl -> new SenseCell());
         this.senseList.setItems(this.targets);
     }
@@ -89,21 +83,25 @@ public class TargetController implements Initializable {
     }
 
     public void sourceSelected(Long wordnetOffset) {
-        Synset synset = search.mapToGermanet(wordnetOffset);
+        Synset synset;
+        if (wordnetOffset != null) {
+            synset = search.mapToGermanet(wordnetOffset);
+        } else {
+            synset = null;
+        }
         if (synset != null) {
             this.noEquivalentInGermanet.setValue(false);
-            var word = synset.getLexUnits().get(0).getOrthForm();
-            this.selectedWord.setValue(word);
+            String word = this.search.getGermanetMostFrequentOrthForm(synset);
             this.wordInput.setText(word);
             this.populateSynsetList(word);
-            this.setSelectionBySynset(synset);
             this.setPronunciations();
+            this.selectedWord.setValue(word);
+            this.setSelectionBySynset(synset);
         } else {
             this.noEquivalentInGermanet.setValue(true);
-            this.clearGraph();
             this.selectedWord.setValue(null);
             this.populateSynsetList(null);
-            this.wordInput.setText("");
+            this.wordInput.setText(null);
             this.setSelectionBySynset(null);
         }
     }
@@ -120,6 +118,7 @@ public class TargetController implements Initializable {
             this.clearGraph();
             this.targets.setAll(new ArrayList<>());
         } else {
+            synsets.sort(Comparator.comparingLong(o -> this.search.getGermanetSynsetCumulativeFrequency(o)));
             this.targets.setAll(synsets.stream().map(SenseModelTarget::new).collect(Collectors.toList()));
             this.senseList.getSelectionModel().select(0);
         }
@@ -130,18 +129,22 @@ public class TargetController implements Initializable {
             this.senseList.getSelectionModel().clearSelection();
             return;
         }
-        // TODO: not very nice
-        for (int i = 0; i < this.targets.size(); i++) {
-            if (((SenseModelTarget) this.targets.get(i)).getId() == synset.getId()) {
-                this.senseList.getSelectionModel().select(i);
-                break;
-            }
+        var t = this.targets
+                .stream()
+                .filter(senseModel -> ((SenseModelTarget)senseModel).getSynsetIdentifier() == synset.getId())
+                .findFirst()
+                .orElse(null);
+        if (t != null) {
+            this.senseList.getSelectionModel().select(t);
+        } else {
+            throw new RuntimeException();
         }
     }
 
-    public void wordInputChanged(ActionEvent actionEvent) {
+    public void wordInputChanged() {
         this.populateSynsetList(wordInput.getText());
         this.setPronunciations();
+        this.senseList.getSelectionModel().select(0);
     }
 
     private void setPronunciations() {
@@ -152,10 +155,16 @@ public class TargetController implements Initializable {
     }
 
     public void senseSelected() {
-        if (this.senseList.getSelectionModel().getSelectedItem() != null) {
-            this.mainController.maybeCalculateSimilarity();
-            this.updateGraph();
+        var selection = (SenseModelTarget) this.senseList.getSelectionModel().getSelectedItem();
+        if (selection != null) {
+            String word = this.search.getGermanetMostFrequentOrthForm(
+                    this.search.getTargetSynsetById(selection.getSynsetIdentifier()));
+            this.selectedWord.setValue(word);
+        } else {
+            this.selectedWord.setValue("");
         }
+        this.mainController.maybeCalculateSimilarity();
+        this.updateGraph();
     }
 
     public void setSearch(Search search) {
@@ -168,7 +177,7 @@ public class TargetController implements Initializable {
 
     public int getSelectedId() {
         SenseModelTarget selection = (SenseModelTarget) this.senseList.getSelectionModel().getSelectedItem();
-        return selection.getId();
+        return selection.getSynsetIdentifier();
     }
 
     public boolean hasSelection() {
@@ -184,12 +193,12 @@ public class TargetController implements Initializable {
     }
 
     public List<SenseModelTarget> getHypernyms(SenseModelTarget selection) {
-        List<Synset> hypernyms = this.search.getTargetHypernyms(selection.getId());
+        List<Synset> hypernyms = this.search.getTargetHypernyms(selection.getSynsetIdentifier());
         return hypernyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
     }
 
     public List<SenseModelTarget> getHyponyms(SenseModelTarget selection) {
-        List<Synset> hyponyms = this.search.getTargetHyponyms(selection.getId());
+        List<Synset> hyponyms = this.search.getTargetHyponyms(selection.getSynsetIdentifier());
         return hyponyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
     }
 
@@ -197,9 +206,9 @@ public class TargetController implements Initializable {
         int id = Integer.parseInt(stringId);
         var synset = this.search.getTargetSynsetById(id);
         this.setWordInputText(synset.getLexUnits().get(0).getOrthForm());
-        this.wordInputChanged(null);
+        this.wordInputChanged();
 
-        SenseModel s = this.targets.stream().filter(t -> id == ((SenseModelTarget)t).getId()).findAny().orElse(null);
+        SenseModel s = this.targets.stream().filter(t -> id == ((SenseModelTarget) t).getSynsetIdentifier()).findAny().orElse(null);
 
         if (s == null) {
             // TODO
@@ -210,17 +219,16 @@ public class TargetController implements Initializable {
     }
 
     public void updateGraph() {
+        if (this.selectedWord.get() == null || this.selectedWord.get().equals("")) {
+            this.clearGraph();
+            return;
+        }
         SenseModelTarget selection = (SenseModelTarget) this.senseList
                 .getSelectionModel()
                 .getSelectedItem();
 
-        if (selection == null) {
-            // This happens when the user is manually searching for a word
-            selection = (SenseModelTarget) this.senseList.getItems().get(0);
-        }
-
         graphPaneController.updateGraphData(
-                this.wordInput.getText(),
+                this.selectedWord.get(),
                 selection,
                 this.getHypernyms(selection),
                 this.getHyponyms(selection)
@@ -231,16 +239,17 @@ public class TargetController implements Initializable {
         graphPaneController.clearContents();
     }
 
-    public void prevGraph(ActionEvent actionEvent) {
+    public void prevGraph() {
         this.graphPaneController.prevGraph();
     }
 
-    public void nextGraph(ActionEvent actionEvent) {
+    public void nextGraph() {
         this.graphPaneController.nextGraph();
     }
 
     public void selectedLineChanged(int lexUnitId) {
-        this.selectedWord.setValue(this.search.getLexUnitById(lexUnitId));
+        this.selectedWord.setValue(this.search.getGermanetOrthFormByLexUnitId(lexUnitId));
+        this.mainController.maybeCalculateSimilarity();
     }
 
     public String getSelectedWord() {

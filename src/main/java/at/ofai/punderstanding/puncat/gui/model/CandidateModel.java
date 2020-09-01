@@ -1,18 +1,16 @@
 package at.ofai.punderstanding.puncat.gui.model;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class CandidateModel {
     private final StringProperty pun = new SimpleStringProperty();
     private final StringProperty target = new SimpleStringProperty();
-    private final DoubleProperty sem = new SimpleDoubleProperty();
-    private final DoubleProperty phon = new SimpleDoubleProperty();
+    private final StringProperty sem = new SimpleStringProperty();
+    private final StringProperty phon = new SimpleStringProperty();
     private final boolean realTime;
 
-    public CandidateModel(String pun, String target, Double sem, Double phon) {
+    public CandidateModel(String pun, String target, String sem, String phon) {
         this.setPun(pun);
         this.setTarget(target);
         this.setSem(sem);
@@ -21,7 +19,7 @@ public class CandidateModel {
     }
 
     public CandidateModel(StringProperty punCandidate, StringProperty targetCandidate,
-                          DoubleProperty semanticScore, DoubleProperty phoneticScore) {
+                          StringProperty semanticScore, StringProperty phoneticScore) {
         this.pun.bind(punCandidate);
         this.target.bind(targetCandidate);
         this.sem.bind(semanticScore);
@@ -53,27 +51,27 @@ public class CandidateModel {
         this.target.set(target);
     }
 
-    public double getSem() {
+    public String getSem() {
         return sem.get();
     }
 
-    public DoubleProperty semProperty() {
+    public StringProperty semProperty() {
         return sem;
     }
 
-    public void setSem(double sem) {
+    public void setSem(String sem) {
         this.sem.set(sem);
     }
 
-    public double getPhon() {
+    public String getPhon() {
         return phon.get();
     }
 
-    public DoubleProperty phonProperty() {
+    public StringProperty phonProperty() {
         return phon;
     }
 
-    public void setPhon(double phon) {
+    public void setPhon(String phon) {
         this.phon.set(phon);
     }
 

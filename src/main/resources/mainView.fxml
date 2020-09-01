@@ -6,9 +6,6 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.layout.HBox?>
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="at.ofai.punderstanding.puncat.gui.controller.MainController"
           hgap="10.0" vgap="10.0">
@@ -70,17 +67,6 @@
                 <ColumnConstraints hgrow="ALWAYS" percentWidth="25"/>
                 <ColumnConstraints hgrow="ALWAYS" percentWidth="25"/>
             </columnConstraints>
-
-            <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
-                <HBox>
-                    <Label text="Semantic similarity: "/>
-                    <Label fx:id="semanticScore"/>
-                </HBox>
-                <HBox>
-                    <Label text="Phonetic similarity:  "/>
-                    <Label fx:id="phoneticScore"/>
-                </HBox>
-            </VBox>
 
             <Button text="Add to candidates" fx:id="addCandidateButton" onAction="#addToCandidates"
                 GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2"/>

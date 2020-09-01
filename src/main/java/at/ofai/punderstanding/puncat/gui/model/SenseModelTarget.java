@@ -13,13 +13,13 @@ import de.tuebingen.uni.sfs.germanet.api.Synset;
 public class SenseModelTarget implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
-    private final IntegerProperty id = new SimpleIntegerProperty();
+    private final IntegerProperty synsetIdentifier = new SimpleIntegerProperty();
     private final BiMap<Integer, String> synonyms = HashBiMap.create();
 
     public SenseModelTarget(Synset synset) {
         this.setPronunciation("-");
         this.setDescription(String.join("; ", synset.getParaphrases()));
-        this.setId(synset.getId());
+        this.setSynsetIdentifier(synset.getId());
 
         for (LexUnit lu : synset.getLexUnits()) {
             synonyms.put(lu.getId(), lu.getOrthForm());
@@ -57,15 +57,15 @@ public class SenseModelTarget implements SenseModel {
         this.description.set(description);
     }
 
-    public int getId() {
-        return id.get();
+    public Integer getSynsetIdentifier() {
+        return synsetIdentifier.get();
     }
 
-    public IntegerProperty idProperty() {
-        return id;
+    public IntegerProperty synsetIdentifierProperty() {
+        return synsetIdentifier;
     }
 
-    public void setId(int id) {
-        this.id.set(id);
+    public void setSynsetIdentifier(int synsetIdentifier) {
+        this.synsetIdentifier.set(synsetIdentifier);
     }
 }

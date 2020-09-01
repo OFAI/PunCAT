@@ -68,6 +68,14 @@ public class Search {
         }
     }
 
+    public Long getGermanetSynsetCumulativeFrequency(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
+        return this.germaNet.getSynsetCumulativeFrequency(synset);
+    }
+
+    public String getGermanetMostFrequentOrthForm(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
+        return this.germaNet.getMostFrequentOrthForm(synset);
+    }
+
     public double calculatePhoneticSimilarity(String word1, String word2) {
         return this.phonSimilarity.calculatePhoneticSimilarity(word1, word2);
     }
@@ -106,7 +114,7 @@ public class Search {
         return this.germaNet.getSynsetById(id);
     }
 
-    public String getLexUnitById(int lexUnitId) {
+    public String getGermanetOrthFormByLexUnitId(int lexUnitId) {
         return this.germaNet.getLexUnitById(lexUnitId);
     }
 }

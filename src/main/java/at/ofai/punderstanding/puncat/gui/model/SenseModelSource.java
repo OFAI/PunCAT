@@ -13,13 +13,13 @@ import net.sf.extjwnl.data.Word;
 public class SenseModelSource implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
-    private final LongProperty offset = new SimpleLongProperty();
+    private final LongProperty synsetIdentifier = new SimpleLongProperty();
     private final BiMap<Integer, String> synonyms = HashBiMap.create();
 
     public SenseModelSource(Synset synset) {
         this.setPronunciation("-");
         this.setDescription(synset.getGloss());
-        this.setOffset(synset.getOffset());
+        this.setSynsetIdentifier(synset.getOffset());
         
         for (Word w : synset.getWords()) {
             this.synonyms.put(w.getLexId(), w.getLemma());
@@ -54,15 +54,15 @@ public class SenseModelSource implements SenseModel {
         this.description.set(description);
     }
 
-    public long getOffset() {
-        return offset.get();
+    public Long getSynsetIdentifier() {
+        return synsetIdentifier.get();
     }
 
-    public LongProperty offsetProperty() {
-        return offset;
+    public LongProperty synsetIdentifierProperty() {
+        return synsetIdentifier;
     }
 
-    public void setOffset(long offset) {
-        this.offset.set(offset);
+    public void setSynsetIdentifier(long synsetIdentifier) {
+        this.synsetIdentifier.set(synsetIdentifier);
     }
 }

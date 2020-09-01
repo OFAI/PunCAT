@@ -42,14 +42,32 @@ public class GermanetFrequencies {
         return freqMap;
     }
 
-    public Long getFrequency(Synset synset) {
+    public Long getSynsetCumulativeFrequency(Synset synset) {
         long frequency = 0L;
+        String wordCat = synset.getWordCategory().toString();
         for (String form : synset.getAllOrthForms()) {
-            Long f = this.wordCatMap.get(synset.getWordCategory().toString()).get(form);
+            Long f = this.wordCatMap.get(wordCat).get(form);
             if (f != null) {
                 frequency += f;
             }
         }
         return frequency;
+    }
+
+    public String getMostFrequentOrthForm(Synset synset) {
+        String mostFrequent = null;
+        Long maxFreq = -1L;
+        String wordCat = synset.getWordCategory().toString();
+        for (String form : synset.getAllOrthForms()) {
+            Long f = this.wordCatMap.get(wordCat).get(form);
+            if (f > maxFreq) {
+                maxFreq = f;
+                mostFrequent = form;
+            }
+        }
+        if (mostFrequent == null) {
+            throw new RuntimeException();
+        }
+        return mostFrequent;
     }
 }
