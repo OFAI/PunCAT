@@ -22,7 +22,6 @@ public class Graph extends Group {
     private final double childNodeDistanceX;
     private final double childNodeDistanceY;
 
-    private Node rootNode;
     private final StringProperty selectedLineId = new SimpleStringProperty();
     private final ArrayList<Group> childNodePages = new ArrayList<>();
     private Group activeChildren;
@@ -45,23 +44,24 @@ public class Graph extends Group {
             this.buildChildren(hypernymSlice, hyponymSlice);
         }
         this.activeChildren = this.childNodePages.get(0);
-        this.getChildren().add(this.activeChildren);
+        this.activeChildren.setVisible(true);
 
-        this.rootNode = new Node(root.getSynonyms(), 0, 0, true);
-        this.getChildren().add(this.rootNode);
-        this.rootNode.setSelectedLine(selectedText);
+        Node rootNode = new Node(root.getSynonyms(), 0, 0, true);
+        this.getChildren().add(rootNode);
+        rootNode.setSelectedLine(selectedText);
         // TODO: this is a long binding chain. there must be a better way
-        this.selectedLineId.bind(this.rootNode.selectedLineIdProperty());
+        this.selectedLineId.bind(rootNode.selectedLineIdProperty());
     }
 
     private void buildChildren(List<SenseModelTarget> hypernyms, List<SenseModelTarget> hyponyms) {
         Group childGroup = new Group();
-        //childGroup.setVisible(false);
+        childGroup.setVisible(false);
 
         this.addNodes(childGroup, hypernyms, true);
         this.addNodes(childGroup, hyponyms, false);
 
         this.childNodePages.add(childGroup);
+        this.getChildren().add(childGroup);
     }
 
     private ArrayList<ArrayList<SenseModelTarget>> slice(List<SenseModelTarget> senses) {
@@ -149,22 +149,14 @@ public class Graph extends Group {
     public void prevGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
         if (idx != 0) {
-            //this.setVisibleChildren(this.childNodePages.get(idx-1));
-            this.getChildren().remove(this.activeChildren);
-            this.activeChildren = this.childNodePages.get(idx-1);
-            this.getChildren().add(this.activeChildren);
-            this.rootNode.toFront();
+            this.setVisibleChildren(this.childNodePages.get(idx-1));
         }
     }
 
     public void nextGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
         if (idx != this.childNodePages.size()-1) {
-            // this.setVisibleChildren(this.childNodePages.get(idx+1));
-            this.getChildren().remove(this.activeChildren);
-            this.activeChildren = this.childNodePages.get(idx+1);
-            this.getChildren().add(this.activeChildren);
-            this.rootNode.toFront();
+            this.setVisibleChildren(this.childNodePages.get(idx+1));
         }
     }
 

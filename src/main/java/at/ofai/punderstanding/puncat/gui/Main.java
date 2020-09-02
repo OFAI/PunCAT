@@ -39,12 +39,7 @@ public class Main extends Application {
             mainPane.setVisible(false);
 
             GridPane targetPane = (GridPane) mainPane.lookup("#targetPane");
-            /*
-            Button first = new Button("", loadButtonImage(Consts.firstBtn));
-            Button prev = new Button("", loadButtonImage(Consts.prevBtn));
-            Button next = new Button("", loadButtonImage(Consts.nextBtn));
-            Button last = new Button("", loadButtonImage(Consts.lastBtn));
-             */
+
             Button first = new Button("<<");
             first.setOnAction(event -> this.firstPane());
             first.setTooltip(new Tooltip("jump to the first translation task"));  // TODO: ui strings to Consts?
@@ -80,18 +75,6 @@ public class Main extends Application {
 
         primaryStage.show();
     }
-
-    /*
-    private ImageView loadButtonImage(String path) {
-        var img = new Image(String.valueOf(getClass().getResource(path)));
-        var imgNode = new ImageView(img);
-        imgNode.setFitHeight(22);
-        imgNode.setPreserveRatio(true);
-        imgNode.setSmooth(true);
-        imgNode.setCache(true);
-        return imgNode;
-    }
-     */
 
     private void firstPane() {
         int idx = this.mainPanes.indexOf(this.activePane);
