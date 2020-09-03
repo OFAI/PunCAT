@@ -6,9 +6,11 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Tooltip?>
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="at.ofai.punderstanding.puncat.gui.controller.MainController"
-          hgap="10.0" vgap="10.0">
+          hgap="10.0" vgap="10.0" visible="false">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
@@ -86,5 +88,29 @@
         <fx:include fx:id="candidates"
                     source="candidateView.fxml"
                     GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+
+        <!-- main buttons for pagination -->
+        <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" spacing="5" alignment="BOTTOM_RIGHT">
+            <Button id="main-pagination-btn" text="&lt;&lt;">
+                <tooltip>
+                    <Tooltip text="jump to the first translation task" />
+                </tooltip>
+            </Button>
+            <Button id="main-pagination-btn" text="&lt;">
+                <tooltip>
+                    <Tooltip text="step to the previous translation task" />
+                </tooltip>
+            </Button>
+            <Button id="main-pagination-btn" text="&gt;">
+                <tooltip>
+                    <Tooltip text="step to the next translation task" />
+                </tooltip>
+            </Button>
+            <Button id="main-pagination-btn" text="&gt;&gt;">
+                <tooltip>
+                    <Tooltip text="jump to the last translation task" />
+                </tooltip>
+            </Button>
+        </HBox>
     </GridPane>
 </GridPane>

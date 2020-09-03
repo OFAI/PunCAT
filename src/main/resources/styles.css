@@ -17,3 +17,7 @@
     -fx-border-color: black;
 }
 
+#main-pagination-btn {
+    -fx-font-size: 15px;
+}
+

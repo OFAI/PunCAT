@@ -13,4 +13,6 @@ public class Consts {
     public static final String firstBtn = "/img/chevrons-left.png";
     public static final String nextBtn = "/img/chevron-right.png";
     public static final String lastBtn = "/img/chevrons-right.png";
+
+    public static final String splashImg = "/img/Computational_Pun-derstanding_logo.png";
 }
