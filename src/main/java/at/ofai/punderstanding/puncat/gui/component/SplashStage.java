@@ -1,17 +1,13 @@
 package at.ofai.punderstanding.puncat.gui.component;
 
-import java.util.Collections;
+import java.io.InputStream;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -19,36 +15,38 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import afester.javafx.svg.SvgLoader;
+
 import at.ofai.punderstanding.puncat.logic.util.Consts;
 
 
 public class SplashStage extends Stage {
     public SplashStage() {
         super();
-        int splashWidth = 750;
-        int splashHeight = 440;
+        int splashWidth = 700;
+        int splashHeight = 400;
 
         this.setWidth(splashWidth);
         this.setHeight(splashHeight);
         this.initStyle(StageStyle.UNDECORATED);
 
         var loadingLabel = new Label("Loading…");
-        loadingLabel.setFont(new Font(18));
-        StackPane.setMargin(loadingLabel, new Insets(0, 200, 0, 0));
-        StackPane.setAlignment(loadingLabel, Pos.CENTER_RIGHT);
+        loadingLabel.setFont(new Font(22));
+        StackPane.setMargin(loadingLabel, new Insets(splashHeight/3., splashWidth/5., 0, 0));
+        StackPane.setAlignment(loadingLabel, Pos.TOP_RIGHT);
 
-        var puncatImg = new Image(String.valueOf(getClass().getResource(Consts.splashImg)));
-        var puncatBackground = new BackgroundImage(puncatImg,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                new BackgroundSize(0, 0, false, false, true, true));
+        InputStream svgFile = getClass().getResourceAsStream(Consts.splashImg);
+        SvgLoader loader = new SvgLoader();
+        Group svgImage = loader.loadSvg(svgFile);
+        svgImage.setScaleX((splashWidth-5)/svgImage.getBoundsInParent().getWidth());
+        svgImage.setScaleY((splashHeight-5)/svgImage.getBoundsInParent().getHeight());
+
+        Group puncat = new Group(svgImage);
+        StackPane.setAlignment(puncat, Pos.BOTTOM_CENTER);
 
         StackPane puncatPane = new StackPane();
-        puncatPane.setBackground(new Background(
-                Collections.singletonList(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)),
-                Collections.singletonList(puncatBackground)));
-        puncatPane.getChildren().addAll(loadingLabel);
+        puncatPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        puncatPane.getChildren().addAll(loadingLabel, puncat);
 
         var scene = new Scene(puncatPane);
         this.setScene(scene);

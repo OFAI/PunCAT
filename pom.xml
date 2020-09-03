@@ -80,6 +80,11 @@
             <version>2.3.3</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.afester.javafx</groupId>
+            <artifactId>FranzXaver</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
