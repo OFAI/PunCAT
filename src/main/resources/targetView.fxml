@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="at.ofai.punderstanding.puncat.gui.controller.TargetController"
           vgap="10" hgap="10">
@@ -25,7 +26,7 @@
                 GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 
     <!-- TODO: buttons to graphView? -->
-    <HBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER">
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER" spacing="5">
         <Button text="Prev" onAction="#prevGraph"/>
         <Button text="Next" onAction="#nextGraph"/>
     </HBox>

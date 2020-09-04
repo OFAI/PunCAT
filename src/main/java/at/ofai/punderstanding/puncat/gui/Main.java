@@ -6,20 +6,28 @@ import javafx.application.Application;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import at.ofai.punderstanding.puncat.gui.component.SplashStage;
 import at.ofai.punderstanding.puncat.gui.controller.MainController;
+import at.ofai.punderstanding.puncat.gui.model.CorpusInstance.Corpus;
+import at.ofai.punderstanding.puncat.gui.model.CorpusInstance.CorpusInstance;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 
 
 public class Main extends Application {
     GridPane activePane = null;
     Stage mainStage;
+    StackPane rootPane = new StackPane();
     ArrayList<GridPane> mainPanes = new ArrayList<>();
     private Search search;
 
@@ -42,7 +50,6 @@ public class Main extends Application {
     }
 
     private void buildMainStage(Search search) {
-        StackPane rootPane = new StackPane();
         Scene scene = new Scene(rootPane);
         scene.getStylesheets().add("/styles.css");
 
@@ -51,7 +58,34 @@ public class Main extends Application {
         mainStage.setMaximized(true);
         mainStage.getIcons().add(new Image(getClass().getResourceAsStream("/img/message-square.png")));
 
-        for (int i = 0; i < 2; i++) {
+
+        Button first = new Button("<<");
+        first.setOnAction(event -> this.firstPane());
+        first.setTooltip(new Tooltip("jump to the first translation task"));  // TODO: ui strings to Consts?
+        first.setStyle("-fx-font-size: 15px");
+
+        Button prev = new Button("<");
+        prev.setOnAction(event -> this.prevPane());
+        prev.setTooltip(new Tooltip("step to the previous translation task"));
+        prev.setStyle("-fx-font-size: 15px");
+
+        Button next = new Button(">");
+        next.setOnAction(event -> this.nextPane());
+        next.setTooltip(new Tooltip("step to the next translation task"));
+        next.setStyle("-fx-font-size: 15px");
+
+        Button last = new Button(">>");
+        last.setOnAction(event -> this.lastPane());
+        last.setTooltip(new Tooltip("jump to the last translation task"));  // TODO: tooltip size, look, delay
+        last.setStyle("-fx-font-size: 15px");
+
+        var btnBox = new HBox();
+        btnBox.setSpacing(5);
+        btnBox.getChildren().addAll(first, prev, next, last);
+        btnBox.setAlignment(Pos.BOTTOM_RIGHT);
+
+        Corpus corpus = Corpus.parseCorpus();
+        for (int i = 0; i < corpus.size(); i++) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainView.fxml"));
             GridPane mainPane;
             try {
@@ -59,7 +93,11 @@ public class Main extends Application {
             } catch (IOException e) {
                 throw new RuntimeException();
             }
-            ((MainController) loader.getController()).setSearch(search);
+            var mc = ((MainController) loader.getController());
+            mc.setPageButtons(btnBox);
+            mc.setSearch(search);
+            //mc.loadCorpusInstance(corpus.getModel(i));
+
             rootPane.getChildren().add(mainPane);
             this.mainPanes.add(mainPane);
         }

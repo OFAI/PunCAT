@@ -79,4 +79,15 @@ public class SourceController implements Initializable {
         SenseModelSource selection = (SenseModelSource) this.senseList.getSelectionModel().getSelectedItem();
         return selection.getSynsetIdentifier();
     }
+
+    public void setContentsByCorpusInstance(String lemma, Long sense) {
+        this.wordInput.setText(lemma);
+        this.wordInputChanged();
+        var toSelect = this.sources.stream().filter(s -> s.getSynsetIdentifier().equals(sense)).findFirst();
+        if (toSelect.isPresent()) {
+            this.senseList.getSelectionModel().select(toSelect.get());
+        } else {
+            throw new RuntimeException();
+        }
+    }
 }

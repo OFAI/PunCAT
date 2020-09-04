@@ -9,14 +9,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import at.ofai.punderstanding.puncat.gui.model.CandidateModel;
+import at.ofai.punderstanding.puncat.gui.model.CorpusInstance.CorpusInstance;
 import at.ofai.punderstanding.puncat.gui.model.SimilarityModel;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 
 public class MainController implements Initializable {
     private SimilarityModel similarityModel;
+
+    @FXML
+    public GridPane mainGridPane;
 
     @FXML
     public VBox source1;
@@ -103,5 +108,18 @@ public class MainController implements Initializable {
         if (target1Controller.hasSelection() && target2Controller.hasSelection()) {
             candidatesController.newCandidate();
         }
+    }
+
+    public void loadCorpusInstance(CorpusInstance model) {
+        this.source1Controller.setContentsByCorpusInstance(
+                model.getText().getPun().getFirstLemma(),
+                Long.parseLong(model.getText().getPun().getFirstSense()));
+        this.source2Controller.setContentsByCorpusInstance(
+                model.getText().getPun().getSecondLemma(),
+                Long.parseLong(model.getText().getPun().getSecondSense()));
+    }
+
+    public void setPageButtons(HBox btnBox) {
+        this.mainGridPane.add(btnBox, 1, 1);
     }
 }

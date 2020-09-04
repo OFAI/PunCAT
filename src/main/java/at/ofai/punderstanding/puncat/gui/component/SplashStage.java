@@ -23,8 +23,8 @@ import at.ofai.punderstanding.puncat.logic.util.Consts;
 public class SplashStage extends Stage {
     public SplashStage() {
         super();
-        int splashWidth = 700;
-        int splashHeight = 400;
+        int splashWidth = 500;
+        int splashHeight = 300;
 
         this.setWidth(splashWidth);
         this.setHeight(splashHeight);

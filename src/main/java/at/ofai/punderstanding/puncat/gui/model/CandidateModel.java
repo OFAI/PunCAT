@@ -3,6 +3,7 @@ package at.ofai.punderstanding.puncat.gui.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+
 public class CandidateModel {
     private final StringProperty pun = new SimpleStringProperty();
     private final StringProperty target = new SimpleStringProperty();

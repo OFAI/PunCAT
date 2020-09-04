@@ -19,6 +19,7 @@ import javafx.scene.text.TextFlow;
 
 import com.google.common.collect.BiMap;
 
+
 public class Node extends Group {
     private final LabelWrapper labelWrapper;
     private static final double minRadiusX = 25;
@@ -30,8 +31,8 @@ public class Node extends Group {
         Ellipse ellipse = new Ellipse(x, y, 0, 0);
 
         this.labelWrapper = new LabelWrapper(text, ellipse.centerXProperty(), ellipse.centerYProperty(), isRoot);
-        double radiusX = Math.max(labelWrapper.getWidth()/2 + labelPadding, minRadiusX);
-        double radiusY = Math.max(labelWrapper.getHeight()/2 + labelPadding, minRadiusY);
+        double radiusX = Math.max(labelWrapper.getWidth() / 2 + labelPadding, minRadiusX);
+        double radiusY = Math.max(labelWrapper.getHeight() / 2 + labelPadding, minRadiusY);
         ellipse.setRadiusX(radiusX);
         ellipse.setRadiusY(radiusY);
 
@@ -72,6 +73,7 @@ public class Node extends Group {
     }
 
     boolean scrollStartRegistered = false;
+
     public void enableScrollListener() {
         this.setOnScrollStarted(event -> {
             scrollStartRegistered = true;
@@ -117,10 +119,10 @@ public class Node extends Group {
             }
             Text firstBeforeSort = this.labelParts.get(0);
             this.labelParts = LabelWrapper.sortLines(this.labelParts);
-            for (int i = 0; i < this.labelParts.size()-1; i++) {
+            for (int i = 0; i < this.labelParts.size() - 1; i++) {
                 this.labelFlow.getChildren().addAll(this.labelParts.get(i), new Text(System.lineSeparator()));
             }
-            this.labelFlow.getChildren().add(this.labelParts.get(this.labelParts.size()-1));
+            this.labelFlow.getChildren().add(this.labelParts.get(this.labelParts.size() - 1));
             this.labelFlow.setTextAlignment(TextAlignment.CENTER);
 
             Text widestText = Collections.max(this.labelParts, Comparator.comparing(l -> l.getLayoutBounds().getWidth()));
