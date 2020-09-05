@@ -19,7 +19,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -33,9 +32,9 @@ import at.ofai.punderstanding.puncat.logic.util.Consts;
 
 public class Main extends Application {
     GridPane activePane = null;
-    Stage rootStage;
+    Stage stage;
     BorderPane rootPane = new BorderPane();
-    ArrayList<GridPane> mainPanes = new ArrayList<>();
+    ArrayList<GridPane> mainPaneList = new ArrayList<>();
     private Search search;
 
     public static void main(String[] args) {
@@ -44,39 +43,35 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        rootStage = stage;
+        this.stage = stage;
         var splashStage = new SplashStage();
         splashStage.show();
 
         var loader = new LoaderClass();
         loader.setOnSucceeded(t -> {
-            search = (Search) t.getSource().getValue();
-            //rootPane.getChildren().add(createMenubar());
-            rootPane.setTop(createMenubar());
-            buildRootStage(search);
-            this.mainPanes.get(0).setVisible(true);
-            this.activePane = this.mainPanes.get(0);
-            rootStage.show();
+            this.search = (Search) t.getSource().getValue();
+            this.rootPane.setTop(createMenubar());
+            buildRootStage();
+            buildMainPane(null);
+            this.activePane = this.mainPaneList.get(0);
+            this.rootPane.setCenter(this.activePane);
+            this.stage.show();
             splashStage.hide();
         });
         loader.start();
     }
 
-    private void buildRootStage(Search search) {
-        Scene scene = new Scene(rootPane);
+    private void buildRootStage() {
+        Scene scene = new Scene(this.rootPane);
         scene.getStylesheets().add("/styles.css");
 
-        rootStage.setTitle("PunCAT");
-        rootStage.setScene(scene);
-        rootStage.setMaximized(true);
-        rootStage.getIcons().add(new Image(getClass().getResourceAsStream(Consts.icon)));
-
-        buildMainView(null);
-        this.mainPanes.get(0).setVisible(true);
-        this.activePane = this.mainPanes.get(0);
+        this.stage.setTitle("PunCAT");
+        this.stage.setScene(scene);
+        this.stage.setMaximized(true);
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream(Consts.icon)));
     }
 
-    private void buildMainView(CorpusInstance corpusInstance) {
+    private void buildMainPane(CorpusInstance corpusInstance) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainView.fxml"));
         GridPane mainPane;
         try {
@@ -84,17 +79,14 @@ public class Main extends Application {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+        mainPane.setVisible(true);
 
         var mc = (MainController) loader.getController();
-        mc.setSearch(search);
+        mc.setSearch(this.search);
         var targetPane = (GridPane) mainPane.lookup("#targetPane");
         targetPane.add(createButtonBox(), 1, 2);
 
-        mainPane.setVisible(false);
-
-        //rootPane.getChildren().add(mainPane);
-        rootPane.setCenter(mainPane);
-        this.mainPanes.add(mainPane);
+        this.mainPaneList.add(mainPane);
 
         if (corpusInstance != null) {
             mc.loadCorpusInstance(corpusInstance);
@@ -106,15 +98,14 @@ public class Main extends Application {
         if (corpus.size() == 0) {
             return;
         }
-        this.rootPane.getChildren().removeAll(this.mainPanes);
-        this.mainPanes.clear();
+        this.rootPane.getChildren().removeAll(this.mainPaneList);
+        this.mainPaneList.clear();
         for (CorpusInstance ci : corpus.getInstances()) {
-            buildMainView(ci);
+            buildMainPane(ci);
         }
 
-        rootPane.setCenter(this.mainPanes.get(0));
-        this.activePane = this.mainPanes.get(0);
-        this.activePane.setVisible(true);
+        this.activePane = this.mainPaneList.get(0);
+        this.rootPane.setCenter(this.activePane);
     }
 
     private HBox createButtonBox() {
@@ -154,55 +145,70 @@ public class Main extends Application {
         fileMenu.getItems().add(openItem);
 
         openItem.setOnAction(event -> {
-            File file = new FileChooser().showOpenDialog(rootStage);
+            File file = new FileChooser().showOpenDialog(stage);
             if (file != null) {
                 parseXml(file);
             }
         });
 
-        StackPane.setAlignment(menuBar, Pos.TOP_CENTER);
         return menuBar;
     }
 
     private void firstPane() {
-        int idx = this.mainPanes.indexOf(this.activePane);
+        int idx = this.mainPaneList.indexOf(this.activePane);
         if (idx == 0) {
             return;
         }
+        this.activePane = this.mainPaneList.get(0);
+        this.rootPane.setCenter(this.activePane);
+        /*
         this.activePane.setVisible(false);
         this.activePane = this.mainPanes.get(0);
         this.activePane.setVisible(true);
+         */
 
     }
 
     private void prevPane() {
-        int idx = this.mainPanes.indexOf(this.activePane);
+        int idx = this.mainPaneList.indexOf(this.activePane);
         if (idx == 0) {
             return;
         }
+        this.activePane = this.mainPaneList.get(idx - 1);
+        this.rootPane.setCenter(this.activePane);
+        /*
         this.activePane.setVisible(false);
         this.activePane = this.mainPanes.get(idx - 1);
         this.activePane.setVisible(true);
+         */
     }
 
     private void nextPane() {
-        int idx = this.mainPanes.indexOf(this.activePane);
-        if (idx == this.mainPanes.size() - 1) {
+        int idx = this.mainPaneList.indexOf(this.activePane);
+        if (idx == this.mainPaneList.size() - 1) {
             return;
         }
+        this.activePane = this.mainPaneList.get(idx + 1);
+        this.rootPane.setCenter(this.activePane);
+        /*
         this.activePane.setVisible(false);
         this.activePane = this.mainPanes.get(idx + 1);
         this.activePane.setVisible(true);
+         */
     }
 
     private void lastPane() {
-        int idx = this.mainPanes.indexOf(this.activePane);
-        if (idx == this.mainPanes.size() - 1) {
+        int idx = this.mainPaneList.indexOf(this.activePane);
+        if (idx == this.mainPaneList.size() - 1) {
             return;
         }
+        this.activePane = this.mainPaneList.get(idx + 1);
+        this.rootPane.setCenter(this.activePane);
+        /*
         this.activePane.setVisible(false);
         this.activePane = this.mainPanes.get(this.mainPanes.size() - 1);
         this.activePane.setVisible(true);
+         */
     }
 
     static class LoaderClass extends Service<Search> {

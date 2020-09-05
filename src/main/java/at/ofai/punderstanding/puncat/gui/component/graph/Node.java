@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Group;
@@ -28,8 +29,11 @@ public class Node extends Group {
     private final StringProperty selectedLineId = new SimpleStringProperty();
     boolean scrollStartRegistered = false;
 
-    public Node(BiMap<Integer, String> text, double x, double y, boolean isRoot) {
-        Ellipse ellipse = new Ellipse(x, y, 0, 0);
+    public Node(BiMap<Integer, String> text, DoubleProperty x, DoubleProperty y, boolean isRoot) {
+        Ellipse ellipse = new Ellipse(0, 0);
+        ellipse.centerXProperty().bind(x);
+        ellipse.centerYProperty().bind(y);
+
 
         this.labelWrapper = new LabelWrapper(text, ellipse.centerXProperty(), ellipse.centerYProperty(), isRoot);
         double radiusX = Math.max(labelWrapper.getWidth() / 2 + labelPadding, minRadiusX);

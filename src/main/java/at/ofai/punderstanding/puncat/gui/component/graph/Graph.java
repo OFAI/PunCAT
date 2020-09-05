@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Group;
@@ -20,18 +23,19 @@ public class Graph extends Group {
     public static final int maxNodesPerHalf = 6;
 
     private final GraphController controller;
-    private final double childNodeDistanceX;
-    private final double childNodeDistanceY;
+    private final DoubleProperty childNodeDistanceX = new SimpleDoubleProperty();
+    private final DoubleProperty childNodeDistanceY = new SimpleDoubleProperty();
 
     private final StringProperty selectedLineId = new SimpleStringProperty();
     private final ArrayList<Group> childNodePages = new ArrayList<>();
     private Group activeChildren;
 
-    public Graph(GraphController controller, double slotHeight, double slotWidth) {
+    public Graph(GraphController controller, ReadOnlyDoubleProperty slotHeight, ReadOnlyDoubleProperty slotWidth) {
         this.controller = controller;
 
-        this.childNodeDistanceY = Math.min(slotHeight * 0.4, 200);  // TODO: check this on a higher resolution
-        this.childNodeDistanceX = Math.min(slotWidth * 0.4, this.childNodeDistanceY + 30);
+        // TODO: check this on a higher resolution
+        this.childNodeDistanceX.bind(slotWidth.multiply(0.4));
+        this.childNodeDistanceY.bind(slotHeight.multiply(0.4));
     }
 
     public void build(String selectedText, SenseModelTarget root, List<SenseModelTarget> hypernyms, List<SenseModelTarget> hyponyms) {
@@ -47,7 +51,7 @@ public class Graph extends Group {
         this.activeChildren = this.childNodePages.get(0);
         this.activeChildren.setVisible(true);
 
-        Node rootNode = new Node(root.getSynonyms(), 0, 0, true);
+        Node rootNode = new Node(root.getSynonyms(), new SimpleDoubleProperty(0), new SimpleDoubleProperty(0), true);
         this.getChildren().add(rootNode);
         rootNode.setSelectedLine(selectedText);
         // TODO: this is a long binding chain. there must be a better way
@@ -118,12 +122,18 @@ public class Graph extends Group {
         }
 
         for (int i = 0; i < labelValues.size(); i++) {
-            var x = 0 + childNodeDistanceX * Math.cos(Math.toRadians(25 / 2.0 + degrees.get(i)));
-            var y = 0 + childNodeDistanceY * Math.sin(Math.toRadians(25 / 2.0 + degrees.get(i)));
+            DoubleProperty x = new SimpleDoubleProperty();
+            x.bind(childNodeDistanceX.multiply(Math.cos(Math.toRadians(25 / 2.0 + degrees.get(i)))));
+            DoubleProperty y = new SimpleDoubleProperty();
+            y.bind(childNodeDistanceY.multiply( Math.sin(Math.toRadians(25 / 2.0 + degrees.get(i)))));
 
             var node = new Node(labelValues.get(i), x, y, false);
             node.setId(String.valueOf(senses.get(i).getSynsetIdentifier()));
-            var edge = new Line(0, 0, x, y);
+            var edge = new Line();
+            edge.setStartX(0);
+            edge.setStartY(0);
+            edge.endXProperty().bind(x);
+            edge.endYProperty().bind(y);
 
             childGroup.getChildren().addAll(node, edge);
 
@@ -159,10 +169,6 @@ public class Graph extends Group {
         if (idx != this.childNodePages.size() - 1) {
             this.setVisibleChildren(this.childNodePages.get(idx + 1));
         }
-    }
-
-    public String getSelectedLineId() {
-        return selectedLineId.get();
     }
 
     public StringProperty selectedLineIdProperty() {
