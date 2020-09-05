@@ -11,6 +11,7 @@ import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 import net.sf.extjwnl.dictionary.Dictionary;
 
+
 public class WordnetController implements SemnetController<Synset> {
     private final Dictionary wordnet;
 

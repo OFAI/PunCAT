@@ -7,6 +7,7 @@ import javafx.scene.text.TextFlow;
 
 import at.ofai.punderstanding.puncat.gui.model.SenseModel;
 
+
 public class SenseCell extends ListCell<SenseModel> {
     TextFlow textFlow = new TextFlow();
 

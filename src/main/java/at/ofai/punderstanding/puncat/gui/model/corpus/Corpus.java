@@ -1,5 +1,6 @@
-package at.ofai.punderstanding.puncat.gui.model.CorpusInstance;
+package at.ofai.punderstanding.puncat.gui.model.corpus;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -17,34 +18,14 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 
-import at.ofai.punderstanding.puncat.logic.util.Consts;
-
 
 @XmlRootElement(name = "corpus")
 public class Corpus {
     @XmlElement(name = "instance")
     ArrayList<CorpusInstance> instances;
 
-    public int size() {
-        return this.instances.size();
-    }
-
-    public ArrayList<CorpusInstance> getInstances() {
-        return instances;
-    }
-
-    public CorpusInstance getModel(int i) {
-        return instances.get(0);
-    }
-
-    public void printAll() {
-        for (CorpusInstance ci : this.instances) {
-            ci.printAll();
-        }
-    }
-
-    public static Corpus parseCorpus() {
-        String xml = "C:/git/ref/puncat.xml";
+    public static Corpus parseCorpus(File xml) {
+        //String xml = "C:/git/ref/puncat.xml";
 
         JAXBContext jc;
         try {
@@ -90,5 +71,23 @@ public class Corpus {
         }
 
         return corpus;
+    }
+
+    public int size() {
+        return this.instances.size();
+    }
+
+    public ArrayList<CorpusInstance> getInstances() {
+        return instances;
+    }
+
+    public CorpusInstance getModel(int i) {
+        return instances.get(0);
+    }
+
+    public void printAll() {
+        for (CorpusInstance ci : this.instances) {
+            ci.printAll();
+        }
     }
 }

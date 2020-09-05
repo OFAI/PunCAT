@@ -1,64 +1,123 @@
 package at.ofai.punderstanding.puncat.gui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import at.ofai.punderstanding.puncat.gui.component.SplashStage;
 import at.ofai.punderstanding.puncat.gui.controller.MainController;
-import at.ofai.punderstanding.puncat.gui.model.CorpusInstance.Corpus;
-import at.ofai.punderstanding.puncat.gui.model.CorpusInstance.CorpusInstance;
+import at.ofai.punderstanding.puncat.gui.model.corpus.Corpus;
+import at.ofai.punderstanding.puncat.gui.model.corpus.CorpusInstance;
 import at.ofai.punderstanding.puncat.logic.search.Search;
+import at.ofai.punderstanding.puncat.logic.util.Consts;
 
 
 public class Main extends Application {
     GridPane activePane = null;
-    Stage mainStage;
-    StackPane rootPane = new StackPane();
+    Stage rootStage;
+    BorderPane rootPane = new BorderPane();
     ArrayList<GridPane> mainPanes = new ArrayList<>();
     private Search search;
 
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage stage) {
-        mainStage = stage;
+        rootStage = stage;
         var splashStage = new SplashStage();
         splashStage.show();
 
         var loader = new LoaderClass();
         loader.setOnSucceeded(t -> {
             search = (Search) t.getSource().getValue();
-            buildMainStage(search);
+            //rootPane.getChildren().add(createMenubar());
+            rootPane.setTop(createMenubar());
+            buildRootStage(search);
             this.mainPanes.get(0).setVisible(true);
             this.activePane = this.mainPanes.get(0);
-            mainStage.show();
+            rootStage.show();
             splashStage.hide();
         });
         loader.start();
     }
 
-    private void buildMainStage(Search search) {
+    private void buildRootStage(Search search) {
         Scene scene = new Scene(rootPane);
         scene.getStylesheets().add("/styles.css");
 
-        mainStage.setTitle("PunCAT");
-        mainStage.setScene(scene);
-        mainStage.setMaximized(true);
-        mainStage.getIcons().add(new Image(getClass().getResourceAsStream("/img/message-square.png")));
+        rootStage.setTitle("PunCAT");
+        rootStage.setScene(scene);
+        rootStage.setMaximized(true);
+        rootStage.getIcons().add(new Image(getClass().getResourceAsStream(Consts.icon)));
 
+        buildMainView(null);
+        this.mainPanes.get(0).setVisible(true);
+        this.activePane = this.mainPanes.get(0);
+    }
 
+    private void buildMainView(CorpusInstance corpusInstance) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainView.fxml"));
+        GridPane mainPane;
+        try {
+            mainPane = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
+        var mc = (MainController) loader.getController();
+        mc.setSearch(search);
+        var targetPane = (GridPane) mainPane.lookup("#targetPane");
+        targetPane.add(createButtonBox(), 1, 2);
+
+        mainPane.setVisible(false);
+
+        //rootPane.getChildren().add(mainPane);
+        rootPane.setCenter(mainPane);
+        this.mainPanes.add(mainPane);
+
+        if (corpusInstance != null) {
+            mc.loadCorpusInstance(corpusInstance);
+        }
+    }
+
+    private void parseXml(File file) {
+        Corpus corpus = Corpus.parseCorpus(file);
+        if (corpus.size() == 0) {
+            return;
+        }
+        this.rootPane.getChildren().removeAll(this.mainPanes);
+        this.mainPanes.clear();
+        for (CorpusInstance ci : corpus.getInstances()) {
+            buildMainView(ci);
+        }
+
+        rootPane.setCenter(this.mainPanes.get(0));
+        this.activePane = this.mainPanes.get(0);
+        this.activePane.setVisible(true);
+    }
+
+    private HBox createButtonBox() {
         Button first = new Button("<<");
         first.setOnAction(event -> this.firstPane());
         first.setTooltip(new Tooltip("jump to the first translation task"));  // TODO: ui strings to Consts?
@@ -84,35 +143,25 @@ public class Main extends Application {
         btnBox.getChildren().addAll(first, prev, next, last);
         btnBox.setAlignment(Pos.BOTTOM_RIGHT);
 
-        Corpus corpus = Corpus.parseCorpus();
-        for (int i = 0; i < corpus.size(); i++) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainView.fxml"));
-            GridPane mainPane;
-            try {
-                mainPane = loader.load();
-            } catch (IOException e) {
-                throw new RuntimeException();
-            }
-            var mc = ((MainController) loader.getController());
-            mc.setPageButtons(btnBox);
-            mc.setSearch(search);
-            //mc.loadCorpusInstance(corpus.getModel(i));
-
-            rootPane.getChildren().add(mainPane);
-            this.mainPanes.add(mainPane);
-        }
+        return btnBox;
     }
 
-    static class LoaderClass extends Service<Search> {
-        @Override
-        protected Task<Search> createTask() {
-            return new Task<>() {
-                @Override
-                protected Search call() {
-                    return new Search();
-                }
-            };
-        }
+    private MenuBar createMenubar() {
+        var menuBar = new MenuBar();
+        var fileMenu = new Menu("File");
+        var openItem = new MenuItem("Open corpus");
+        menuBar.getMenus().add(fileMenu);
+        fileMenu.getItems().add(openItem);
+
+        openItem.setOnAction(event -> {
+            File file = new FileChooser().showOpenDialog(rootStage);
+            if (file != null) {
+                parseXml(file);
+            }
+        });
+
+        StackPane.setAlignment(menuBar, Pos.TOP_CENTER);
+        return menuBar;
     }
 
     private void firstPane() {
@@ -156,7 +205,15 @@ public class Main extends Application {
         this.activePane.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        launch();
+    static class LoaderClass extends Service<Search> {
+        @Override
+        protected Task<Search> createTask() {
+            return new Task<>() {
+                @Override
+                protected Search call() {
+                    return new Search();
+                }
+            };
+        }
     }
 }

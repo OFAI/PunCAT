@@ -15,6 +15,7 @@ import com.google.common.collect.BiMap;
 import at.ofai.punderstanding.puncat.gui.controller.GraphController;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
 
+
 public class Graph extends Group {
     public static final int maxNodesPerHalf = 6;
 
@@ -95,30 +96,30 @@ public class Graph extends Group {
         }
 
         var degreesFirstHalf = new ArrayList<Double>();
-        for (int i = 0; i < degrees.size()/2; i++) {
+        for (int i = 0; i < degrees.size() / 2; i++) {
             degreesFirstHalf.add(degrees.get(i));
         }
         Collections.reverse(degreesFirstHalf);
 
-        var degreesSecondHalf = new ArrayList<Double>(degrees.subList(labelValues.size()/2, labelValues.size()).size());
-        for (int i = degrees.size()/2; i < degrees.size(); i++) {
+        var degreesSecondHalf = new ArrayList<Double>(degrees.subList(labelValues.size() / 2, labelValues.size()).size());
+        for (int i = degrees.size() / 2; i < degrees.size(); i++) {
             degreesSecondHalf.add(degrees.get(i));
         }
 
         degrees.clear();
         degrees.addAll(degreesFirstHalf);
         for (int i = 1; i <= degreesSecondHalf.size(); i++) {
-            var item = degreesSecondHalf.get(i-1);
-            if (degrees.size() > i*2) {
-                degrees.add(i*2, item);
+            var item = degreesSecondHalf.get(i - 1);
+            if (degrees.size() > i * 2) {
+                degrees.add(i * 2, item);
             } else {
                 degrees.add(item);
             }
         }
 
         for (int i = 0; i < labelValues.size(); i++) {
-            var x = 0 + childNodeDistanceX * Math.cos(Math.toRadians(25/2.0 + degrees.get(i)));
-            var y = 0 + childNodeDistanceY * Math.sin(Math.toRadians(25/2.0 + degrees.get(i)));
+            var x = 0 + childNodeDistanceX * Math.cos(Math.toRadians(25 / 2.0 + degrees.get(i)));
+            var y = 0 + childNodeDistanceY * Math.sin(Math.toRadians(25 / 2.0 + degrees.get(i)));
 
             var node = new Node(labelValues.get(i), x, y, false);
             node.setId(String.valueOf(senses.get(i).getSynsetIdentifier()));
@@ -149,14 +150,14 @@ public class Graph extends Group {
     public void prevGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
         if (idx != 0) {
-            this.setVisibleChildren(this.childNodePages.get(idx-1));
+            this.setVisibleChildren(this.childNodePages.get(idx - 1));
         }
     }
 
     public void nextGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
-        if (idx != this.childNodePages.size()-1) {
-            this.setVisibleChildren(this.childNodePages.get(idx+1));
+        if (idx != this.childNodePages.size() - 1) {
+            this.setVisibleChildren(this.childNodePages.get(idx + 1));
         }
     }
 

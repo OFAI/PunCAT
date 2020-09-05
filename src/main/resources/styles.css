@@ -21,3 +21,6 @@
     -fx-font-size: 15px;
 }
 
+.menu-bar {
+    -fx-background-color: white;
+}

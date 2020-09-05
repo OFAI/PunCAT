@@ -131,7 +131,7 @@ public class TargetController implements Initializable {
         }
         var t = this.targets
                 .stream()
-                .filter(senseModel -> ((SenseModelTarget)senseModel).getSynsetIdentifier() == synset.getId())
+                .filter(senseModel -> ((SenseModelTarget) senseModel).getSynsetIdentifier() == synset.getId())
                 .findFirst()
                 .orElse(null);
         if (t != null) {
@@ -157,8 +157,8 @@ public class TargetController implements Initializable {
     public void senseSelected() {
         var selection = (SenseModelTarget) this.senseList.getSelectionModel().getSelectedItem();
         if (selection != null) {
-            String word = this.search.getGermanetMostFrequentOrthForm(
-                    this.search.getTargetSynsetById(selection.getSynsetIdentifier()));
+            var selectedSynset = this.search.getTargetSynsetById(selection.getSynsetIdentifier());
+            String word = this.search.getGermanetMostFrequentOrthForm(selectedSynset);
             this.selectedWord.setValue(word);
         } else {
             this.selectedWord.setValue("");

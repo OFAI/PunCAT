@@ -15,13 +15,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import at.ofai.punderstanding.puncat.gui.model.CandidateModel;
 
+
 public class CandidateController implements Initializable {
-    public TableView<CandidateModel> candidateTable;
     private final ObservableList<CandidateModel> candidateData = FXCollections.observableArrayList();
     private final StringProperty punCandidate = new SimpleStringProperty();
     private final StringProperty targetCandidate = new SimpleStringProperty();
     private final StringProperty semanticScore = new SimpleStringProperty();
     private final StringProperty phoneticScore = new SimpleStringProperty();
+    public TableView<CandidateModel> candidateTable;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

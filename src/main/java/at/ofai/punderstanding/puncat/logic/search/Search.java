@@ -15,13 +15,14 @@ import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
 import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
 import at.ofai.punderstanding.puncat.logic.util.Consts;
 
+
 public class Search {
+    private final Map<String, String> word2ipaDE = new HashMap<>();
+    private final Map<String, String> word2ipaEN = new HashMap<>();
     private GermanetController germaNet;
     private WordnetController wordNet;
     private SemanticSimilarity semSimilarity;
     private PhoneticSimilarity phonSimilarity;
-    private final Map<String, String> word2ipaDE = new HashMap<>();
-    private final Map<String, String> word2ipaEN = new HashMap<>();
 
     public Search() {
         var csvFile = getClass().getResourceAsStream(Consts.germanet2ipaPath);
@@ -63,8 +64,12 @@ public class Search {
         if (soureAsTargetSynset != null && targetSynset != null) {
             return this.semSimilarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset);
         } else {
-            System.err.println("Source or target null in calculateSemanticSimilarity()");
-            return 0;
+            // TODO: this can happen if a source is not mapped to GermaNet in the interlingual index
+            if (soureAsTargetSynset == null) {
+                throw new RuntimeException("Source null");
+            } else {
+                throw new RuntimeException("Target null");
+            }
         }
     }
 

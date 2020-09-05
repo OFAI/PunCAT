@@ -6,8 +6,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+
 public class ALINEconsts {
     public static final List<String> consonants = new ArrayList<>();
+    public static final Map<String, Double> similarityMatrix = new HashMap<>();
+    public static HashSet<String> R_v = new HashSet<>();
+    public static HashSet<String> R_c = new HashSet<>();
+    public static Map<String, Integer> salience = new HashMap<>();
+    public static Map<String, Map<String, String>> featureMatrix = new HashMap<>();
+
     static {
         consonants.add("B");
         consonants.add("N");
@@ -71,7 +78,6 @@ public class ALINEconsts {
         consonants.add("w");
     }
 
-    public static final Map<String, Double> similarityMatrix = new HashMap<>();
     static {
         similarityMatrix.put("bilabial", 1.0);
         similarityMatrix.put("labiodental", 0.95);
@@ -106,7 +112,6 @@ public class ALINEconsts {
         similarityMatrix.put("minus", 0.0);
     }
 
-    public static HashSet<String> R_v = new HashSet<>();
     static {
         R_v.add("syllabic");
         R_v.add("nasal");
@@ -117,7 +122,6 @@ public class ALINEconsts {
         R_v.add("long");
     }
 
-    public static HashSet<String> R_c = new HashSet<>();
     static {
         R_c.add("syllabic");
         R_c.add("manner");
@@ -129,7 +133,6 @@ public class ALINEconsts {
         R_c.add("place");
     }
 
-    public static Map<String, Integer> salience = new HashMap<>();
     static {
         salience.put("syllabic", 5);
         salience.put("voice", 10);
@@ -145,7 +148,6 @@ public class ALINEconsts {
         salience.put("round", 5);
     }
 
-    public static Map<String, Map<String, String>> featureMatrix = new HashMap<>();
     static {
         Map<String, String> m = new HashMap<>();
         m.put("place", "bilabial");

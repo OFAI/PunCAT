@@ -10,6 +10,7 @@ import com.google.common.collect.HashBiMap;
 import de.tuebingen.uni.sfs.germanet.api.LexUnit;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 
+
 public class SenseModelTarget implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
@@ -36,12 +37,12 @@ public class SenseModelTarget implements SenseModel {
         return pronunciation.get();
     }
 
-    public StringProperty pronunciationProperty() {
-        return pronunciation;
-    }
-
     public void setPronunciation(String pronunciation) {
         this.pronunciation.set(pronunciation);
+    }
+
+    public StringProperty pronunciationProperty() {
+        return pronunciation;
     }
 
     @Override
@@ -49,23 +50,23 @@ public class SenseModelTarget implements SenseModel {
         return description.get();
     }
 
-    public StringProperty descriptionProperty() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description.set(description);
+    }
+
+    public StringProperty descriptionProperty() {
+        return description;
     }
 
     public Integer getSynsetIdentifier() {
         return synsetIdentifier.get();
     }
 
-    public IntegerProperty synsetIdentifierProperty() {
-        return synsetIdentifier;
-    }
-
     public void setSynsetIdentifier(int synsetIdentifier) {
         this.synsetIdentifier.set(synsetIdentifier);
+    }
+
+    public IntegerProperty synsetIdentifierProperty() {
+        return synsetIdentifier;
     }
 }

@@ -9,12 +9,12 @@ import javafx.scene.layout.Pane;
 import at.ofai.punderstanding.puncat.gui.component.graph.Graph;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
 
+
 public class GraphController {
+    private final StringProperty selectedLineId = new SimpleStringProperty();
     @FXML
     Pane graphPane;
-
     private Graph graph;
-    private final StringProperty selectedLineId = new SimpleStringProperty();
     private TargetController targetController;
 
     public void setReferences(TargetController tc) {

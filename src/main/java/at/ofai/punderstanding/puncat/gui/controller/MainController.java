@@ -2,27 +2,22 @@ package at.ofai.punderstanding.puncat.gui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import at.ofai.punderstanding.puncat.gui.model.CandidateModel;
-import at.ofai.punderstanding.puncat.gui.model.CorpusInstance.CorpusInstance;
+import at.ofai.punderstanding.puncat.gui.model.corpus.CorpusInstance;
 import at.ofai.punderstanding.puncat.gui.model.SimilarityModel;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 
-public class MainController implements Initializable {
-    private SimilarityModel similarityModel;
 
+public class MainController implements Initializable {
     @FXML
     public GridPane mainGridPane;
-
     @FXML
     public VBox source1;
     @FXML
@@ -31,12 +26,11 @@ public class MainController implements Initializable {
     public GridPane target2;
     @FXML
     public VBox source2;
-
     @FXML
     public TableView<CandidateModel> candidates;
     @FXML
     public Button addCandidateButton;
-
+    private SimilarityModel similarityModel;
     @FXML
     private SourceController source1Controller;
     @FXML
@@ -84,14 +78,15 @@ public class MainController implements Initializable {
 
     public void maybeCalculateSimilarity() {
         if (this.allSenseFieldsHaveSelection()) {
-            long sSense1 = this.source1Controller.getSelectedId();
-            long sSense2 = this.source2Controller.getSelectedId();
-            int tSense1 = this.target1Controller.getSelectedId();
-            int tSense2 = this.target2Controller.getSelectedId();
+            long sourceSense1 = this.source1Controller.getSelectedId();
+            long sourceSense2 = this.source2Controller.getSelectedId();
+            int targetSense1 = this.target1Controller.getSelectedId();
+            int targetSense2 = this.target2Controller.getSelectedId();
             String word1 = this.target1Controller.getSelectedWord();
             String word2 = this.target2Controller.getSelectedWord();
 
-            this.similarityModel.calculateSimilarity(sSense1, sSense2, tSense1, tSense2, word1, word2);
+            this.similarityModel.calculateSemanticSimilarity(sourceSense1, sourceSense2, targetSense1, targetSense2);
+            this.similarityModel.calculatePhoneticSimilarity(word1, word2);
         } else {
             this.similarityModel.clearSimilarity();
         }
@@ -117,9 +112,5 @@ public class MainController implements Initializable {
         this.source2Controller.setContentsByCorpusInstance(
                 model.getText().getPun().getSecondLemma(),
                 Long.parseLong(model.getText().getPun().getSecondSense()));
-    }
-
-    public void setPageButtons(HBox btnBox) {
-        this.mainGridPane.add(btnBox, 1, 1);
     }
 }

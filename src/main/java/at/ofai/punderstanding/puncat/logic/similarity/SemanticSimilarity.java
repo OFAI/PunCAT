@@ -7,13 +7,11 @@ import de.tuebingen.uni.sfs.germanet.api.SemRelMeasure;
 import de.tuebingen.uni.sfs.germanet.api.SemanticUtils;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 
-public class SemanticSimilarity {
 
-    private final GermaNet germaNet;
+public class SemanticSimilarity {
     private final SemanticUtils semanticUtils;
 
     public SemanticSimilarity(GermaNet gn) throws IOException {
-        this.germaNet = gn;
         this.semanticUtils = gn.getSemanticUtils();
     }
 

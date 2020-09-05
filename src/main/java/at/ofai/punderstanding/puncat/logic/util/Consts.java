@@ -15,4 +15,5 @@ public class Consts {
     public static final String lastBtn = "/img/chevrons-right.png";
 
     public static final String splashImg = "/img/Computational_Pun-derstanding_logo.svg";
+    public static final String icon = "/img/Computational_Pun-derstanding_head.png";
 }

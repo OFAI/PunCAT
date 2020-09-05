@@ -32,48 +32,48 @@ public class CandidateModel {
         return pun.get();
     }
 
-    public StringProperty punProperty() {
-        return pun;
-    }
-
     public void setPun(String pun) {
         this.pun.set(pun);
+    }
+
+    public StringProperty punProperty() {
+        return pun;
     }
 
     public String getTarget() {
         return target.get();
     }
 
-    public StringProperty targetProperty() {
-        return target;
-    }
-
     public void setTarget(String target) {
         this.target.set(target);
+    }
+
+    public StringProperty targetProperty() {
+        return target;
     }
 
     public String getSem() {
         return sem.get();
     }
 
-    public StringProperty semProperty() {
-        return sem;
-    }
-
     public void setSem(String sem) {
         this.sem.set(sem);
+    }
+
+    public StringProperty semProperty() {
+        return sem;
     }
 
     public String getPhon() {
         return phon.get();
     }
 
-    public StringProperty phonProperty() {
-        return phon;
-    }
-
     public void setPhon(String phon) {
         this.phon.set(phon);
+    }
+
+    public StringProperty phonProperty() {
+        return phon;
     }
 
     public boolean isRealTime() {

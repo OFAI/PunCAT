@@ -17,6 +17,7 @@ import de.tuebingen.uni.sfs.germanet.api.Synset;
 import at.ofai.punderstanding.puncat.logic.util.Consts;
 import at.ofai.punderstanding.puncat.logic.util.GermanetFrequencies;
 
+
 public class GermanetController implements SemnetController<Synset> {
     private final GermaNet germanet;
     private final GermanetFrequencies frequencies;

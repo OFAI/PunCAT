@@ -21,11 +21,12 @@ import com.google.common.collect.BiMap;
 
 
 public class Node extends Group {
-    private final LabelWrapper labelWrapper;
     private static final double minRadiusX = 25;
     private static final double minRadiusY = 17;
     private static final double labelPadding = 10;
+    private final LabelWrapper labelWrapper;
     private final StringProperty selectedLineId = new SimpleStringProperty();
+    boolean scrollStartRegistered = false;
 
     public Node(BiMap<Integer, String> text, double x, double y, boolean isRoot) {
         Ellipse ellipse = new Ellipse(x, y, 0, 0);
@@ -72,8 +73,6 @@ public class Node extends Group {
         return r;
     }
 
-    boolean scrollStartRegistered = false;
-
     public void enableScrollListener() {
         this.setOnScrollStarted(event -> {
             scrollStartRegistered = true;
@@ -103,10 +102,9 @@ public class Node extends Group {
         //private final String boldStyle = "-fx-cursor: default; fx-font-weight: bold;";
 
         private final TextFlow labelFlow = new TextFlow();
-        private ArrayList<Text> labelParts = new ArrayList<>();
-
-        private Text activeLine = null;
         private final StringProperty activeLineId = new SimpleStringProperty();
+        private ArrayList<Text> labelParts = new ArrayList<>();
+        private Text activeLine = null;
 
         LabelWrapper(BiMap<Integer, String> text, DoubleProperty x, DoubleProperty y, boolean isRoot) {
             for (Integer key : text.keySet()) {

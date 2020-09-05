@@ -4,6 +4,7 @@ import java.util.Map;
 
 import at.ofai.punderstanding.puncat.logic.aline.ALINE;
 
+
 public class PhoneticSimilarity {
     private final Map<String, String> word2ipa;
 

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 
+
 public class GermanetFrequencies {
     private final Map<String, Map<String, Long>> wordCatMap;
 

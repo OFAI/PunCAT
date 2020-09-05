@@ -1,4 +1,4 @@
-package at.ofai.punderstanding.puncat.gui.model.CorpusInstance;
+package at.ofai.punderstanding.puncat.gui.model.corpus;
 
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlAttribute;

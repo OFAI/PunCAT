@@ -18,6 +18,7 @@ import at.ofai.punderstanding.puncat.gui.model.SenseModel;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelSource;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 
+
 public class SourceController implements Initializable {
     @FXML
     public TextField wordInput;
@@ -36,7 +37,7 @@ public class SourceController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.sources = FXCollections.observableArrayList();
         this.senseList.getSelectionModel().selectedItemProperty().addListener((observableValue, senseModel, t1) ->
-            this.senseSelected()
+                this.senseSelected()
         );
 
         this.senseList.setCellFactory(sl -> new SenseCell());
