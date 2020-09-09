@@ -1,6 +1,7 @@
 package at.ofai.punderstanding.puncat.gui.controller;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,6 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import at.ofai.punderstanding.puncat.gui.model.CandidateModel;
 import at.ofai.punderstanding.puncat.gui.model.SimilarityModel;
@@ -112,5 +116,9 @@ public class MainController implements Initializable {
         this.source2Controller.setContentsByCorpusInstance(
                 model.getText().getPun().getSecondLemma(),
                 Long.parseLong(model.getText().getPun().getSecondSense()));
+    }
+
+    public JSONArray saveCandidates() {
+        return this.candidatesController.saveCandidatesToFile();
     }
 }

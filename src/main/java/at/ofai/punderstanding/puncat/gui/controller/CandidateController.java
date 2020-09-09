@@ -1,6 +1,7 @@
 package at.ofai.punderstanding.puncat.gui.controller;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -13,6 +14,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
 import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
@@ -94,13 +98,31 @@ public class CandidateController implements Initializable {
                 LoggerValues.EVENT, LoggerValues.NEW_CANDIDATE_ADDED_EVENT,
                 LoggerValues.CANDIDATE_PUN, this.punCandidate.getValue(),
                 LoggerValues.CANDIDATE_TARGET, this.targetCandidate.getValue(),
-                LoggerValues.CANDIDATE_SEM, this.semanticScore.getValue(),
-                LoggerValues.CANDIDATE_PHON, this.phoneticScore.getValue()));
+                LoggerValues.CANDIDATE_SEM, Double.parseDouble(this.semanticScore.getValue()),
+                LoggerValues.CANDIDATE_PHON, Double.parseDouble(this.phoneticScore.getValue())
+        ));
 
         this.candidateData.add(new CandidateModel(
                 this.punCandidate.getValue(),
                 this.targetCandidate.getValue(),
                 this.semanticScore.getValue(),
                 this.phoneticScore.getValue()));
+    }
+
+    public JSONArray saveCandidatesToFile() {
+        var candidates = new ArrayList<Map<String, Object>>();
+        for (var candidate : this.candidateData) {
+            if (candidate.isRealTime()) {
+                continue;
+            }
+            candidates.add(Map.of(
+                    LoggerValues.CANDIDATE_PUN, candidate.getPun(),
+                    LoggerValues.CANDIDATE_TARGET, candidate.getTarget(),
+                    LoggerValues.CANDIDATE_SEM, Double.parseDouble(candidate.getSem()),
+                    LoggerValues.CANDIDATE_PHON, Double.parseDouble(candidate.getPhon())
+            ));
+        }
+
+        return new JSONArray(candidates);
     }
 }

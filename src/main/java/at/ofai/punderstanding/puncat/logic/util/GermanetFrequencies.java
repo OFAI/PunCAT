@@ -57,10 +57,13 @@ public class GermanetFrequencies {
 
     public String getMostFrequentOrthForm(Synset synset) {
         String mostFrequent = null;
-        Long maxFreq = -1L;
+        long maxFreq = -1L;
         String wordCat = synset.getWordCategory().toString();
         for (String form : synset.getAllOrthForms()) {
             Long f = this.wordCatMap.get(wordCat).get(form);
+            if (f == null) {
+                f = 0L;  // TODO: do something about the missing entries
+            }
             if (f > maxFreq) {
                 maxFreq = f;
                 mostFrequent = form;

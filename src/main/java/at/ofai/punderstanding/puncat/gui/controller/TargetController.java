@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -48,6 +49,10 @@ public class TargetController implements Initializable {
     public ListView<SenseModel> senseList;
     @FXML
     public Pane graphPane;
+    @FXML
+    public Button prevGraphButton;
+    @FXML
+    public Button nextGraphButton;
     @FXML
     private GraphController graphPaneController;  // TODO: graph should observe senseList?
     private ObservableList<SenseModel> targets;

@@ -27,8 +27,8 @@
 
     <!-- TODO: buttons to graphView? -->
     <HBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER" spacing="5">
-        <Button text="Prev" onAction="#prevGraph"/>
-        <Button text="Next" onAction="#nextGraph"/>
+        <Button fx:id="prevGraphButton" text="Prev" onAction="#prevGraph"/>
+        <Button fx:id="nextGraphButton" text="Next" onAction="#nextGraph"/>
     </HBox>
     <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
         <TextField fx:id="wordInput" onAction="#wordInputChangedByUser"/>

@@ -2,6 +2,11 @@ package at.ofai.punderstanding.puncat.gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map;
@@ -23,6 +28,10 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import org.json.JSONArray;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
 import at.ofai.punderstanding.puncat.gui.component.SplashStage;
 import at.ofai.punderstanding.puncat.gui.component.UsernameWindow;
 import at.ofai.punderstanding.puncat.gui.controller.MainController;
@@ -39,7 +48,10 @@ public class Main extends Application {
     Stage stage;
     BorderPane rootPane = new BorderPane();
     ArrayList<GridPane> mainPaneList = new ArrayList<>();
+    ArrayList<MainController> mainControllers = new ArrayList<>();
     private Search search;
+    String userName = "";
+    Long startupInstant = 0L;
 
     public static void main(String[] args) {
         launch();
@@ -48,36 +60,48 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
-        this.stage.setOnCloseRequest(event ->
-                InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT)));
+        this.stage.setOnCloseRequest(event -> {
+            this.saveCandidates();
+            InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
+        });
 
         var userNameStage = UsernameWindow.buildUsernameWindow();
-        userNameStage.setOnHidden(event -> this.build());
+        userNameStage.setOnHidden(event -> {
+            userName = UsernameWindow.getUserName();
+            this.build();
+        });
         userNameStage.show();
     }
 
     private void build() {
+        this.startupInstant = Instant.now().toEpochMilli();
         System.setProperty("puncatlogfilename",
-                "logs/" + UsernameWindow.getUserName() + " " + Instant.now().toEpochMilli() + ".json");
+                "logs/log_" + this.userName + "_" + this.startupInstant + ".json");
+
         var splashStage = new SplashStage();
         splashStage.show();
 
         var loader = new LoaderClass();
         loader.setOnSucceeded(t -> {
             InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
+
             this.search = (Search) t.getSource().getValue();
-            this.rootPane.setTop(createMenubar());
+
             this.buildRootStage();
+
             this.buildMainPane(null);
             this.activePane = this.mainPaneList.get(0);
             this.rootPane.setCenter(this.activePane);
+
             this.stage.show();
+
             splashStage.hide();
         });
         loader.start();
     }
 
     private void buildRootStage() {
+        this.rootPane.setTop(createMenubar());
         Scene scene = new Scene(this.rootPane);
         scene.getStylesheets().add("/styles.css");
 
@@ -103,6 +127,7 @@ public class Main extends Application {
         targetPane.add(createButtonBox(), 1, 2);
 
         this.mainPaneList.add(mainPane);
+        this.mainControllers.add(mc);
 
         if (corpusInstance != null) {
             mc.loadCorpusInstance(corpusInstance);
@@ -116,6 +141,7 @@ public class Main extends Application {
         }
         this.rootPane.getChildren().removeAll(this.mainPaneList);
         this.mainPaneList.clear();
+        this.mainControllers.clear();
         for (CorpusInstance ci : corpus.getInstances()) {
             buildMainPane(ci);
         }
@@ -228,6 +254,31 @@ public class Main extends Application {
         }
         this.activePane = this.mainPaneList.get(idx + 1);
         this.rootPane.setCenter(this.activePane);
+    }
+
+    void saveCandidates() {
+        JSONArray candidateList = new JSONArray();
+        int idx = 0;
+        for (MainController mc : this.mainControllers) {
+            var candidates = mc.saveCandidates();
+            candidateList.put(Map.of(
+                    "task", idx,
+                    "results", candidates
+            ));
+            idx++;
+        }
+
+        String fileName = "results_" + this.userName + "_" + this.startupInstant + ".json";
+        File file = new File(System.getProperty("user.dir"), "results");
+        if (!file.exists() && !file.mkdir()) {
+            throw new RuntimeException("could not create results folder");
+        }
+        try {
+            Files.writeString(file.toPath().resolve(Paths.get(fileName)), candidateList.toString(4), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("could not write results file");
+        }
     }
 
     static class LoaderClass extends Service<Search> {
