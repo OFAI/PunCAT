@@ -31,7 +31,7 @@
         <Button text="Next" onAction="#nextGraph"/>
     </HBox>
     <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
-        <TextField fx:id="wordInput" onAction="#wordInputChanged"/>
+        <TextField fx:id="wordInput" onAction="#wordInputChangedByUser"/>
         <ListView fx:id="senseList"/>
     </VBox>
 </GridPane>

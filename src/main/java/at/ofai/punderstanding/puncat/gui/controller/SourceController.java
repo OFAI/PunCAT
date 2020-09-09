@@ -2,18 +2,23 @@ package at.ofai.punderstanding.puncat.gui.controller;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 import net.sf.extjwnl.data.Synset;
 
 import at.ofai.punderstanding.puncat.gui.component.SenseCell;
+import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.SenseModel;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelSource;
 import at.ofai.punderstanding.puncat.logic.search.Search;
@@ -28,9 +33,11 @@ public class SourceController implements Initializable {
     private ObservableList<SenseModel> sources;
     private MainController mainController;
     private Search search;
+    private int identifier;
 
-    public void setReferences(MainController mc) {
+    public void setReferences(MainController mc, int identifier) {
         this.mainController = mc;
+        this.identifier = identifier;
     }
 
     @Override
@@ -50,6 +57,12 @@ public class SourceController implements Initializable {
         this.sources.setAll(synsets.stream().map(SenseModelSource::new).collect(Collectors.toList()));
         this.setPronunciations();
         this.senseList.getSelectionModel().select(0);
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
+                LoggerValues.NEW_VALUE, wordInput.getText(),
+                LoggerValues.PANEL_ID, this.identifier,
+                LoggerValues.AUTO_SELECTED_SYNSET_ID, this.senseList.getSelectionModel().getSelectedItem().getSynsetIdentifier()));
     }
 
     public void senseSelected() {
@@ -90,5 +103,25 @@ public class SourceController implements Initializable {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void logSelection(MouseEvent mouseEvent) {
+        var cls = mouseEvent.getTarget().getClass();
+
+        // if this was a click on an empty area
+        // TODO: nicer solution?
+        if (cls == ListView.class || cls == Group.class ||
+                (cls == SenseCell.class && !((SenseCell) mouseEvent.getTarget()).hasContent())) {
+            return;
+        }
+        var idx = this.senseList.getSelectionModel().getSelectedIndex();
+        var selection = this.senseList.getSelectionModel().getSelectedItem();
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.SOURCE_SENSE_SELECTED_EVENT,
+                LoggerValues.PANEL_ID, this.identifier,
+                LoggerValues.SELECTION_INDEX, idx,
+                LoggerValues.SELECTED_SYNSET_ID, selection.getSynsetIdentifier())
+        );
     }
 }

@@ -22,6 +22,10 @@ public class SenseCell extends ListCell<SenseModel> {
         this.setPrefWidth(0);
     }
 
+    public boolean hasContent() {
+        return this.getGraphic() != null;
+    }
+
     @Override
     protected void updateItem(SenseModel item, boolean empty) {
         super.updateItem(item, empty);

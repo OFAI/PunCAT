@@ -3,8 +3,8 @@ package at.ofai.punderstanding.puncat.gui.component.graph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Group;
@@ -19,6 +19,9 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 import com.google.common.collect.BiMap;
+
+import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
 
 
 public class Node extends Group {
@@ -47,15 +50,25 @@ public class Node extends Group {
 
         this.getChildren().addAll(ellipse, labelWrapper.getLabel());
 
-        this.setOnMouseEntered(event -> this.toFront());
-
         if (isRoot) {
             this.enableScrollListener();
             this.labelWrapper.setupInteractions();
             this.selectedLineId.bind(this.labelWrapper.activeLineIdProperty());
         } else {
-            // TODO: find a nicer way to do this
-            this.setOnMouseClicked(event -> ((Graph) this.getParent().getParent()).nodeSelected(this.getId()));
+            this.setOnMouseEntered(event -> {
+                this.toFront();
+                InteractionLogger.logThis(Map.of(
+                        LoggerValues.EVENT, LoggerValues.GRAPH_NODE_HOVERED_EVENT,
+                        LoggerValues.NODE_SYNSET_ID, this.getId()));
+            });
+            this.setOnMouseClicked(event -> {
+                InteractionLogger.logThis(Map.of(
+                        LoggerValues.EVENT, LoggerValues.GRAPH_NODE_CLICKED_EVENT,
+                        LoggerValues.NODE_SYNSET_ID, this.getId()));
+
+                // TODO: find a nicer way to do this
+                ((Graph) this.getParent().getParent()).nodeSelected(this.getId());
+            });
         }
     }
 

@@ -10,8 +10,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import at.ofai.punderstanding.puncat.gui.model.CandidateModel;
-import at.ofai.punderstanding.puncat.gui.model.corpus.CorpusInstance;
 import at.ofai.punderstanding.puncat.gui.model.SimilarityModel;
+import at.ofai.punderstanding.puncat.gui.model.corpus.CorpusInstance;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 
 
@@ -46,10 +46,10 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.similarityModel = new SimilarityModel();
-        this.source1Controller.setReferences(this);
-        this.source2Controller.setReferences(this);
-        this.target1Controller.setReferences(this);
-        this.target2Controller.setReferences(this);
+        this.source1Controller.setReferences(this, 1);
+        this.source2Controller.setReferences(this, 2);
+        this.target1Controller.setReferences(this, 1);
+        this.target2Controller.setReferences(this, 2);
         this.candidatesController.setReferences(
                 this.target1Controller.selectedWordProperty(),
                 this.target2Controller.selectedWordProperty(),

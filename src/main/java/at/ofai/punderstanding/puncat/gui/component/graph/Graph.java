@@ -3,6 +3,7 @@ package at.ofai.punderstanding.puncat.gui.component.graph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
@@ -16,6 +17,8 @@ import javafx.scene.shape.Line;
 import com.google.common.collect.BiMap;
 
 import at.ofai.punderstanding.puncat.gui.controller.GraphController;
+import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
 
 
@@ -82,9 +85,6 @@ public class Graph extends Group {
 
     private void addNodes(Group childGroup, List<SenseModelTarget> senses, boolean above) {
         // TODO: simplify
-        if (senses.size() > maxNodesPerHalf) {
-            throw new UnsupportedOperationException("Got more nodes than I can chew!");
-        }
         if (senses.isEmpty()) {
             return;
         }
@@ -159,6 +159,12 @@ public class Graph extends Group {
 
     public void prevGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.PREV_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_GRAPH_IDX, idx,
+                LoggerValues.NEXT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
+
         if (idx != 0) {
             this.setVisibleChildren(this.childNodePages.get(idx - 1));
         }
@@ -166,6 +172,12 @@ public class Graph extends Group {
 
     public void nextGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.NEXT_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_GRAPH_IDX, idx,
+                LoggerValues.NEXT_GRAPH_IDX, idx == this.childNodePages.size()-1 ? this.childNodePages.size()-1 : idx + 1));
+
         if (idx != this.childNodePages.size() - 1) {
             this.setVisibleChildren(this.childNodePages.get(idx + 1));
         }

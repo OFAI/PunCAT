@@ -3,3 +3,4 @@
 target
 lib
 /src/main/resources/data/
+/logs

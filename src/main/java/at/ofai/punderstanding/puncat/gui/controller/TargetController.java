@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
@@ -20,12 +21,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 
 import at.ofai.punderstanding.puncat.gui.component.SenseCell;
+import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.SenseModel;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
 import at.ofai.punderstanding.puncat.logic.search.Search;
@@ -48,9 +54,11 @@ public class TargetController implements Initializable {
     private MainController mainController;
     private Search search;
     private BooleanBinding targetsEmptyProperty;
+    private int identifier;
 
-    public void setReferences(MainController mc) {
+    public void setReferences(MainController mc, int identifier) {
         this.mainController = mc;
+        this.identifier = identifier;
     }
 
     @Override
@@ -66,6 +74,15 @@ public class TargetController implements Initializable {
         this.senseList.getSelectionModel().selectedItemProperty().addListener((observableValue, senseModel, t1) ->
                 this.senseSelected()
         );
+
+        this.senseList.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            var trgt = event.getTarget();
+            if (trgt.getClass() == Text.class || trgt.getClass() == TextFlow.class) {
+                this.logSelection();
+            } else if (trgt.getClass() == SenseCell.class && ((SenseCell) trgt).hasContent()) {
+                this.logSelection();
+            }
+        });
 
         this.senseList.setCellFactory(sl -> new SenseCell());
         this.senseList.setItems(this.targets);
@@ -139,6 +156,16 @@ public class TargetController implements Initializable {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void wordInputChangedByUser() {
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
+                LoggerValues.NEW_KEYWORD, wordInput.getText(),
+                LoggerValues.PANEL_ID, this.identifier,
+                LoggerValues.AUTO_SELECTED_SYNSET_ID, this.senseList.getSelectionModel().getSelectedItem().getSynsetIdentifier()));
+
+        this.wordInputChanged();
     }
 
     public void wordInputChanged() {
@@ -258,5 +285,16 @@ public class TargetController implements Initializable {
 
     public StringProperty selectedWordProperty() {
         return selectedWord;
+    }
+
+    public void logSelection() {
+        int idx = this.senseList.getSelectionModel().getSelectedIndex();
+        var selection = this.senseList.getSelectionModel().getSelectedItem();
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.TARGET_SENSE_SELECTED_EVENT,
+                LoggerValues.PANEL_ID, this.identifier,
+                LoggerValues.SELECTION_INDEX, idx,
+                LoggerValues.SELECTED_SYNSET_ID, selection.getSynsetIdentifier())
+        );
     }
 }

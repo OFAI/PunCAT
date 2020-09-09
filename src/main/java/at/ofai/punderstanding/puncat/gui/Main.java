@@ -2,7 +2,9 @@ package at.ofai.punderstanding.puncat.gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -18,12 +20,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import at.ofai.punderstanding.puncat.gui.component.SplashStage;
 import at.ofai.punderstanding.puncat.gui.controller.MainController;
+import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.corpus.Corpus;
 import at.ofai.punderstanding.puncat.gui.model.corpus.CorpusInstance;
 import at.ofai.punderstanding.puncat.logic.search.Search;
@@ -38,7 +41,10 @@ public class Main extends Application {
     private Search search;
 
     public static void main(String[] args) {
+        System.setProperty("puncatlogfilename", "logs/" + Instant.now().toEpochMilli() + ".json");
+        InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
         launch();
+        InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
     }
 
     @Override
@@ -156,59 +162,62 @@ public class Main extends Application {
 
     private void firstPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_TASK_IDX, idx,
+                LoggerValues.NEXT_TASK_IDX, idx == 0 ? 0 : idx - 1));
+
         if (idx == 0) {
             return;
         }
         this.activePane = this.mainPaneList.get(0);
         this.rootPane.setCenter(this.activePane);
-        /*
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPanes.get(0);
-        this.activePane.setVisible(true);
-         */
-
     }
 
     private void prevPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_TASK_IDX, idx,
+                LoggerValues.NEXT_TASK_IDX, idx == 0 ? 0 : idx - 1));
+
         if (idx == 0) {
             return;
         }
         this.activePane = this.mainPaneList.get(idx - 1);
         this.rootPane.setCenter(this.activePane);
-        /*
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPanes.get(idx - 1);
-        this.activePane.setVisible(true);
-         */
     }
 
     private void nextPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_TASK_IDX, idx,
+                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size()-1 ? this.mainPaneList.size()-1 : idx + 1));
+
         if (idx == this.mainPaneList.size() - 1) {
             return;
         }
         this.activePane = this.mainPaneList.get(idx + 1);
         this.rootPane.setCenter(this.activePane);
-        /*
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPanes.get(idx + 1);
-        this.activePane.setVisible(true);
-         */
     }
 
     private void lastPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
+
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_TASK_IDX, idx,
+                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size()-1 ? this.mainPaneList.size()-1 : idx + 1));
+
         if (idx == this.mainPaneList.size() - 1) {
             return;
         }
         this.activePane = this.mainPaneList.get(idx + 1);
         this.rootPane.setCenter(this.activePane);
-        /*
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPanes.get(this.mainPanes.size() - 1);
-        this.activePane.setVisible(true);
-         */
     }
 
     static class LoaderClass extends Service<Search> {

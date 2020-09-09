@@ -60,6 +60,7 @@
             <version>1.0.3</version>
         </dependency>
         <dependency>
+            <!-- matrix library for ALINE -->
             <groupId>org.ejml</groupId>
             <artifactId>ejml-all</artifactId>
             <version>0.39</version>
@@ -81,9 +82,37 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <!-- SVG loader for JFX -->
             <groupId>com.github.afester.javafx</groupId>
             <artifactId>FranzXaver</artifactId>
             <version>0.1</version>
+        </dependency>
+
+        <!-- logging dependencies -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.11.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.11.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20200518</version>
         </dependency>
     </dependencies>
     <build>

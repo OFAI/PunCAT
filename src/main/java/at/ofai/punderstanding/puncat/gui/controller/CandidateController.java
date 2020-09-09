@@ -2,6 +2,7 @@ package at.ofai.punderstanding.puncat.gui.controller;
 
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,6 +14,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.CandidateModel;
 
 
@@ -87,6 +90,13 @@ public class CandidateController implements Initializable {
     }
 
     public void newCandidate() {
+        InteractionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.NEW_CANDIDATE_ADDED_EVENT,
+                LoggerValues.CANDIDATE_PUN, this.punCandidate.getValue(),
+                LoggerValues.CANDIDATE_TARGET, this.targetCandidate.getValue(),
+                LoggerValues.CANDIDATE_SEM, this.semanticScore.getValue(),
+                LoggerValues.CANDIDATE_PHON, this.phoneticScore.getValue()));
+
         this.candidateData.add(new CandidateModel(
                 this.punCandidate.getValue(),
                 this.targetCandidate.getValue(),
