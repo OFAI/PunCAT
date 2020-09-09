@@ -24,6 +24,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import at.ofai.punderstanding.puncat.gui.component.SplashStage;
+import at.ofai.punderstanding.puncat.gui.component.UsernameWindow;
 import at.ofai.punderstanding.puncat.gui.controller.MainController;
 import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
 import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
@@ -41,24 +42,33 @@ public class Main extends Application {
     private Search search;
 
     public static void main(String[] args) {
-        System.setProperty("puncatlogfilename", "logs/" + Instant.now().toEpochMilli() + ".json");
-        InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
         launch();
-        InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
     }
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        this.stage.setOnCloseRequest(event ->
+                InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT)));
+
+        var userNameStage = UsernameWindow.buildUsernameWindow();
+        userNameStage.setOnHidden(event -> this.build());
+        userNameStage.show();
+    }
+
+    private void build() {
+        System.setProperty("puncatlogfilename",
+                "logs/" + UsernameWindow.getUserName() + " " + Instant.now().toEpochMilli() + ".json");
         var splashStage = new SplashStage();
         splashStage.show();
 
         var loader = new LoaderClass();
         loader.setOnSucceeded(t -> {
+            InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
             this.search = (Search) t.getSource().getValue();
             this.rootPane.setTop(createMenubar());
-            buildRootStage();
-            buildMainPane(null);
+            this.buildRootStage();
+            this.buildMainPane(null);
             this.activePane = this.mainPaneList.get(0);
             this.rootPane.setCenter(this.activePane);
             this.stage.show();
@@ -196,7 +206,7 @@ public class Main extends Application {
         InteractionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_TASK_IDX, idx,
-                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size()-1 ? this.mainPaneList.size()-1 : idx + 1));
+                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size() - 1 ? this.mainPaneList.size() - 1 : idx + 1));
 
         if (idx == this.mainPaneList.size() - 1) {
             return;
@@ -211,7 +221,7 @@ public class Main extends Application {
         InteractionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_TASK_IDX, idx,
-                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size()-1 ? this.mainPaneList.size()-1 : idx + 1));
+                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size() - 1 ? this.mainPaneList.size() - 1 : idx + 1));
 
         if (idx == this.mainPaneList.size() - 1) {
             return;
