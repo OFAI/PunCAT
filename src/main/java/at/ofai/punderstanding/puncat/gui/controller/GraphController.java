@@ -5,11 +5,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 
 import at.ofai.punderstanding.puncat.gui.component.graph.Graph;
@@ -22,7 +19,6 @@ public class GraphController implements Initializable {
     Pane graphPane;
     private Graph graph;
     private TargetController targetController;
-    public final ObservableList<Group> graphPages = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

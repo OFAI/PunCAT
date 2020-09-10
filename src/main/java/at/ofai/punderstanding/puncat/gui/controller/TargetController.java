@@ -60,6 +60,11 @@ public class TargetController implements Initializable {
     private Search search;
     private BooleanBinding targetsEmptyProperty;
     private int identifier;
+    private final InteractionLogger interactionLogger;
+
+    public TargetController() {
+        this.interactionLogger = new InteractionLogger();
+    }
 
     public void setReferences(MainController mc, int identifier) {
         this.mainController = mc;
@@ -164,7 +169,7 @@ public class TargetController implements Initializable {
     }
 
     public void wordInputChangedByUser() {
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
                 LoggerValues.NEW_KEYWORD, wordInput.getText(),
                 LoggerValues.PANEL_ID, this.identifier,
@@ -295,7 +300,7 @@ public class TargetController implements Initializable {
     public void logSelection() {
         int idx = this.senseList.getSelectionModel().getSelectedIndex();
         var selection = this.senseList.getSelectionModel().getSelectedItem();
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.TARGET_SENSE_SELECTED_EVENT,
                 LoggerValues.PANEL_ID, this.identifier,
                 LoggerValues.SELECTION_INDEX, idx,

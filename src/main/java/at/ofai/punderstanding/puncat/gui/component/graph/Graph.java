@@ -10,8 +10,6 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -34,9 +32,11 @@ public class Graph extends Group {
     private final StringProperty selectedLineId = new SimpleStringProperty();
     private final ArrayList<Group> childNodePages = new ArrayList<>();
     private Group activeChildren;
+    private final InteractionLogger interactionLogger;
 
     public Graph(GraphController controller, ReadOnlyDoubleProperty slotHeight, ReadOnlyDoubleProperty slotWidth) {
         this.controller = controller;
+        this.interactionLogger = new InteractionLogger();
 
         // TODO: check this on a higher resolution
         this.childNodeDistanceX.bind(slotWidth.multiply(0.4));
@@ -127,7 +127,7 @@ public class Graph extends Group {
             DoubleProperty x = new SimpleDoubleProperty();
             x.bind(childNodeDistanceX.multiply(Math.cos(Math.toRadians(25 / 2.0 + degrees.get(i)))));
             DoubleProperty y = new SimpleDoubleProperty();
-            y.bind(childNodeDistanceY.multiply( Math.sin(Math.toRadians(25 / 2.0 + degrees.get(i)))));
+            y.bind(childNodeDistanceY.multiply(Math.sin(Math.toRadians(25 / 2.0 + degrees.get(i)))));
 
             var node = new Node(labelValues.get(i), x, y, false);
             node.setId(String.valueOf(senses.get(i).getSynsetIdentifier()));
@@ -162,7 +162,7 @@ public class Graph extends Group {
     public void prevGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.PREV_GRAPH_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_GRAPH_IDX, idx,
                 LoggerValues.NEXT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
@@ -175,10 +175,10 @@ public class Graph extends Group {
     public void nextGraph() {
         int idx = this.childNodePages.indexOf(this.activeChildren);
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_GRAPH_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_GRAPH_IDX, idx,
-                LoggerValues.NEXT_GRAPH_IDX, idx == this.childNodePages.size()-1 ? this.childNodePages.size()-1 : idx + 1));
+                LoggerValues.NEXT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
 
         if (idx != this.childNodePages.size() - 1) {
             this.setVisibleChildren(this.childNodePages.get(idx + 1));

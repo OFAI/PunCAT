@@ -16,7 +16,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
 import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
@@ -30,6 +29,11 @@ public class CandidateController implements Initializable {
     private final StringProperty semanticScore = new SimpleStringProperty();
     private final StringProperty phoneticScore = new SimpleStringProperty();
     public TableView<CandidateModel> candidateTable;
+    private final InteractionLogger interactionLogger;
+
+    public CandidateController() {
+        this.interactionLogger = new InteractionLogger();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -94,7 +98,7 @@ public class CandidateController implements Initializable {
     }
 
     public void newCandidate() {
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEW_CANDIDATE_ADDED_EVENT,
                 LoggerValues.CANDIDATE_PUN, this.punCandidate.getValue(),
                 LoggerValues.CANDIDATE_TARGET, this.targetCandidate.getValue(),
@@ -109,7 +113,7 @@ public class CandidateController implements Initializable {
                 this.phoneticScore.getValue()));
     }
 
-    public JSONArray saveCandidatesToFile() {
+    public JSONArray candidatesToJsonArray() {
         var candidates = new ArrayList<Map<String, Object>>();
         for (var candidate : this.candidateData) {
             if (candidate.isRealTime()) {

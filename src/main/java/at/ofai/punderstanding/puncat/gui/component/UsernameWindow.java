@@ -1,7 +1,6 @@
 package at.ofai.punderstanding.puncat.gui.component;
 
 import javafx.application.Platform;
-import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

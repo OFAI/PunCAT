@@ -1,5 +1,6 @@
 package at.ofai.punderstanding.puncat.gui.component.graph;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,9 +31,12 @@ public class Node extends Group {
     private static final double labelPadding = 10;
     private final LabelWrapper labelWrapper;
     private final StringProperty selectedLineId = new SimpleStringProperty();
-    boolean scrollStartRegistered = false;
+    Instant scrollStartRegistered = Instant.now();
+    private final InteractionLogger interactionLogger;
 
     public Node(BiMap<Integer, String> text, DoubleProperty x, DoubleProperty y, boolean isRoot) {
+        this.interactionLogger = new InteractionLogger();
+
         Ellipse ellipse = new Ellipse(0, 0);
         ellipse.centerXProperty().bind(x);
         ellipse.centerYProperty().bind(y);
@@ -57,12 +61,12 @@ public class Node extends Group {
         } else {
             this.setOnMouseEntered(event -> {
                 this.toFront();
-                InteractionLogger.logThis(Map.of(
+                interactionLogger.logThis(Map.of(
                         LoggerValues.EVENT, LoggerValues.GRAPH_NODE_HOVERED_EVENT,
                         LoggerValues.NODE_SYNSET_ID, this.getId()));
             });
             this.setOnMouseClicked(event -> {
-                InteractionLogger.logThis(Map.of(
+                interactionLogger.logThis(Map.of(
                         LoggerValues.EVENT, LoggerValues.GRAPH_NODE_CLICKED_EVENT,
                         LoggerValues.NODE_SYNSET_ID, this.getId()));
 
@@ -91,16 +95,13 @@ public class Node extends Group {
     }
 
     public void enableScrollListener() {
-        this.setOnScrollStarted(event -> {
-            scrollStartRegistered = true;
-            this.labelWrapper.scrollActiveLine(event);
-        });
+        // TODO: disable for a short while after each scroll event
         this.setOnScroll(event -> {
-            if (!scrollStartRegistered) {
+            if (Instant.now().minusMillis(500L).isAfter(scrollStartRegistered)) {
+                scrollStartRegistered = Instant.now();
                 this.labelWrapper.scrollActiveLine(event);
             }
         });
-        this.setOnScrollFinished(event -> this.scrollStartRegistered = false);
     }
 
     public String getSelectedLineId() {
@@ -122,6 +123,7 @@ public class Node extends Group {
         private final StringProperty activeLineId = new SimpleStringProperty();
         private ArrayList<Text> labelParts = new ArrayList<>();
         private Text activeLine = null;
+        private static InteractionLogger interactionLogger = new InteractionLogger();
 
         LabelWrapper(BiMap<Integer, String> text, DoubleProperty x, DoubleProperty y, boolean isRoot) {
             for (Integer key : text.keySet()) {
@@ -190,7 +192,12 @@ public class Node extends Group {
                 this.activeLine = this.labelParts.get(Math.floorMod(i + 1, this.labelParts.size()));
             }
             this.activeLine.setFont(this.boldFont);
-            //this.activeLine.setStyle(this.boldStyle);
+
+            interactionLogger.logThis(Map.of(
+                    LoggerValues.EVENT, LoggerValues.SELECTION_ON_ROOT_NODE,
+                    LoggerValues.PREV_ORTH_FORM, this.labelParts.get(i).getText(),
+                    LoggerValues.NEW_ORTH_FORM, this.activeLine.getText()
+            ));
         }
 
         void setupInteractions() {
@@ -198,6 +205,12 @@ public class Node extends Group {
 
             for (Text t : this.labelParts) {
                 t.setOnMouseClicked(event -> {
+                    interactionLogger.logThis(Map.of(
+                            LoggerValues.EVENT, LoggerValues.SELECTION_ON_ROOT_NODE,
+                            LoggerValues.PREV_ORTH_FORM, this.activeLine.getText(),
+                            LoggerValues.NEW_ORTH_FORM, t.getText()
+                    ));
+
                     this.setActiveLine(t);
                     t.setUnderline(false);
                 });

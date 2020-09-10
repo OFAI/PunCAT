@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,8 +28,6 @@ import javafx.stage.Stage;
 
 import org.json.JSONArray;
 
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
-
 import at.ofai.punderstanding.puncat.gui.component.SplashStage;
 import at.ofai.punderstanding.puncat.gui.component.UsernameWindow;
 import at.ofai.punderstanding.puncat.gui.controller.MainController;
@@ -49,9 +45,10 @@ public class Main extends Application {
     BorderPane rootPane = new BorderPane();
     ArrayList<GridPane> mainPaneList = new ArrayList<>();
     ArrayList<MainController> mainControllers = new ArrayList<>();
-    private Search search;
     String userName = "";
     Long startupInstant = 0L;
+    InteractionLogger interactionLogger;
+    private Search search;
 
     public static void main(String[] args) {
         launch();
@@ -62,7 +59,7 @@ public class Main extends Application {
         this.stage = stage;
         this.stage.setOnCloseRequest(event -> {
             this.saveCandidates();
-            InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
+            interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
         });
 
         var userNameStage = UsernameWindow.buildUsernameWindow();
@@ -83,7 +80,8 @@ public class Main extends Application {
 
         var loader = new LoaderClass();
         loader.setOnSucceeded(t -> {
-            InteractionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
+            interactionLogger = new InteractionLogger();
+            interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
 
             this.search = (Search) t.getSource().getValue();
 
@@ -199,7 +197,7 @@ public class Main extends Application {
     private void firstPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_TASK_IDX, idx,
                 LoggerValues.NEXT_TASK_IDX, idx == 0 ? 0 : idx - 1));
@@ -214,7 +212,7 @@ public class Main extends Application {
     private void prevPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_TASK_IDX, idx,
                 LoggerValues.NEXT_TASK_IDX, idx == 0 ? 0 : idx - 1));
@@ -229,7 +227,7 @@ public class Main extends Application {
     private void nextPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_TASK_IDX, idx,
                 LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size() - 1 ? this.mainPaneList.size() - 1 : idx + 1));
@@ -244,7 +242,7 @@ public class Main extends Application {
     private void lastPane() {
         int idx = this.mainPaneList.indexOf(this.activePane);
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_TASK_IDX, idx,
                 LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size() - 1 ? this.mainPaneList.size() - 1 : idx + 1));
@@ -258,14 +256,12 @@ public class Main extends Application {
 
     void saveCandidates() {
         JSONArray candidateList = new JSONArray();
-        int idx = 0;
         for (MainController mc : this.mainControllers) {
             var candidates = mc.saveCandidates();
             candidateList.put(Map.of(
-                    "task", idx,
+                    "task", mc.getCorpusInstanceId(),
                     "results", candidates
             ));
-            idx++;
         }
 
         String fileName = "results_" + this.userName + "_" + this.startupInstant + ".json";

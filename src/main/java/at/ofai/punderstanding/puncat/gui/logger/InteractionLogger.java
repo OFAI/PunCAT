@@ -8,9 +8,17 @@ import org.apache.logging.log4j.message.ObjectMessage;
 
 
 public class InteractionLogger {
-    private static final Logger jsonLogger = LogManager.getLogger("json_logger");
+    Logger interactionLogger;
 
-    public static void logThis(Map<String, Object> msg) {
-        jsonLogger.info(new ObjectMessage(msg));
+    public InteractionLogger() {
+        if (System.getProperty(LoggerValues.LOGGING_DISABLED) == null) {
+            this.interactionLogger = LogManager.getLogger("json_logger");
+        }
+    }
+
+    public void logThis(Map<String, Object> msg) {
+        if (System.getProperty(LoggerValues.LOGGING_DISABLED) == null) {
+            this.interactionLogger.info(new ObjectMessage(msg));
+        }
     }
 }

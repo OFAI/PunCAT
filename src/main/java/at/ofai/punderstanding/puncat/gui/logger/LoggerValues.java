@@ -41,5 +41,11 @@ public class LoggerValues {
     public static final String GRAPH_NODE_HOVERED_EVENT = "Graph node hovered";  // TODO: delete if layout improved
     public static final String GRAPH_NODE_CLICKED_EVENT = "Graph node clicked";
 
+    public static final String SELECTION_ON_ROOT_NODE = "Selection on root node";
+    public static final String PREV_ORTH_FORM = "Previous orth form";
+    public static final String NEW_ORTH_FORM = "New orth form";
+
     public static final String NEW_CANDIDATE_ADDED_EVENT = "New candidate added";
+
+    public static final String LOGGING_DISABLED = "interactionloggingdisabled";
 }

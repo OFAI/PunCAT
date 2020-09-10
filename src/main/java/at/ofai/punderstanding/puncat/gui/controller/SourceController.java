@@ -34,10 +34,15 @@ public class SourceController implements Initializable {
     private MainController mainController;
     private Search search;
     private int identifier;
+    private final InteractionLogger interactionLogger;
 
     public void setReferences(MainController mc, int identifier) {
         this.mainController = mc;
         this.identifier = identifier;
+    }
+
+    public SourceController() {
+        this.interactionLogger = new InteractionLogger();
     }
 
     @Override
@@ -58,7 +63,7 @@ public class SourceController implements Initializable {
         this.setPronunciations();
         this.senseList.getSelectionModel().select(0);
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
                 LoggerValues.NEW_VALUE, wordInput.getText(),
                 LoggerValues.PANEL_ID, this.identifier,
@@ -117,7 +122,7 @@ public class SourceController implements Initializable {
         var idx = this.senseList.getSelectionModel().getSelectedIndex();
         var selection = this.senseList.getSelectionModel().getSelectedItem();
 
-        InteractionLogger.logThis(Map.of(
+        interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.SOURCE_SENSE_SELECTED_EVENT,
                 LoggerValues.PANEL_ID, this.identifier,
                 LoggerValues.SELECTION_INDEX, idx,
