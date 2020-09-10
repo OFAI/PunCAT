@@ -31,8 +31,8 @@ import javafx.scene.text.TextFlow;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 
 import at.ofai.punderstanding.puncat.gui.component.SenseCell;
-import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
-import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
+import at.ofai.punderstanding.puncat.gui.logging.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.SenseModel;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
 import at.ofai.punderstanding.puncat.logic.search.Search;
@@ -230,12 +230,12 @@ public class TargetController implements Initializable {
     }
 
     public List<SenseModelTarget> getHypernyms(SenseModelTarget selection) {
-        List<Synset> hypernyms = this.search.getTargetHypernyms(selection.getSynsetIdentifier());
+        List<Synset> hypernyms = this.search.getTargetHypernymsOrderedByFrequency(selection.getSynsetIdentifier());
         return hypernyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
     }
 
     public List<SenseModelTarget> getHyponyms(SenseModelTarget selection) {
-        List<Synset> hyponyms = this.search.getTargetHyponyms(selection.getSynsetIdentifier());
+        List<Synset> hyponyms = this.search.getTargetHyponymsOrderedByFrequency(selection.getSynsetIdentifier());
         return hyponyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
     }
 

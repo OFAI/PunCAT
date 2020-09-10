@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import at.ofai.punderstanding.puncat.gui.controller.CandidateController;
-import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
+import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
 
 
 public class CandidateControllerTests {

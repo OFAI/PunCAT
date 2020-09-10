@@ -17,8 +17,8 @@ import javafx.scene.shape.Line;
 import com.google.common.collect.BiMap;
 
 import at.ofai.punderstanding.puncat.gui.controller.GraphController;
-import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
-import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
+import at.ofai.punderstanding.puncat.gui.logging.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
 
 

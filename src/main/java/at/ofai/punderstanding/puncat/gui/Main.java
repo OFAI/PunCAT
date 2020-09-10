@@ -31,8 +31,8 @@ import org.json.JSONArray;
 import at.ofai.punderstanding.puncat.gui.component.SplashStage;
 import at.ofai.punderstanding.puncat.gui.component.UsernameWindow;
 import at.ofai.punderstanding.puncat.gui.controller.MainController;
-import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
-import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
+import at.ofai.punderstanding.puncat.gui.logging.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.corpus.Corpus;
 import at.ofai.punderstanding.puncat.gui.model.corpus.CorpusInstance;
 import at.ofai.punderstanding.puncat.logic.search.Search;
@@ -73,7 +73,7 @@ public class Main extends Application {
     private void build() {
         this.startupInstant = Instant.now().toEpochMilli();
         System.setProperty("puncatlogfilename",
-                "logs/log_" + this.userName + "_" + this.startupInstant + ".json");
+                "log_" + this.userName + "_" + this.startupInstant);
 
         var splashStage = new SplashStage();
         splashStage.show();

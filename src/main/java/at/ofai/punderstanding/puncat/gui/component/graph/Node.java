@@ -21,8 +21,8 @@ import javafx.scene.text.TextFlow;
 
 import com.google.common.collect.BiMap;
 
-import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
-import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
+import at.ofai.punderstanding.puncat.gui.logging.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
 
 
 public class Node extends Group {
@@ -123,7 +123,7 @@ public class Node extends Group {
         private final StringProperty activeLineId = new SimpleStringProperty();
         private ArrayList<Text> labelParts = new ArrayList<>();
         private Text activeLine = null;
-        private static InteractionLogger interactionLogger = new InteractionLogger();
+        private static final InteractionLogger interactionLogger = new InteractionLogger();
 
         LabelWrapper(BiMap<Integer, String> text, DoubleProperty x, DoubleProperty y, boolean isRoot) {
             for (Integer key : text.keySet()) {
@@ -257,7 +257,7 @@ public class Node extends Group {
         public void setSelectedLine(String textToSelect) {
             // TODO
             var line = this.labelParts.stream()
-                    .filter(t -> t.getText().toLowerCase().equals(textToSelect))
+                    .filter(t -> t.getText().toLowerCase().equals(textToSelect.toLowerCase()))
                     .findFirst();
             line.ifPresent(this::setActiveLine);
         }

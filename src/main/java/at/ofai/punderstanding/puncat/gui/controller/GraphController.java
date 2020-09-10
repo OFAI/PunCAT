@@ -7,7 +7,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+
+import org.controlsfx.tools.Borders;
 
 import at.ofai.punderstanding.puncat.gui.component.graph.Graph;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelTarget;
@@ -33,6 +37,7 @@ public class GraphController implements Initializable {
         this.clearContents();
         this.graph = new Graph(this, graphPane.heightProperty(), graphPane.widthProperty());
         this.graphPane.getChildren().add(this.graph);
+
         this.graph.layoutXProperty().bind(graphPane.widthProperty().divide(2));
         this.graph.layoutYProperty().bind(graphPane.heightProperty().divide(2));
         this.graph.build(selectedText, root, hypernyms, hyponyms);

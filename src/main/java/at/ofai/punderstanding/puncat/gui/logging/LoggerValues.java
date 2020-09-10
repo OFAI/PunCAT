@@ -1,4 +1,4 @@
-package at.ofai.punderstanding.puncat.gui.logger;
+package at.ofai.punderstanding.puncat.gui.logging;
 
 public class LoggerValues {
     public static final String EVENT = "event";

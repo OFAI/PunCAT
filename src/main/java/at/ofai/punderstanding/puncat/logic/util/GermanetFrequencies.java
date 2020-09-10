@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +68,12 @@ public class GermanetFrequencies {
             if (f > maxFreq) {
                 maxFreq = f;
                 mostFrequent = form;
+            }
+        }
+        if (maxFreq == 0) {
+            var shortest = synset.getAllOrthForms().stream().min(Comparator.comparingInt(String::length));
+            if (shortest.isPresent()) {
+                return shortest.get();
             }
         }
         if (mostFrequent == null) {

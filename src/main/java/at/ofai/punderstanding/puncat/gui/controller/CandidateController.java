@@ -17,8 +17,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import org.json.JSONArray;
 
-import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
-import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
+import at.ofai.punderstanding.puncat.gui.logging.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.CandidateModel;
 
 

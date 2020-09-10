@@ -17,8 +17,8 @@ import javafx.scene.input.MouseEvent;
 import net.sf.extjwnl.data.Synset;
 
 import at.ofai.punderstanding.puncat.gui.component.SenseCell;
-import at.ofai.punderstanding.puncat.gui.logger.InteractionLogger;
-import at.ofai.punderstanding.puncat.gui.logger.LoggerValues;
+import at.ofai.punderstanding.puncat.gui.logging.InteractionLogger;
+import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
 import at.ofai.punderstanding.puncat.gui.model.SenseModel;
 import at.ofai.punderstanding.puncat.gui.model.SenseModelSource;
 import at.ofai.punderstanding.puncat.logic.search.Search;
@@ -63,11 +63,17 @@ public class SourceController implements Initializable {
         this.setPronunciations();
         this.senseList.getSelectionModel().select(0);
 
+        Number autoSelectedSynsetId;
+        try {
+            autoSelectedSynsetId = this.senseList.getSelectionModel().getSelectedItem().getSynsetIdentifier();
+        } catch (NullPointerException e) {
+            autoSelectedSynsetId = -1;
+        }
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
                 LoggerValues.NEW_VALUE, wordInput.getText(),
                 LoggerValues.PANEL_ID, this.identifier,
-                LoggerValues.AUTO_SELECTED_SYNSET_ID, this.senseList.getSelectionModel().getSelectedItem().getSynsetIdentifier()));
+                LoggerValues.AUTO_SELECTED_SYNSET_ID, autoSelectedSynsetId));
     }
 
     public void senseSelected() {

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <File name="json_appender" fileName="${sys:puncatlogfilename}">
+        <File name="json_appender" fileName="logs/${sys:puncatlogfilename}.json">
             <JsonLayout complete="true" objectMessageAsJsonObject="true"/>
+        </File>
+        <File name="simple_appender" fileName="logs/${sys:puncatlogfilename}.txt">
+            <PatternLayout/>
         </File>
         <Console name="Console" target="SYSTEM_OUT">
         </Console>
@@ -13,6 +16,9 @@
         </Root>
         <Logger name="json_logger" level="trace" additivity="false">
             <AppenderRef ref="json_appender"/>
+        </Logger>
+        <Logger name="simple_logger" level="trace" additivity="false">
+            <AppenderRef ref="simple_appender"/>
         </Logger>
     </Loggers>
 </Configuration>

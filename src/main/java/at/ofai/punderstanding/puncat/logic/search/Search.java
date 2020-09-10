@@ -3,6 +3,8 @@ package at.ofai.punderstanding.puncat.logic.search;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,12 +109,18 @@ public class Search {
         return germaNet.equivalentByWordnetOffset(offset);
     }
 
-    public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetHypernyms(int synsetId) {
-        return this.germaNet.getHypernyms(synsetId);
+    public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetHypernymsOrderedByFrequency(int synsetId) {
+        var hypernyms = this.germaNet.getHypernyms(synsetId);
+        hypernyms.sort(Comparator.comparing(this::getGermanetSynsetCumulativeFrequency));
+        Collections.reverse(hypernyms);
+        return hypernyms;
     }
 
-    public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetHyponyms(int synsetId) {
-        return this.germaNet.getHyponyms(synsetId);
+    public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetHyponymsOrderedByFrequency(int synsetId) {
+        var hyponyms = this.germaNet.getHyponyms(synsetId);
+        hyponyms.sort(Comparator.comparing(this::getGermanetSynsetCumulativeFrequency));
+        Collections.reverse(hyponyms);
+        return hyponyms;
     }
 
     public de.tuebingen.uni.sfs.germanet.api.Synset getTargetSynsetById(int id) {
