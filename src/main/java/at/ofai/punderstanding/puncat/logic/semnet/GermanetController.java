@@ -58,7 +58,8 @@ public class GermanetController implements SemnetController<Synset> {
                 return germanet.getLexUnitByID(ir.getLexUnitId()).getSynset();
             }
         }
-        return null; // TODO: return closely related synset if no result?
+
+        return null;
     }
 
     public List<Long> getOffsetFromID(int id) {

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.extjwnl.data.Synset;
+import net.sf.extjwnl.data.Word;
 
 import at.ofai.punderstanding.puncat.logic.semnet.GermanetController;
 import at.ofai.punderstanding.puncat.logic.semnet.WordnetController;
@@ -79,7 +80,7 @@ public class Search {
         return this.germaNet.getSynsetCumulativeFrequency(synset);
     }
 
-    public String getGermanetMostFrequentOrthForm(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
+    public String germanetGetMostFrequentOrthForm(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
         return this.germaNet.getMostFrequentOrthForm(synset);
     }
 
@@ -87,47 +88,51 @@ public class Search {
         return this.phonSimilarity.calculatePhoneticSimilarity(word1, word2);
     }
 
-    public String getIpaTranscription(String word, String lang) {
-        String result = null;
-        if (lang.equals("en")) {
-            result = this.word2ipaEN.get(word.toLowerCase());
-        } else if (lang.equals("de")) {
-            result = this.word2ipaDE.get(word.toLowerCase());
-        }
-        return result != null ? result : "";
+    public String getIpaTranscriptionEnglish(String word) {
+        String result = this.word2ipaEN.get(word.toLowerCase());
+        return result == null ? "" : result;
     }
 
-    public List<Synset> getSourceSenses(String word) {
-        return wordNet.getSynsets(word);
+    public String getIpaTranscriptionGerman(String word) {
+        String result = this.word2ipaDE.get(word.toLowerCase());
+        return result == null ? "" : result;
     }
 
-    public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetSenses(String word) {
+    public List<Synset> wordnetGetSenses(String word) {
+        return wordNet.getSynsets(word.toLowerCase());
+    }
+
+    public List<de.tuebingen.uni.sfs.germanet.api.Synset> germanetGetSenses(String word) {
         return germaNet.getSynsets(word);
     }
 
-    public de.tuebingen.uni.sfs.germanet.api.Synset mapToGermanet(long offset) {
+    public de.tuebingen.uni.sfs.germanet.api.Synset mapWordnetSynsetToGermanet(long offset) {
         return germaNet.equivalentByWordnetOffset(offset);
     }
 
-    public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetHypernymsOrderedByFrequency(int synsetId) {
+    public List<de.tuebingen.uni.sfs.germanet.api.Synset> germanetGetHypernymsOrderedByFrequency(int synsetId) {
         var hypernyms = this.germaNet.getHypernyms(synsetId);
         hypernyms.sort(Comparator.comparing(this::getGermanetSynsetCumulativeFrequency));
         Collections.reverse(hypernyms);
         return hypernyms;
     }
 
-    public List<de.tuebingen.uni.sfs.germanet.api.Synset> getTargetHyponymsOrderedByFrequency(int synsetId) {
+    public List<de.tuebingen.uni.sfs.germanet.api.Synset> germanetGetHyponymsOrderedByFrequency(int synsetId) {
         var hyponyms = this.germaNet.getHyponyms(synsetId);
         hyponyms.sort(Comparator.comparing(this::getGermanetSynsetCumulativeFrequency));
         Collections.reverse(hyponyms);
         return hyponyms;
     }
 
-    public de.tuebingen.uni.sfs.germanet.api.Synset getTargetSynsetById(int id) {
+    public de.tuebingen.uni.sfs.germanet.api.Synset germanetGetSynsetById(int id) {
         return this.germaNet.getSynsetById(id);
     }
 
     public String getGermanetOrthFormByLexUnitId(int lexUnitId) {
         return this.germaNet.getLexUnitById(lexUnitId);
+    }
+
+    public Word wordnetGetWordBySenseKey(String senseKey) {
+        return this.wordNet.getWordBySenseKey(senseKey);
     }
 }

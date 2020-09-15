@@ -7,18 +7,20 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import de.tuebingen.uni.sfs.germanet.api.LexUnit;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 
 
 public class GermanetFrequencies {
-    private final Map<String, Map<String, Long>> wordCatMap;
+    private final Map<String, Map<String, Long>> wordCategoryMap;
 
     public GermanetFrequencies(Map<String, Long> nomenFreq, Map<String, Long> verbenFreq, Map<String, Long> adjFreq) {
-        this.wordCatMap = new HashMap<>();
-        this.wordCatMap.put("nomen", nomenFreq);
-        this.wordCatMap.put("verben", verbenFreq);
-        this.wordCatMap.put("adj", adjFreq);
+        this.wordCategoryMap = new HashMap<>();
+        this.wordCategoryMap.put("nomen", nomenFreq);
+        this.wordCategoryMap.put("verben", verbenFreq);
+        this.wordCategoryMap.put("adj", adjFreq);
     }
 
     public static GermanetFrequencies loadFrequencies(String nomenPath, String verbenPath, String adjPath) {
@@ -48,7 +50,7 @@ public class GermanetFrequencies {
         long frequency = 0L;
         String wordCat = synset.getWordCategory().toString();
         for (String form : synset.getAllOrthForms()) {
-            Long f = this.wordCatMap.get(wordCat).get(form);
+            Long f = this.wordCategoryMap.get(wordCat).get(form);
             if (f != null) {
                 frequency += f;
             }
@@ -60,8 +62,8 @@ public class GermanetFrequencies {
         String mostFrequent = null;
         long maxFreq = -1L;
         String wordCat = synset.getWordCategory().toString();
-        for (String form : synset.getAllOrthForms()) {
-            Long f = this.wordCatMap.get(wordCat).get(form);
+        for (String form : synset.getLexUnits().stream().map(LexUnit::getOrthForm).collect(Collectors.toList())) {
+            Long f = this.wordCategoryMap.get(wordCat).get(form);
             if (f == null) {
                 f = 0L;  // TODO: do something about the missing entries
             }

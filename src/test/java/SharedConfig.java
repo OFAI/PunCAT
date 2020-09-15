@@ -1,4 +1,4 @@
-import at.ofai.punderstanding.puncat.gui.logging.LoggerValues;
+import at.ofai.punderstanding.puncat.logging.LoggerValues;
 
 
 public class SharedConfig {

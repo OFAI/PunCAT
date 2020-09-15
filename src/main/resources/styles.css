@@ -1,6 +1,3 @@
-.sense-cell:filled:selected:focused, .sense-cell:filled:selected {
-    -fx-background-color: #d3d3d3;
-}
 
 #candidate-table .table-column {
     -fx-alignment: CENTER;
@@ -18,9 +15,13 @@
 }
 
 #main-pagination-btn {
-    -fx-font-size: 15px;
+    -fx-font-size: 12px;
 }
 
 .menu-bar {
     -fx-background-color: white;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
 }

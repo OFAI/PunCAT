@@ -25,7 +25,7 @@ public class WordnetController implements SemnetController<Synset> {
 
     @Override
     public List<Synset> getSynsets(String word) {
-        List<Synset> results = new ArrayList<>();
+        var results = new ArrayList<Synset>();
         try {
             for (POS p : POS.getAllPOS()) {
                 IndexWord iw = this.wordnet.lookupIndexWord(p, word);
@@ -39,8 +39,16 @@ public class WordnetController implements SemnetController<Synset> {
         return results;
     }
 
+    public Word getWordBySenseKey(String senseKey) {
+        try {
+            return this.wordnet.getWordBySenseKey(senseKey);
+        } catch (JWNLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<String> getWordsByOffset(Long offset) {
-        List<String> words = new ArrayList<>();
+        var words = new ArrayList<String>();
         for (POS p : POS.getAllPOS()) {
             try {
                 Synset synset = this.wordnet.getSynsetAt(p, offset);
