@@ -16,6 +16,8 @@ import javafx.scene.layout.VBox;
 
 import org.json.JSONArray;
 
+import at.ofai.punderstanding.puncat.component.CorpusInstanceKeywordTextFlow;
+import at.ofai.punderstanding.puncat.component.CorpusInstanceQuoteTextFlow;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 import at.ofai.punderstanding.puncat.model.SimilarityModel;
 import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
@@ -44,35 +46,6 @@ public class MainController implements Initializable {
     private SenseGroupController senseGroupController2;
     private String corpusInstanceId = "none";
 
-    public void setSearch(Search search) {
-        this.similarityModel.setSearch(search);
-        this.senseGroupController1.setSearch(search);
-        this.senseGroupController2.setSearch(search);
-    }
-
-    public void loadCorpusInstance(CorpusInstance corpusInstance) {
-        this.corpusInstanceId = corpusInstance.getId();
-
-        this.senseGroupController1.setContentsByCorpusInstance(
-                corpusInstance.getText().getPun().getFirstLemma(),
-                corpusInstance.getText().getPun().getFirstSense());
-        this.senseGroupController2.setContentsByCorpusInstance(
-                corpusInstance.getText().getPun().getSecondLemma(),
-                corpusInstance.getText().getPun().getSecondSense());
-
-        this.imageView.fitWidthProperty().bind(this.container.widthProperty());
-        this.imageView.setPreserveRatio(true);
-        var image = new Image(corpusInstance.getImg().src, true);
-        this.imageView.setImage(image);
-    }
-
-    public JSONArray saveCandidates() {
-        return this.candidateController.candidatesToJsonArray();
-    }
-
-    public String getCorpusInstanceId() {
-        return this.corpusInstanceId;
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -102,13 +75,6 @@ public class MainController implements Initializable {
         }
         this.candidateController = loader.getController();
 
-        /*
-        this.imageViewContainer.setCenter(Borders.wrap(this.imageView)
-                .lineBorder().color(Color.BLACK)
-                .innerPadding(0)
-                .buildAll());
-         */
-
         this.candidateController
                 .punCandidateProperty().bind(this.senseGroupController1.selectedOrthFormProperty());
         this.candidateController
@@ -133,6 +99,46 @@ public class MainController implements Initializable {
 
         this.senseGroupController1.setIdentifier(1);
         this.senseGroupController2.setIdentifier(2);
+    }
+
+    public void setSearch(Search search) {
+        this.similarityModel.setSearch(search);
+        this.senseGroupController1.setSearch(search);
+        this.senseGroupController2.setSearch(search);
+    }
+
+    public void loadCorpusInstance(CorpusInstance corpusInstance) {
+        this.corpusInstanceId = corpusInstance.getId();
+
+        this.senseGroupController1.setContentsByCorpusInstance(
+                corpusInstance.getText().getPun().getFirstLemma(),
+                corpusInstance.getText().getPun().getFirstSense());
+        this.senseGroupController2.setContentsByCorpusInstance(
+                corpusInstance.getText().getPun().getSecondLemma(),
+                corpusInstance.getText().getPun().getSecondSense());
+
+        this.imageView.fitWidthProperty().bind(this.imageContainer.widthProperty());
+        var image = new Image(corpusInstance.getImg().src, true);
+        this.imageView.setImage(image);
+
+        var imageText = CorpusInstanceQuoteTextFlow.build(corpusInstance.getText());
+        this.imageContainer.getChildren().add(0, imageText);
+        this.imageContainer.setSpacing(10);
+
+        var keywordLabel = CorpusInstanceKeywordTextFlow.build(corpusInstance.getImg().keywords);
+        this.imageContainer.getChildren().add(keywordLabel);
+
+        for (var btn : this.getButtons()) {
+            btn.setVisible(true);
+        }
+    }
+
+    public JSONArray saveCandidates() {
+        return this.candidateController.candidatesToJsonArray();
+    }
+
+    public String getCorpusInstanceId() {
+        return this.corpusInstanceId;
     }
 
     public void maybeCalculateSimilarity() {

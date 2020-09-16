@@ -26,32 +26,32 @@
         <RowConstraints percentHeight="50"/>
     </rowConstraints>
 
-    <BorderPane fx:id="container" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="NEVER">
+    <BorderPane fx:id="container" GridPane.columnIndex="0" GridPane.rowIndex="0">
         <center>
-            <VBox fx:id="imageContainer" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
-                <ImageView fx:id="imageView" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER"/>
+            <VBox fx:id="imageContainer">
+                <ImageView fx:id="imageView" preserveRatio="true"/>
             </VBox>
         </center>
         <bottom>
-            <HBox spacing="5" BorderPane.alignment="CENTER" alignment="CENTER">
-                <Button fx:id="firstButton" id="main-pagination-btn" text="&lt;&lt;">
+            <HBox spacing="5" alignment="CENTER">
+                <Button fx:id="firstButton" id="main-pagination-btn" text="&lt;&lt;" visible="false">
                     <tooltip>
-                        <Tooltip text="jump to the first translation task"/>
+                        <Tooltip text="Jump to the first translation task"/>
                     </tooltip>
                 </Button>
-                <Button fx:id="prevButton" id="main-pagination-btn" text="&lt;">
+                <Button fx:id="prevButton" id="main-pagination-btn" text="&lt;" visible="false">
                     <tooltip>
-                        <Tooltip text="step to the previous translation task"/>
+                        <Tooltip text="Step to the previous translation task"/>
                     </tooltip>
                 </Button>
-                <Button fx:id="nextButton" id="main-pagination-btn" text="&gt;">
+                <Button fx:id="nextButton" id="main-pagination-btn" text="&gt;" visible="false">
                     <tooltip>
-                        <Tooltip text="step to the next translation task"/>
+                        <Tooltip text="Step to the next translation task"/>
                     </tooltip>
                 </Button>
-                <Button fx:id="lastButton" id="main-pagination-btn" text="&gt;&gt;">
+                <Button fx:id="lastButton" id="main-pagination-btn" text="&gt;&gt;" visible="false">
                     <tooltip>
-                        <Tooltip text="jump to the last translation task"/>
+                        <Tooltip text="Jump to the last translation task"/>
                     </tooltip>
                 </Button>
             </HBox>

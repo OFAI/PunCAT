@@ -15,6 +15,13 @@ public class PhoneticSimilarity {
     public double calculatePhoneticSimilarity(String word1, String word2) {
         String ipa1 = this.word2ipa.get(word1.toLowerCase());
         String ipa2 = this.word2ipa.get(word2.toLowerCase());
+        if (ipa1 == null) {
+            System.err.println(word1 + " ipa transcription null");
+            ipa1 = "";
+        } else if (ipa2 == null) {
+            System.err.println(word2 + " ipa transcription null");
+            ipa2 = "";
+        }
 
         // remove character not handled by the ALINE class
         var sb = new StringBuilder(ipa1);

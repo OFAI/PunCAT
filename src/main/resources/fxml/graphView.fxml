@@ -2,5 +2,7 @@
 
 <?import javafx.scene.layout.Pane?>
 <Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="at.ofai.punderstanding.puncat.controller.GraphController" fx:id="graphPane">
+      fx:controller="at.ofai.punderstanding.puncat.controller.GraphController" fx:id="graphPane"
+      style="-fx-border-color: lightgrey; -fx-border-width: 1; -fx-border-style: solid;
+             -fx-background-color: white;">
 </Pane>

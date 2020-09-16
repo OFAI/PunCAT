@@ -19,6 +19,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -39,6 +40,7 @@ public class Main extends Application {
     GridPane activePane = null;
     Stage stage;
     BorderPane rootPane = new BorderPane();
+    StackPane mainViewContainer = new StackPane();
     ArrayList<GridPane> mainPaneList = new ArrayList<>();
     ArrayList<MainController> mainControllers = new ArrayList<>();
     String userName = "";
@@ -85,7 +87,7 @@ public class Main extends Application {
 
             this.buildMainPane(null);
             this.activePane = this.mainPaneList.get(0);
-            this.rootPane.setCenter(this.activePane);
+            this.activePane.setVisible(true);
 
             this.stage.show();
 
@@ -96,6 +98,7 @@ public class Main extends Application {
 
     private void buildRootStage() {
         this.rootPane.setTop(createMenubar());
+        this.rootPane.setCenter(mainViewContainer);
         Scene scene = new Scene(this.rootPane);
         scene.getStylesheets().add("/styles.css");
 
@@ -113,7 +116,7 @@ public class Main extends Application {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        mainPane.setVisible(true);
+        mainPane.setVisible(false);
 
         var mc = (MainController) loader.getController();
         mc.setSearch(this.search);
@@ -125,6 +128,7 @@ public class Main extends Application {
         buttons.get(3).setOnAction(event -> this.lastPane());
 
         this.mainPaneList.add(mainPane);
+        this.mainViewContainer.getChildren().add(mainPane);
         this.mainControllers.add(mc);
 
         if (corpusInstance != null) {
@@ -144,8 +148,13 @@ public class Main extends Application {
             buildMainPane(ci);
         }
 
-        this.activePane = this.mainPaneList.get(0);
-        this.rootPane.setCenter(this.activePane);
+        this.setActivePane(this.mainPaneList.get(0));
+    }
+
+    private void setActivePane(GridPane mainPane) {
+        this.activePane.setVisible(false);
+        this.activePane = mainPane;
+        this.activePane.setVisible(true);
     }
 
     private MenuBar createMenubar() {
@@ -175,8 +184,9 @@ public class Main extends Application {
         if (idx == 0) {
             return;
         }
+        this.activePane.setVisible(false);
         this.activePane = this.mainPaneList.get(0);
-        this.rootPane.setCenter(this.activePane);
+        this.activePane.setVisible(true);
     }
 
     private void prevPane() {
@@ -190,8 +200,9 @@ public class Main extends Application {
         if (idx == 0) {
             return;
         }
+        this.activePane.setVisible(false);
         this.activePane = this.mainPaneList.get(idx - 1);
-        this.rootPane.setCenter(this.activePane);
+        this.activePane.setVisible(true);
     }
 
     private void nextPane() {
@@ -205,8 +216,9 @@ public class Main extends Application {
         if (idx == this.mainPaneList.size() - 1) {
             return;
         }
+        this.activePane.setVisible(false);
         this.activePane = this.mainPaneList.get(idx + 1);
-        this.rootPane.setCenter(this.activePane);
+        this.activePane.setVisible(true);
     }
 
     private void lastPane() {
@@ -220,8 +232,9 @@ public class Main extends Application {
         if (idx == this.mainPaneList.size() - 1) {
             return;
         }
+        this.activePane.setVisible(false);
         this.activePane = this.mainPaneList.get(idx + 1);
-        this.rootPane.setCenter(this.activePane);
+        this.activePane.setVisible(true);
     }
 
     void saveCandidates() {

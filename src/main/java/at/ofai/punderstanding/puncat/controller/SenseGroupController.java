@@ -20,9 +20,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import at.ofai.punderstanding.puncat.component.SenseCell;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
@@ -43,7 +46,7 @@ public class SenseGroupController implements Initializable {
     private final Label noResultLabel = new Label("No known equivalent in GermaNet!\nTry searching manually.");
     private final InteractionLogger interactionLogger = new InteractionLogger();
     @FXML
-    public TitledPane sourceTitledPane;
+    private TitledPane sourceTitledPane;
     @FXML
     private GridPane container;
     @FXML
