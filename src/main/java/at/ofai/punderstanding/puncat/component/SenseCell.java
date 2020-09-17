@@ -10,26 +10,21 @@ import at.ofai.punderstanding.puncat.model.SenseModel;
 
 
 public class SenseCell extends ListCell<SenseModel> {
-    public TextFlow textFlow = new TextFlow();
-    Text pronunciation = new Text();
-    Text description = new Text();
-    Text synonyms = new Text();
+    private final TextFlow textFlow = new TextFlow();
+    private final Text pronunciation = new Text();
+    private final Text description = new Text();
+    private final Text synonyms = new Text();
 
     public SenseCell(ListView<SenseModel> list) {
         this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         this.synonyms.setStyle("-fx-font-weight: bold");
         this.textFlow.maxWidthProperty().bind(list.widthProperty().subtract(15));
         this.setPrefWidth(0);
-        // this.setPadding(new Insets(5));
         this.textFlow.getChildren().addAll(this.pronunciation, this.synonyms, this.description);
     }
 
     public boolean hasContent() {
         return this.getGraphic() != null;
-    }
-
-    public void setWidthBinding() {
-        this.textFlow.prefWidthProperty().bind(this.getListView().widthProperty());
     }
 
     @Override

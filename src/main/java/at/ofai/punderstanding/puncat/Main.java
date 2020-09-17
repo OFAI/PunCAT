@@ -9,6 +9,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map;
 import javafx.application.Application;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +39,8 @@ import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
 
 
 public class Main extends Application {
-    GridPane activePane = null;
+    //GridPane activePane = null;
+    ObjectProperty<GridPane> activePane = new SimpleObjectProperty<>();
     Stage stage;
     BorderPane rootPane = new BorderPane();
     StackPane mainViewContainer = new StackPane();
@@ -86,8 +89,8 @@ public class Main extends Application {
             this.buildRootStage();
 
             this.buildMainPane(null);
-            this.activePane = this.mainPaneList.get(0);
-            this.activePane.setVisible(true);
+            this.activePane.set(this.mainPaneList.get(0));
+            this.activePane.get().setVisible(true);
 
             this.stage.show();
 
@@ -126,6 +129,12 @@ public class Main extends Application {
         buttons.get(1).setOnAction(event -> this.prevPane());
         buttons.get(2).setOnAction(event -> this.nextPane());
         buttons.get(3).setOnAction(event -> this.lastPane());
+        this.activePane.addListener((observable, oldValue, newValue) -> {
+            buttons.get(0).setDisable(this.mainPaneList.indexOf(newValue) == 0);
+            buttons.get(1).setDisable(this.mainPaneList.indexOf(newValue) == 0);
+            buttons.get(2).setDisable(this.mainPaneList.indexOf(newValue) == this.mainPaneList.size() - 1);
+            buttons.get(3).setDisable(this.mainPaneList.indexOf(newValue) == this.mainPaneList.size() - 1);
+        });
 
         this.mainPaneList.add(mainPane);
         this.mainViewContainer.getChildren().add(mainPane);
@@ -152,9 +161,9 @@ public class Main extends Application {
     }
 
     private void setActivePane(GridPane mainPane) {
-        this.activePane.setVisible(false);
-        this.activePane = mainPane;
-        this.activePane.setVisible(true);
+        this.activePane.get().setVisible(false);
+        this.activePane.set(mainPane);
+        this.activePane.get().setVisible(true);
     }
 
     private MenuBar createMenubar() {
@@ -174,7 +183,7 @@ public class Main extends Application {
     }
 
     private void firstPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane);
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
@@ -184,13 +193,13 @@ public class Main extends Application {
         if (idx == 0) {
             return;
         }
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPaneList.get(0);
-        this.activePane.setVisible(true);
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(0));
+        this.activePane.get().setVisible(true);
     }
 
     private void prevPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane);
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
@@ -200,13 +209,13 @@ public class Main extends Application {
         if (idx == 0) {
             return;
         }
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPaneList.get(idx - 1);
-        this.activePane.setVisible(true);
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(idx - 1));
+        this.activePane.get().setVisible(true);
     }
 
     private void nextPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane);
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
@@ -216,13 +225,13 @@ public class Main extends Application {
         if (idx == this.mainPaneList.size() - 1) {
             return;
         }
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPaneList.get(idx + 1);
-        this.activePane.setVisible(true);
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(idx + 1));
+        this.activePane.get().setVisible(true);
     }
 
     private void lastPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane);
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
@@ -232,9 +241,9 @@ public class Main extends Application {
         if (idx == this.mainPaneList.size() - 1) {
             return;
         }
-        this.activePane.setVisible(false);
-        this.activePane = this.mainPaneList.get(idx + 1);
-        this.activePane.setVisible(true);
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(this.mainPaneList.size() - 1));
+        this.activePane.get().setVisible(true);
     }
 
     void saveCandidates() {
@@ -242,8 +251,11 @@ public class Main extends Application {
         for (MainController mc : this.mainControllers) {
             var candidates = mc.saveCandidates();
             candidateList.put(Map.of(
+                    mc.getCorpusInstanceId(), candidates
+                    /*
                     "task", mc.getCorpusInstanceId(),
                     "results", candidates
+                     */
             ));
         }
 

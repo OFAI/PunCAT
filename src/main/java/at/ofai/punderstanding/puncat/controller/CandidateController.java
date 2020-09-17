@@ -39,6 +39,8 @@ public class CandidateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.candidateTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         var punColumn = new TableColumn<CandidateModel, String>("Pun");
         punColumn.setCellValueFactory(new PropertyValueFactory<>("pun"));
         this.candidateTable.getColumns().add(punColumn);
@@ -82,11 +84,14 @@ public class CandidateController implements Initializable {
             }
         });
         this.candidateTable.getColumns().add(buttonColumn);
-        this.candidateTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         var c = new CandidateModel(this.punCandidate, this.targetCandidate, this.semanticScore, this.phoneticScore);
         this.candidateTableContents.add(c);
         this.candidateTable.setItems(this.candidateTableContents);
+
+        for (var child : this.candidateTable.getChildrenUnmodifiable()) {
+            System.out.println(child);
+        }
     }
 
     public void newCandidate() {

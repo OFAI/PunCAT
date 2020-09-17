@@ -5,7 +5,9 @@
             <JsonLayout complete="true" objectMessageAsJsonObject="true"/>
         </File>
         <File name="simple_appender" fileName="logs/${sys:puncatlogfilename}.txt">
-            <PatternLayout/>
+            <PatternLayout>
+                <Pattern>%d{DEFAULT}\n%m%n\n\n</Pattern>
+            </PatternLayout>
         </File>
         <Console name="Console" target="SYSTEM_OUT">
         </Console>

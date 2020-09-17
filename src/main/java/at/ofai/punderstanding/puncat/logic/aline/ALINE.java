@@ -11,10 +11,10 @@ import org.ejml.simple.SimpleMatrix;
 
 
 public class ALINE {
-    private double C_skip;
-    private double C_sub;
-    private double C_exp;
-    private double C_vwl;
+    private final double C_skip;
+    private final double C_sub;
+    private final double C_exp;
+    private final double C_vwl;
     private SimpleMatrix S;
 
     public ALINE() {

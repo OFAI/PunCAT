@@ -13,8 +13,8 @@
           fx:controller="at.ofai.punderstanding.puncat.controller.SenseGroupController"
           fx:id="container" hgap="10" vgap="10">
     <columnConstraints>
-        <ColumnConstraints halignment="CENTER" percentWidth="25"/>
-        <ColumnConstraints halignment="CENTER" percentWidth="75"/>
+        <ColumnConstraints halignment="CENTER" percentWidth="30"/>
+        <ColumnConstraints halignment="CENTER" percentWidth="70"/>
     </columnConstraints>
 
     <Accordion GridPane.columnIndex="0" GridPane.rowIndex="0" expandedPane="$sourceTitledPane">

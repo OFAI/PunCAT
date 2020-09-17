@@ -17,7 +17,7 @@ import javafx.scene.text.TextFlow;
 import at.ofai.punderstanding.puncat.model.corpus.CorpusText;
 
 
-public class CorpusInstanceQuoteTextFlow {
+public class QuoteTextFlow {
     public static TextFlow build(CorpusText corpusText) {
         // TODO: parse xml with whitespace intact
         var firstPart = corpusText.getText().get(0);

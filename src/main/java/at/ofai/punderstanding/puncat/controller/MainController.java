@@ -16,8 +16,8 @@ import javafx.scene.layout.VBox;
 
 import org.json.JSONArray;
 
-import at.ofai.punderstanding.puncat.component.CorpusInstanceKeywordTextFlow;
-import at.ofai.punderstanding.puncat.component.CorpusInstanceQuoteTextFlow;
+import at.ofai.punderstanding.puncat.component.KeywordTextFlow;
+import at.ofai.punderstanding.puncat.component.QuoteTextFlow;
 import at.ofai.punderstanding.puncat.logic.search.Search;
 import at.ofai.punderstanding.puncat.model.SimilarityModel;
 import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
@@ -43,8 +43,8 @@ public class MainController implements Initializable {
     private Button lastButton;
     private CandidateController candidateController;
     private SenseGroupController senseGroupController1;
-    private SenseGroupController senseGroupController2;
-    private String corpusInstanceId = "none";
+    private SenseGroupControllerTabs senseGroupController2;
+    private String corpusInstanceId = "unnamed_task";
 
 
     @Override
@@ -59,7 +59,7 @@ public class MainController implements Initializable {
         }
         this.senseGroupController1 = loader.getController();
 
-        loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupView.fxml"));
+        loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupViewTabs.fxml"));
         try {
             this.rootGridPane.add(loader.load(), 1, 1);
         } catch (IOException e) {
@@ -121,11 +121,11 @@ public class MainController implements Initializable {
         var image = new Image(corpusInstance.getImg().src, true);
         this.imageView.setImage(image);
 
-        var imageText = CorpusInstanceQuoteTextFlow.build(corpusInstance.getText());
+        var imageText = QuoteTextFlow.build(corpusInstance.getText());
         this.imageContainer.getChildren().add(0, imageText);
         this.imageContainer.setSpacing(10);
 
-        var keywordLabel = CorpusInstanceKeywordTextFlow.build(corpusInstance.getImg().keywords);
+        var keywordLabel = KeywordTextFlow.build(corpusInstance.getImg().keywords);
         this.imageContainer.getChildren().add(keywordLabel);
 
         for (var btn : this.getButtons()) {
@@ -164,5 +164,4 @@ public class MainController implements Initializable {
     public List<Button> getButtons() {
         return List.of(this.firstButton, this.prevButton, this.nextButton, this.lastButton);
     }
-
 }
