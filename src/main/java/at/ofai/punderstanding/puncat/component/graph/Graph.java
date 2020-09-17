@@ -12,6 +12,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -168,10 +169,14 @@ public class Graph extends Group {
         ft.setToValue(0);
         fadeTransitions.add(ft);
 
+        node.setCacheHint(CacheHint.SPEED);
         var tt = new TranslateTransition(Duration.millis(100), node);
         tt.byYProperty().set(node.getCenterY() * -1);
         tt.byXProperty().set(node.getCenterX() * -1);
-        tt.setOnFinished(event -> this.controller.nodeSelected(node.getId()));
+        tt.setOnFinished(event -> {
+            node.setCacheHint(CacheHint.DEFAULT);
+            this.controller.nodeSelected(node.getId());
+        });
 
         for (var tr : fadeTransitions) {
             tr.play();

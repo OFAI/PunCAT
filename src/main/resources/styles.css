@@ -8,12 +8,6 @@
     -fx-selection-bar-non-focused: #d3d3d3;
 }
 
-#firstRow {
-    -fx-border-style: hidden hidden solid hidden;
-    -fx-border-width: 1px;
-    -fx-border-color: black;
-}
-
 #main-pagination-btn {
     -fx-font-size: 12px;
 }
@@ -40,4 +34,8 @@
 }
 .table-row-cell:odd:filled:selected {
     -fx-background: -fx-control-inner-background-alt ;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
 }

@@ -124,24 +124,23 @@ public class Main extends Application {
         var mc = (MainController) loader.getController();
         mc.setSearch(this.search);
 
-        var buttons = mc.getButtons();
-        buttons.get(0).setOnAction(event -> this.firstPane());
-        buttons.get(1).setOnAction(event -> this.prevPane());
-        buttons.get(2).setOnAction(event -> this.nextPane());
-        buttons.get(3).setOnAction(event -> this.lastPane());
-        this.activePane.addListener((observable, oldValue, newValue) -> {
-            buttons.get(0).setDisable(this.mainPaneList.indexOf(newValue) == 0);
-            buttons.get(1).setDisable(this.mainPaneList.indexOf(newValue) == 0);
-            buttons.get(2).setDisable(this.mainPaneList.indexOf(newValue) == this.mainPaneList.size() - 1);
-            buttons.get(3).setDisable(this.mainPaneList.indexOf(newValue) == this.mainPaneList.size() - 1);
-        });
-
         this.mainPaneList.add(mainPane);
         this.mainViewContainer.getChildren().add(mainPane);
         this.mainControllers.add(mc);
 
         if (corpusInstance != null) {
             mc.loadCorpusInstance(corpusInstance);
+            var buttons = mc.getButtons();
+            buttons.get(0).setOnAction(event -> this.firstPane());
+            buttons.get(1).setOnAction(event -> this.prevPane());
+            buttons.get(2).setOnAction(event -> this.nextPane());
+            buttons.get(3).setOnAction(event -> this.lastPane());
+            this.activePane.addListener((observable, oldValue, newValue) -> {
+                buttons.get(0).setDisable(this.mainPaneList.indexOf(newValue) == 0);
+                buttons.get(1).setDisable(this.mainPaneList.indexOf(newValue) == 0);
+                buttons.get(2).setDisable(this.mainPaneList.indexOf(newValue) == this.mainPaneList.size() - 1);
+                buttons.get(3).setDisable(this.mainPaneList.indexOf(newValue) == this.mainPaneList.size() - 1);
+            });
         }
     }
 
@@ -250,13 +249,7 @@ public class Main extends Application {
         JSONArray candidateList = new JSONArray();
         for (MainController mc : this.mainControllers) {
             var candidates = mc.saveCandidates();
-            candidateList.put(Map.of(
-                    mc.getCorpusInstanceId(), candidates
-                    /*
-                    "task", mc.getCorpusInstanceId(),
-                    "results", candidates
-                     */
-            ));
+            candidateList.put(Map.of(mc.getCorpusInstanceId(), candidates));
         }
 
         String fileName = "results_" + this.userName + "_" + this.startupInstant + ".json";

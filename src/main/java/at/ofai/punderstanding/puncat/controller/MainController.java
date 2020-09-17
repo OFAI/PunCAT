@@ -9,10 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 
 import org.json.JSONArray;
 
@@ -26,24 +23,11 @@ import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
 public class MainController implements Initializable {
     private final SimilarityModel similarityModel = new SimilarityModel();
     @FXML
-    public BorderPane container;
-    @FXML
-    private ImageView imageView;
-    @FXML
-    private VBox imageContainer;
-    @FXML
-    private GridPane rootGridPane;
-    @FXML
-    private Button firstButton;
-    @FXML
-    private Button prevButton;
-    @FXML
-    private Button nextButton;
-    @FXML
-    private Button lastButton;
+    private GridPane container;
     private CandidateController candidateController;
     private SenseGroupController senseGroupController1;
     private SenseGroupControllerTabs senseGroupController2;
+    private TaskController taskController = null;
     private String corpusInstanceId = "unnamed_task";
 
 
@@ -53,7 +37,7 @@ public class MainController implements Initializable {
 
         loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupView.fxml"));
         try {
-            this.rootGridPane.add(loader.load(), 1, 0);
+            this.container.add(loader.load(), 1, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +45,7 @@ public class MainController implements Initializable {
 
         loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupViewTabs.fxml"));
         try {
-            this.rootGridPane.add(loader.load(), 1, 1);
+            this.container.add(loader.load(), 1, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,7 +53,7 @@ public class MainController implements Initializable {
 
         loader = new FXMLLoader(getClass().getResource("/fxml/candidateView.fxml"));
         try {
-            this.rootGridPane.add(loader.load(), 0, 1);
+            this.container.add(loader.load(), 0, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,20 +101,22 @@ public class MainController implements Initializable {
                 corpusInstance.getText().getPun().getSecondLemma(),
                 corpusInstance.getText().getPun().getSecondSense());
 
-        this.imageView.fitWidthProperty().bind(this.imageContainer.widthProperty());
+        var loader = new FXMLLoader(getClass().getResource("/fxml/taskView.fxml"));
+        try {
+            this.container.add(loader.load(), 0, 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.taskController = loader.getController();
+
         var image = new Image(corpusInstance.getImg().src, true);
-        this.imageView.setImage(image);
+        this.taskController.insertImage(image);
 
         var imageText = QuoteTextFlow.build(corpusInstance.getText());
-        this.imageContainer.getChildren().add(0, imageText);
-        this.imageContainer.setSpacing(10);
+        this.taskController.insertQuote(imageText);
 
-        var keywordLabel = KeywordTextFlow.build(corpusInstance.getImg().keywords);
-        this.imageContainer.getChildren().add(keywordLabel);
-
-        for (var btn : this.getButtons()) {
-            btn.setVisible(true);
-        }
+        var keywordFlow = KeywordTextFlow.build(corpusInstance.getImg().keywords);
+        this.taskController.insertKeywords(keywordFlow);
     }
 
     public JSONArray saveCandidates() {
@@ -162,6 +148,6 @@ public class MainController implements Initializable {
     }
 
     public List<Button> getButtons() {
-        return List.of(this.firstButton, this.prevButton, this.nextButton, this.lastButton);
+        return this.taskController.getButtons();
     }
 }

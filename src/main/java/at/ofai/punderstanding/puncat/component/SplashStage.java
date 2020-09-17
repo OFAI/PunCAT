@@ -13,6 +13,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -32,7 +33,8 @@ public class SplashStage extends Stage {
         this.setHeight(splashHeight);
         this.initStyle(StageStyle.UNDECORATED);
 
-        var loadingLabel = new Label("Loading…");
+        var loadingLabel = new Label("PunCAT\nis loading…");
+        loadingLabel.setTextAlignment(TextAlignment.CENTER);
         loadingLabel.setFont(new Font(22));
         StackPane.setMargin(loadingLabel, new Insets(splashHeight / 3., splashWidth / 5., 0, 0));
         StackPane.setAlignment(loadingLabel, Pos.TOP_RIGHT);

@@ -62,10 +62,12 @@ public class Node extends Group {
         } else {
             this.setOnMouseEntered(event -> {
                 this.toFront();
+                this.ellipse.setStroke(Color.web("#ebba34"));
                 interactionLogger.logThis(Map.of(
                         LoggerValues.EVENT, LoggerValues.GRAPH_NODE_HOVERED_EVENT,
                         LoggerValues.NODE_SYNSET_ID, this.getId()));
             });
+            this.setOnMouseExited(event -> this.ellipse.setStroke(Color.CORNFLOWERBLUE));
             this.setOnMouseClicked(event -> {
                 interactionLogger.logThis(Map.of(
                         LoggerValues.EVENT, LoggerValues.GRAPH_NODE_CLICKED_EVENT,
