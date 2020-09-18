@@ -32,22 +32,22 @@
     <ImageView fx:id="imageView" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
     <HBox spacing="10" alignment="BOTTOM_CENTER" GridPane.columnIndex="0" GridPane.rowIndex="3">
-        <Button fx:id="firstButton" id="main-pagination-btn" text="&lt;&lt;">
+        <Button fx:id="firstButton" id="main-pagination-btn">
             <tooltip>
                 <Tooltip text="Jump to the first translation task"/>
             </tooltip>
         </Button>
-        <Button fx:id="prevButton" id="main-pagination-btn" text="&lt;">
+        <Button fx:id="prevButton" id="main-pagination-btn">
             <tooltip>
                 <Tooltip text="Step to the previous translation task"/>
             </tooltip>
         </Button>
-        <Button fx:id="nextButton" id="main-pagination-btn" text="&gt;">
+        <Button fx:id="nextButton" id="main-pagination-btn">
             <tooltip>
                 <Tooltip text="Step to the next translation task"/>
             </tooltip>
         </Button>
-        <Button fx:id="lastButton" id="main-pagination-btn" text="&gt;&gt;">
+        <Button fx:id="lastButton" id="main-pagination-btn">
             <tooltip>
                 <Tooltip text="Jump to the last translation task"/>
             </tooltip>

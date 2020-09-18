@@ -5,15 +5,21 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
+
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 
 
 public class TaskController implements Initializable {
@@ -35,6 +41,19 @@ public class TaskController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         GridPane.setValignment(this.container, VPos.BOTTOM);
+        var fontAwesome = GlyphFontRegistry.font("FontAwesome");
+        this.setButtonLayout(firstButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_DOUBLE_LEFT));
+        this.setButtonLayout(prevButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_LEFT));
+        this.setButtonLayout(nextButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_RIGHT));
+        this.setButtonLayout(lastButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_DOUBLE_RIGHT));
+    }
+
+    private void setButtonLayout(Button button, Glyph glyph) {
+        button.setContentDisplay(ContentDisplay.CENTER);
+        glyph.setFontSize(18);
+        button.setGraphic(glyph);
+        button.setPadding(new Insets(2));
+        button.prefWidthProperty().bind(button.heightProperty().add(2));
     }
 
     public List<Button> getButtons() {

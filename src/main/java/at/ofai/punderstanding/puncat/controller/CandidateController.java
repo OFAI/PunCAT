@@ -20,6 +20,9 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFont;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.json.JSONArray;
 
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
@@ -90,8 +93,11 @@ public class CandidateController implements Initializable {
     private void setButtonBehavior(TableColumn<CandidateModel, Void> buttonColumn) {
         buttonColumn.setCellFactory(col -> new TableCell<>() {
             private final Button button = new Button();
+            private final GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+            private final Tooltip addTooltip = new Tooltip("Add to candidates");
+            private final Tooltip removeTooltip = new Tooltip("Remove from candidates");
             {
-                button.prefWidthProperty().bind(this.widthProperty());
+                //button.prefWidthProperty().bind(this.widthProperty());
                 this.setAlignment(Pos.CENTER);
             }
             @Override
@@ -103,17 +109,17 @@ public class CandidateController implements Initializable {
                 } else {
                     var candidate = getTableView().getItems().get(getIndex());
                     if (candidate.isCurrentCandidate()) {
-                        button.setText("+");
-                        button.setTooltip(new Tooltip("Add to candidates"));
+                        button.setGraphic(fontAwesome.create(FontAwesome.Glyph.PLUS));
+                        button.setTooltip(addTooltip);
                         button.setOnAction(event -> newCandidate());
                         button.disableProperty().bind(candidate.hasEmptyValuesProperty());
                         this.setGraphic(button);
                     } else {
-                        button.setText("-");
-                        button.setTooltip(new Tooltip("Remove from candidates"));
+                        button.setGraphic(fontAwesome.create(FontAwesome.Glyph.MINUS));
+                        button.setTooltip(removeTooltip);
+                        button.setOnAction(event -> candidateTableContents.remove(candidate));
                         button.disableProperty().unbind();
                         button.setDisable(false);
-                        button.setOnAction(event -> candidateTableContents.remove(candidate));
                         this.setGraphic(button);
                     }
                 }
