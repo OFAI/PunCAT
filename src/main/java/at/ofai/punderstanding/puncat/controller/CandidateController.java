@@ -2,6 +2,7 @@ package at.ofai.punderstanding.puncat.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 import org.controlsfx.glyphfont.FontAwesome;
@@ -85,6 +87,22 @@ public class CandidateController implements Initializable {
         this.candidateTable.getColumns().add(semColumn);
         this.candidateTable.getColumns().add(buttonColumn);
 
+        this.candidateTable.sortPolicyProperty().set(param -> {
+            Comparator<CandidateModel> comparator = (r1, r2) -> {
+                if (r1.isCurrentCandidate()) {
+                    return -1;
+                } else if (r2.isCurrentCandidate()) {
+                    return 1;
+                } else if (param.getComparator() == null) {
+                    return 0;
+                } else {
+                    return param.getComparator().compare(r1, r2);
+                }
+            };
+            FXCollections.sort(this.candidateTable.getItems(), comparator);
+            return true;
+        });
+
         var c = new CandidateModel(this.punCandidate, this.targetCandidate, this.semanticScore, this.phoneticScore);
         this.candidateTableContents.add(c);
         this.candidateTable.setItems(this.candidateTableContents);
@@ -113,15 +131,14 @@ public class CandidateController implements Initializable {
                         button.setTooltip(addTooltip);
                         button.setOnAction(event -> newCandidate());
                         button.disableProperty().bind(candidate.hasEmptyValuesProperty());
-                        this.setGraphic(button);
                     } else {
                         button.setGraphic(fontAwesome.create(FontAwesome.Glyph.MINUS));
                         button.setTooltip(removeTooltip);
                         button.setOnAction(event -> candidateTableContents.remove(candidate));
                         button.disableProperty().unbind();
                         button.setDisable(false);
-                        this.setGraphic(button);
                     }
+                    this.setGraphic(button);
                 }
             }
         });
