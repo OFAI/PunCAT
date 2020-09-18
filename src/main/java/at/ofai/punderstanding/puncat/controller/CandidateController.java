@@ -19,7 +19,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
 import javafx.util.Duration;
 
 import org.controlsfx.glyphfont.FontAwesome;
@@ -60,26 +59,25 @@ public class CandidateController implements Initializable {
         targetColumn.setCellValueFactory(new PropertyValueFactory<>("target"));
         phonColumn.setCellValueFactory(new PropertyValueFactory<>("phon"));
         semColumn.setCellValueFactory(new PropertyValueFactory<>("sem"));
-        this.setButtonBehavior(buttonColumn);
+        this.setButtonCellValueFactory(buttonColumn);
 
         this.setTextColor(punColumn);
         this.setTextColor(targetColumn);
         this.setTextColor(phonColumn);
         this.setTextColor(semColumn);
 
-        var phonHeader = new Label("~phon");
-        phonHeader.prefWidthProperty().bind(phonColumn.widthProperty());
-        var phonTooltip = new Tooltip("Phonetic similarity score");
-        phonTooltip.setShowDelay(Duration.millis(500));
-        phonHeader.setTooltip(phonTooltip);
-        phonColumn.setGraphic(phonHeader);
-
-        var semHeader = new Label("~sem");
-        semHeader.prefWidthProperty().bind(semColumn.widthProperty());
-        var semTooltip = new Tooltip("Semantic similarity score");
-        semTooltip.setShowDelay(Duration.millis(500));
-        semHeader.setTooltip(semTooltip);
-        semColumn.setGraphic(semHeader);
+        phonColumn.setGraphic(new Label("~phon") {{
+            prefWidthProperty().bind(phonColumn.widthProperty());
+            setTooltip(new Tooltip("Phonetic similarity score") {{
+                setShowDelay(Duration.millis(500));
+            }});
+        }});
+        semColumn.setGraphic(new Label("~sem") {{
+            prefWidthProperty().bind(semColumn.widthProperty());
+            setTooltip(new Tooltip("Semantic similarity score") {{
+                setShowDelay(Duration.millis(500));
+            }});
+        }});
 
         this.candidateTable.getColumns().add(punColumn);
         this.candidateTable.getColumns().add(targetColumn);
@@ -108,20 +106,20 @@ public class CandidateController implements Initializable {
         this.candidateTable.setItems(this.candidateTableContents);
     }
 
-    private void setButtonBehavior(TableColumn<CandidateModel, Void> buttonColumn) {
+    private void setButtonCellValueFactory(TableColumn<CandidateModel, Void> buttonColumn) {
         buttonColumn.setCellFactory(col -> new TableCell<>() {
             private final Button button = new Button();
             private final GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
             private final Tooltip addTooltip = new Tooltip("Add to candidates");
             private final Tooltip removeTooltip = new Tooltip("Remove from candidates");
+
             {
-                //button.prefWidthProperty().bind(this.widthProperty());
                 this.setAlignment(Pos.CENTER);
             }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-
                 if (empty) {
                     this.setGraphic(null);
                 } else {
