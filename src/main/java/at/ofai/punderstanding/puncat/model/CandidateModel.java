@@ -83,7 +83,7 @@ public class CandidateModel {
         return phon;
     }
 
-    public boolean isHasEmptyValues() {
+    public boolean hasEmptyValues() {
         return hasEmptyValues.get();
     }
 

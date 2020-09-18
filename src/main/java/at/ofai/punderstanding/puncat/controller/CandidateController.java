@@ -12,10 +12,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Duration;
 
 import org.json.JSONArray;
 
@@ -43,34 +46,54 @@ public class CandidateController implements Initializable {
         this.candidateTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         var punColumn = new TableColumn<CandidateModel, String>("Pun");
-        punColumn.setCellValueFactory(new PropertyValueFactory<>("pun"));
-        this.setTextColor(punColumn);
-        this.candidateTable.getColumns().add(punColumn);
-
         var targetColumn = new TableColumn<CandidateModel, String>("Target");
-        targetColumn.setCellValueFactory(new PropertyValueFactory<>("target"));
-        this.setTextColor(targetColumn);
-        this.candidateTable.getColumns().add(targetColumn);
-
-        var phonColumn = new TableColumn<CandidateModel, String>("~phon");
-        phonColumn.setCellValueFactory(new PropertyValueFactory<>("phon"));
-        this.setTextColor(phonColumn);
-        this.candidateTable.getColumns().add(phonColumn);
-
-        var semColumn = new TableColumn<CandidateModel, String>("~sem");
-        semColumn.setCellValueFactory(new PropertyValueFactory<>("sem"));
-        this.setTextColor(semColumn);
-        this.candidateTable.getColumns().add(semColumn);
-
+        var phonColumn = new TableColumn<CandidateModel, String>();
+        var semColumn = new TableColumn<CandidateModel, String>();
         var buttonColumn = new TableColumn<CandidateModel, Void>();
+
+        punColumn.setCellValueFactory(new PropertyValueFactory<>("pun"));
+        targetColumn.setCellValueFactory(new PropertyValueFactory<>("target"));
+        phonColumn.setCellValueFactory(new PropertyValueFactory<>("phon"));
+        semColumn.setCellValueFactory(new PropertyValueFactory<>("sem"));
+        this.setButtonBehavior(buttonColumn);
+
+        this.setTextColor(punColumn);
+        this.setTextColor(targetColumn);
+        this.setTextColor(phonColumn);
+        this.setTextColor(semColumn);
+
+        var phonHeader = new Label("~phon");
+        phonHeader.prefWidthProperty().bind(phonColumn.widthProperty());
+        var phonTooltip = new Tooltip("Phonetic similarity score");
+        phonTooltip.setShowDelay(Duration.millis(500));
+        phonHeader.setTooltip(phonTooltip);
+        phonColumn.setGraphic(phonHeader);
+
+        var semHeader = new Label("~sem");
+        semHeader.prefWidthProperty().bind(semColumn.widthProperty());
+        var semTooltip = new Tooltip("Semantic similarity score");
+        semTooltip.setShowDelay(Duration.millis(500));
+        semHeader.setTooltip(semTooltip);
+        semColumn.setGraphic(semHeader);
+
+        this.candidateTable.getColumns().add(punColumn);
+        this.candidateTable.getColumns().add(targetColumn);
+        this.candidateTable.getColumns().add(phonColumn);
+        this.candidateTable.getColumns().add(semColumn);
+        this.candidateTable.getColumns().add(buttonColumn);
+
+        var c = new CandidateModel(this.punCandidate, this.targetCandidate, this.semanticScore, this.phoneticScore);
+        this.candidateTableContents.add(c);
+        this.candidateTable.setItems(this.candidateTableContents);
+    }
+
+    private void setButtonBehavior(TableColumn<CandidateModel, Void> buttonColumn) {
         buttonColumn.setCellFactory(col -> new TableCell<>() {
             private final Button button = new Button();
-
             {
                 button.prefWidthProperty().bind(this.widthProperty());
                 this.setAlignment(Pos.CENTER);
             }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -81,12 +104,14 @@ public class CandidateController implements Initializable {
                     var candidate = getTableView().getItems().get(getIndex());
                     if (candidate.isCurrentCandidate()) {
                         button.setText("+");
-                        this.setGraphic(button);
+                        button.setTooltip(new Tooltip("Add to candidates"));
                         button.setOnAction(event -> newCandidate());
                         button.disableProperty().bind(candidate.hasEmptyValuesProperty());
+                        this.setGraphic(button);
                     } else {
-                        this.setId("");
                         button.setText("-");
+                        button.setTooltip(new Tooltip("Remove from candidates"));
+                        button.disableProperty().unbind();
                         button.setDisable(false);
                         button.setOnAction(event -> candidateTableContents.remove(candidate));
                         this.setGraphic(button);
@@ -94,11 +119,6 @@ public class CandidateController implements Initializable {
                 }
             }
         });
-        this.candidateTable.getColumns().add(buttonColumn);
-
-        var c = new CandidateModel(this.punCandidate, this.targetCandidate, this.semanticScore, this.phoneticScore);
-        this.candidateTableContents.add(c);
-        this.candidateTable.setItems(this.candidateTableContents);
     }
 
     private void setTextColor(TableColumn<CandidateModel, String> tableColumn) {
