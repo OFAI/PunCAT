@@ -26,7 +26,7 @@ public class MainController implements Initializable {
     private GridPane container;
     private CandidateController candidateController;
     private SenseGroupController senseGroupController1;
-    private SenseGroupControllerTabs senseGroupController2;
+    private SenseGroupController senseGroupController2;
     private TaskController taskController = null;
     private String corpusInstanceId = "unnamed_task";
 
@@ -43,7 +43,7 @@ public class MainController implements Initializable {
         }
         this.senseGroupController1 = loader.getController();
 
-        loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupViewTabs.fxml"));
+        loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupView.fxml"));
         try {
             this.container.add(loader.load(), 1, 1);
         } catch (IOException e) {

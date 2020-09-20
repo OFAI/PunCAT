@@ -21,7 +21,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 
 import at.ofai.punderstanding.puncat.component.SenseCell;
@@ -42,8 +41,6 @@ public class SenseGroupController implements Initializable {
     private final BooleanProperty noEquivalentInGermanet = new SimpleBooleanProperty(false);
     private final Label noResultLabel = new Label("No known equivalent in GermaNet!\nTry searching manually.");
     private final InteractionLogger interactionLogger = new InteractionLogger();
-    @FXML
-    private TitledPane sourceTitledPane;
     @FXML
     private GridPane container;
     @FXML

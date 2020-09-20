@@ -8,10 +8,6 @@
     -fx-selection-bar-non-focused: #d3d3d3;
 }
 
-#main-pagination-btn {
-    -fx-font-size: 12px;
-}
-
 .menu-bar {
     -fx-background-color: white;
 }
