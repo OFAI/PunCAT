@@ -6,4 +6,4 @@ Some external resources are required to properly run the application:
 - The [interlingual index](https://uni-tuebingen.de/en/faculties/faculty-of-humanities/departments/modern-languages/department-of-linguistics/chairs/general-and-computational-linguistics/ressources/lexica/germanet/description/interlingual-index/) for GermaNet
 - [Frequency lists](https://uni-tuebingen.de/en/faculties/faculty-of-humanities/departments/modern-languages/department-of-linguistics/chairs/general-and-computational-linguistics/ressources/lexica/germanet/applications-tools/) for GermaNet
 
-The path to these resources can be specified in `src/main/java/logic/GermanetController.java`.
+The path to these resources can be specified in `src/main/java/logic/ResourcePaths.java`.
