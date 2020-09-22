@@ -5,7 +5,7 @@ import javafx.beans.property.StringProperty;
 
 import org.decimal4j.util.DoubleRounder;
 
-import at.ofai.punderstanding.puncat.logic.search.Search;
+import at.ofai.punderstanding.puncat.logic.Search;
 
 
 public class SimilarityModel {

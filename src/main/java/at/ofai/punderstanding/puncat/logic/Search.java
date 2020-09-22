@@ -1,4 +1,4 @@
-package at.ofai.punderstanding.puncat.logic.search;
+package at.ofai.punderstanding.puncat.logic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,11 +16,10 @@ import at.ofai.punderstanding.puncat.logic.semnet.GermanetController;
 import at.ofai.punderstanding.puncat.logic.semnet.WordnetController;
 import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
 import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
-import at.ofai.punderstanding.puncat.logic.util.Consts;
 
 
 public class Search {
-    private final Map<String, String> word2ipaDE = new HashMap<>();
+    private final Map<String, String> word2ipaGER = new HashMap<>();
     private final Map<String, String> word2ipaEN = new HashMap<>();
     private GermanetController germaNet;
     private WordnetController wordNet;
@@ -28,64 +27,65 @@ public class Search {
     private PhoneticSimilarity phonSimilarity;
 
     public Search() {
-        var csvFile = getClass().getResourceAsStream(Consts.germanet2ipaPath);
+        var csvFile = getClass().getResourceAsStream(ResourcePaths.germanet2ipaPath);
         String line;
         String cvsSplitBy = ",";
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] pair = line.split(cvsSplitBy);
-                this.word2ipaDE.put(pair[0], pair[1]);
+                this.word2ipaGER.put(pair[0], pair[1]);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        csvFile = getClass().getResourceAsStream(Consts.wordnet2ipaPath);
+        csvFile = getClass().getResourceAsStream(ResourcePaths.wordnet2ipaPath);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] pair = line.split(cvsSplitBy);
                 this.word2ipaEN.put(pair[0], pair[1]);
             }
         } catch (IOException e) {
-            throw new RuntimeException();
+            e.printStackTrace();
         }
 
         try {
             this.wordNet = new WordnetController();
             this.germaNet = new GermanetController();
             this.semSimilarity = new SemanticSimilarity(this.germaNet.getObject());
-            this.phonSimilarity = new PhoneticSimilarity(word2ipaDE);
+            this.phonSimilarity = new PhoneticSimilarity(word2ipaGER);
         } catch (Exception e) {
             e.printStackTrace();  // TODO: better handling of germanet/wordnet exceptions
         }
     }
 
-    public double calculateSemanticSimilarity(long sSense, int tSense) {
+    public Double calculateSemanticSimilarity(long sSense, int tSense) {
         var soureAsTargetSynset = this.germaNet.equivalentByWordnetOffset(sSense);
         var targetSynset = this.germaNet.getSynsetById(tSense);
         if (soureAsTargetSynset != null && targetSynset != null) {
             return this.semSimilarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset);
         } else {
-            // TODO: this can happen if a source is not mapped to GermaNet in the interlingual index
             if (soureAsTargetSynset == null) {
-                throw new RuntimeException("Source null");
+                // TODO: this can happen if a source is not mapped to GermaNet in the interlingual index
+                System.err.println("WordNet synset " + sSense + " not mapped to GermaNet");
+                return null;
             } else {
-                throw new RuntimeException("Target null");
+                throw new RuntimeException("targetSynset null");
             }
         }
     }
 
-    public Long getGermanetSynsetCumulativeFrequency(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
+    public double calculatePhoneticSimilarity(String word1, String word2) {
+        return this.phonSimilarity.calculatePhoneticSimilarity(word1, word2);
+    }
+
+    public Long germanetGetSynsetCumulativeFrequency(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
         return this.germaNet.getSynsetCumulativeFrequency(synset);
     }
 
     public String germanetGetMostFrequentOrthForm(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
         return this.germaNet.getMostFrequentOrthForm(synset);
-    }
-
-    public double calculatePhoneticSimilarity(String word1, String word2) {
-        return this.phonSimilarity.calculatePhoneticSimilarity(word1, word2);
     }
 
     public String getIpaTranscriptionEnglish(String word) {
@@ -94,7 +94,7 @@ public class Search {
     }
 
     public String getIpaTranscriptionGerman(String word) {
-        String result = this.word2ipaDE.get(word.toLowerCase());
+        String result = this.word2ipaGER.get(word.toLowerCase());
         return result == null ? "" : result;
     }
 
@@ -112,14 +112,14 @@ public class Search {
 
     public List<de.tuebingen.uni.sfs.germanet.api.Synset> germanetGetHypernymsOrderedByFrequency(int synsetId) {
         var hypernyms = this.germaNet.getHypernyms(synsetId);
-        hypernyms.sort(Comparator.comparing(this::getGermanetSynsetCumulativeFrequency));
+        hypernyms.sort(Comparator.comparing(this::germanetGetSynsetCumulativeFrequency));
         Collections.reverse(hypernyms);
         return hypernyms;
     }
 
     public List<de.tuebingen.uni.sfs.germanet.api.Synset> germanetGetHyponymsOrderedByFrequency(int synsetId) {
         var hyponyms = this.germaNet.getHyponyms(synsetId);
-        hyponyms.sort(Comparator.comparing(this::getGermanetSynsetCumulativeFrequency));
+        hyponyms.sort(Comparator.comparing(this::germanetGetSynsetCumulativeFrequency));
         Collections.reverse(hyponyms);
         return hyponyms;
     }
@@ -128,7 +128,7 @@ public class Search {
         return this.germaNet.getSynsetById(id);
     }
 
-    public String getGermanetOrthFormByLexUnitId(int lexUnitId) {
+    public String germanetGetOrthFormByLexUnitId(int lexUnitId) {
         return this.germaNet.getLexUnitById(lexUnitId);
     }
 

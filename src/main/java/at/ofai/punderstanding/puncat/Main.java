@@ -32,13 +32,13 @@ import at.ofai.punderstanding.puncat.component.UsernameWindow;
 import at.ofai.punderstanding.puncat.controller.MainController;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
 import at.ofai.punderstanding.puncat.logging.LoggerValues;
-import at.ofai.punderstanding.puncat.logic.search.Search;
-import at.ofai.punderstanding.puncat.logic.util.Consts;
+import at.ofai.punderstanding.puncat.logic.Search;
 import at.ofai.punderstanding.puncat.model.corpus.Corpus;
 import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
 
 
 public class Main extends Application {
+    private static final String icon = "/img/Computational_Pun-derstanding_head.png";
     //GridPane activePane = null;
     ObjectProperty<GridPane> activePane = new SimpleObjectProperty<>();
     Stage stage;
@@ -108,7 +108,7 @@ public class Main extends Application {
         this.stage.setTitle("PunCAT");
         this.stage.setScene(scene);
         this.stage.setMaximized(true);
-        this.stage.getIcons().add(new Image(getClass().getResourceAsStream(Consts.icon)));
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream(icon)));
     }
 
     private void buildMainPane(CorpusInstance corpusInstance) {

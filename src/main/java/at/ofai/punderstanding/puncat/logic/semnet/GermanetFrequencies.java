@@ -1,4 +1,4 @@
-package at.ofai.punderstanding.puncat.logic.util;
+package at.ofai.punderstanding.puncat.logic.semnet;
 
 import java.io.File;
 import java.io.IOException;

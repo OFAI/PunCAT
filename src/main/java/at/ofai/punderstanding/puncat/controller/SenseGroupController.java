@@ -26,7 +26,7 @@ import javafx.scene.layout.GridPane;
 import at.ofai.punderstanding.puncat.component.SenseCell;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
 import at.ofai.punderstanding.puncat.logging.LoggerValues;
-import at.ofai.punderstanding.puncat.logic.search.Search;
+import at.ofai.punderstanding.puncat.logic.Search;
 import at.ofai.punderstanding.puncat.model.SenseModel;
 import at.ofai.punderstanding.puncat.model.SenseModelSource;
 import at.ofai.punderstanding.puncat.model.SenseModelTarget;
@@ -96,6 +96,11 @@ public class SenseGroupController implements Initializable {
 
     private void onSourceKeywordChanged() {
         String keyword = this.sourceKeyword.getText();
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
+                LoggerValues.NEW_VALUE, keyword,
+                LoggerValues.PANEL_ID, this.identifier));
+
         var synsets = this.search.wordnetGetSenses(keyword);
         var senseModels = synsets.stream().map(SenseModelSource::new).collect(Collectors.toList());
 
@@ -104,12 +109,6 @@ public class SenseGroupController implements Initializable {
 
         this.sourceList.setAll(senseModels);
         this.sourceListView.getSelectionModel().select(0);  // onSourceSelection() gets called here
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
-                LoggerValues.NEW_VALUE, keyword,
-                LoggerValues.PANEL_ID, this.identifier,
-                LoggerValues.AUTO_SELECTED_SYNSET_ID, this.getSelectedSourceId()));
     }
 
     private void onSourceSelection() {
@@ -154,8 +153,7 @@ public class SenseGroupController implements Initializable {
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
                 LoggerValues.NEW_KEYWORD, this.targetKeyword.getText(),
-                LoggerValues.PANEL_ID, this.identifier,
-                LoggerValues.AUTO_SELECTED_SYNSET_ID, this.targetList.get(0).getSynsetIdentifier()
+                LoggerValues.PANEL_ID, this.identifier
         ));
         this.targetListView.getSelectionModel().select(0);
     }
@@ -221,7 +219,7 @@ public class SenseGroupController implements Initializable {
     }
 
     private void onNodeLineChanged(String lexUnitId) {
-        this.selectedOrthForm.set(this.search.getGermanetOrthFormByLexUnitId(Integer.parseInt(lexUnitId)));
+        this.selectedOrthForm.set(this.search.germanetGetOrthFormByLexUnitId(Integer.parseInt(lexUnitId)));
     }
 
     private void onNodeClicked(String synsetIdString) {

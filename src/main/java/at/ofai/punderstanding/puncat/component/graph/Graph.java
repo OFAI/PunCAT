@@ -7,13 +7,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -36,7 +40,7 @@ public class Graph extends Group {
     private final StringProperty selectedLineId = new SimpleStringProperty();
     private final ArrayList<Group> childNodePages = new ArrayList<>();
     private final InteractionLogger interactionLogger;
-    private Group activeChildren;
+    private ObjectProperty<Group> activeChildren = new SimpleObjectProperty<>();
     private Node rootNode;
 
     public Graph(GraphController controller, ReadOnlyDoubleProperty slotHeight, ReadOnlyDoubleProperty slotWidth) {
@@ -58,8 +62,8 @@ public class Graph extends Group {
             List<SenseModelTarget> hyponymSlice = hyponymSlices.size() > i ? hyponymSlices.get(i) : Collections.emptyList();
             this.buildChildren(hypernymSlice, hyponymSlice);
         }
-        this.activeChildren = this.childNodePages.get(0);
-        this.activeChildren.setVisible(true);
+        this.activeChildren.set(this.childNodePages.get(0));
+        this.activeChildren.get().setVisible(true);
 
         this.rootNode = new Node(root.getSynonyms(), new SimpleDoubleProperty(0), new SimpleDoubleProperty(0), true);
         this.getChildren().add(rootNode);
@@ -156,7 +160,7 @@ public class Graph extends Group {
 
     public void nodeSelected(Node node) {
         var fadeTransitions = new ArrayList<FadeTransition>();
-        for (javafx.scene.Node n : this.activeChildren.getChildren()) {
+        for (javafx.scene.Node n : this.activeChildren.get().getChildren()) {
             if (n != node) {
                 var ft = new FadeTransition(Duration.millis(100), n);
                 ft.setFromValue(1);
@@ -186,13 +190,26 @@ public class Graph extends Group {
     }
 
     private void setVisibleChildren(Group children) {
-        this.activeChildren.setVisible(false);
-        this.activeChildren = children;
-        this.activeChildren.setVisible(true);
+        this.activeChildren.get().setVisible(false);
+        this.activeChildren.set(children);
+        this.activeChildren.get().setVisible(true);
+    }
+
+    public void firstGraph() {
+        int idx = this.childNodePages.indexOf(this.activeChildren.get());
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.FIRST_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_GRAPH_IDX, idx,
+                LoggerValues.NEXT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
+
+        if (idx != 0) {
+            this.setVisibleChildren(this.childNodePages.get(0));
+        }
     }
 
     public void prevGraph() {
-        int idx = this.childNodePages.indexOf(this.activeChildren);
+        int idx = this.childNodePages.indexOf(this.activeChildren.get());
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.PREV_GRAPH_BUTTON_CLICKED_EVENT,
@@ -205,7 +222,7 @@ public class Graph extends Group {
     }
 
     public void nextGraph() {
-        int idx = this.childNodePages.indexOf(this.activeChildren);
+        int idx = this.childNodePages.indexOf(this.activeChildren.get());
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_GRAPH_BUTTON_CLICKED_EVENT,
@@ -217,7 +234,33 @@ public class Graph extends Group {
         }
     }
 
+    public void lastGraph() {
+        int idx = this.childNodePages.indexOf(this.activeChildren.get());
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.LAST_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_GRAPH_IDX, idx,
+                LoggerValues.NEXT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
+
+        if (idx != this.childNodePages.size() - 1) {
+            this.setVisibleChildren(this.childNodePages.get(this.childNodePages.size() - 1));
+        }
+    }
+
     public StringProperty selectedLineIdProperty() {
         return selectedLineId;
+    }
+
+    public void configButtonDisable(Button firstButton, Button prevButton, Button nextButton, Button lastButton) {
+        this.activeChildren.addListener((observable, oldValue, newValue) -> {
+            var noActive = this.activeChildren.get() == null;
+            var onePageOrNoPages = childNodePages.size() == 1 || childNodePages.isEmpty();
+            var firstPage = childNodePages.indexOf(this.activeChildren.get()) == 0;
+            var lastPage = childNodePages.indexOf(this.activeChildren.get()) == childNodePages.size() - 1;
+            firstButton.setDisable(noActive || firstPage || onePageOrNoPages);
+            prevButton.setDisable(noActive || firstPage || onePageOrNoPages);
+            nextButton.setDisable(noActive || lastPage || onePageOrNoPages);
+            lastButton.setDisable(noActive || lastPage || onePageOrNoPages);
+        });
     }
 }

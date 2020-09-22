@@ -27,8 +27,10 @@ public class LoggerValues {
     public static final String PREV_TASK_IDX = "prevTaskIdx";
     public static final String NEXT_TASK_IDX = "nextTaskIdx";
 
+    public static final Object FIRST_GRAPH_BUTTON_CLICKED_EVENT = "'First graph' button clicked";
     public static final String PREV_GRAPH_BUTTON_CLICKED_EVENT = "'Prev graph' button clicked";
     public static final String NEXT_GRAPH_BUTTON_CLICKED_EVENT = "'Next graph' button clicked";
+    public static final Object LAST_GRAPH_BUTTON_CLICKED_EVENT = "'Last graph' button clicked";
     public static final String PREV_GRAPH_IDX = "prevGraphIdx";
     public static final String NEXT_GRAPH_IDX = "nextGraphIdx";
 

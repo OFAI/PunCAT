@@ -14,8 +14,7 @@ import de.tuebingen.uni.sfs.germanet.api.IliRecord;
 import de.tuebingen.uni.sfs.germanet.api.RelDirection;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
 
-import at.ofai.punderstanding.puncat.logic.util.Consts;
-import at.ofai.punderstanding.puncat.logic.util.GermanetFrequencies;
+import at.ofai.punderstanding.puncat.logic.ResourcePaths;
 
 
 public class GermanetController implements SemnetController<Synset> {
@@ -24,14 +23,14 @@ public class GermanetController implements SemnetController<Synset> {
 
     public GermanetController() throws IOException, XMLStreamException {
         this.germanet = new GermaNet(
-                getClass().getResource(Consts.germaNetLocation).getPath(),
-                getClass().getResource(Consts.nounFreq).getPath(),
-                getClass().getResource(Consts.verbFreq).getPath(),
-                getClass().getResource(Consts.adjFreq).getPath());
+                getClass().getResource(ResourcePaths.germaNetLocation).getPath(),
+                getClass().getResource(ResourcePaths.nounFreq).getPath(),
+                getClass().getResource(ResourcePaths.verbFreq).getPath(),
+                getClass().getResource(ResourcePaths.adjFreq).getPath());
         this.frequencies = GermanetFrequencies.loadFrequencies(
-                getClass().getResource(Consts.nounFreq).getPath(),
-                getClass().getResource(Consts.verbFreq).getPath(),
-                getClass().getResource(Consts.adjFreq).getPath());
+                getClass().getResource(ResourcePaths.nounFreq).getPath(),
+                getClass().getResource(ResourcePaths.verbFreq).getPath(),
+                getClass().getResource(ResourcePaths.adjFreq).getPath());
     }
 
     @Override

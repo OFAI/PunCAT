@@ -15,7 +15,7 @@ import org.json.JSONArray;
 
 import at.ofai.punderstanding.puncat.component.KeywordTextFlow;
 import at.ofai.punderstanding.puncat.component.QuoteTextFlow;
-import at.ofai.punderstanding.puncat.logic.search.Search;
+import at.ofai.punderstanding.puncat.logic.Search;
 import at.ofai.punderstanding.puncat.model.SimilarityModel;
 import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
 

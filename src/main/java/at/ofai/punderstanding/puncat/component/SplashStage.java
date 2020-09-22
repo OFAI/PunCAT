@@ -19,13 +19,13 @@ import javafx.stage.StageStyle;
 
 import afester.javafx.svg.SvgLoader;
 
-import at.ofai.punderstanding.puncat.logic.util.Consts;
-
 
 public class SplashStage extends Stage {
+    private static final String splashImg = "/img/Computational_Pun-derstanding_logo.svg";
+    private static final String icon = "/img/Computational_Pun-derstanding_head.png";
     public SplashStage() {
         super();
-        this.getIcons().add(new Image(getClass().getResourceAsStream(Consts.icon)));
+        this.getIcons().add(new Image(getClass().getResourceAsStream(icon)));
         int splashWidth = 500;
         int splashHeight = 300;
 
@@ -39,7 +39,7 @@ public class SplashStage extends Stage {
         StackPane.setMargin(loadingLabel, new Insets(splashHeight / 3., splashWidth / 5., 0, 0));
         StackPane.setAlignment(loadingLabel, Pos.TOP_RIGHT);
 
-        InputStream svgFile = getClass().getResourceAsStream(Consts.splashImg);
+        InputStream svgFile = getClass().getResourceAsStream(splashImg);
         SvgLoader loader = new SvgLoader();
         Group svgImage = loader.loadSvg(svgFile);
         svgImage.setScaleX((splashWidth - 5) / svgImage.getBoundsInParent().getWidth());
