@@ -138,7 +138,8 @@
                     <source>14</source>
                     <target>14</target>
                     <release>14</release>
-                    <mainClass>gui.Main</mainClass>
+                    <mainClass>at.ofai.punderstanding.puncat.Main</mainClass>
+                    <includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
                 </configuration>
             </plugin>
             <plugin>
