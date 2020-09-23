@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -68,18 +69,17 @@ public class MainController implements Initializable {
         this.candidateController
                 .phoneticScoreProperty().bind(this.similarityModel.phoneticSimilarityScoreProperty());
 
-        this.senseGroupController1
-                .selectedTargetProperty()
-                .addListener((observable, oldValue, newValue) -> this.maybeCalculateSimilarity());
-        this.senseGroupController1
-                .selectedOrthFormProperty()
-                .addListener((observable, oldValue, newValue) -> this.maybeCalculateSimilarity());
-        this.senseGroupController2
-                .selectedTargetProperty()
-                .addListener((observable, oldValue, newValue) -> this.maybeCalculateSimilarity());
-        this.senseGroupController2
-                .selectedOrthFormProperty()
-                .addListener((observable, oldValue, newValue) -> this.maybeCalculateSimilarity());
+        ChangeListener<Boolean> senseGroupReady = (observable, oldValue, newValue) -> {
+            if (newValue) this.maybeCalculateSimilarity();
+        };
+        this.senseGroupController1.readyForSimilarityCalculationsProperty().addListener(senseGroupReady);
+        this.senseGroupController2.readyForSimilarityCalculationsProperty().addListener(senseGroupReady);
+        this.candidateController.selectedSemAlgProperty().addListener(
+                (observable, oldValue, newValue) -> this.maybeCalculateSimilarity()
+        );
+        this.candidateController.selectedPhonAlgProperty().addListener(
+                (observable, oldValue, newValue) -> this.maybeCalculateSimilarity()
+        );
 
         this.senseGroupController1.setIdentifier(1);
         this.senseGroupController2.setIdentifier(2);
@@ -136,15 +136,21 @@ public class MainController implements Initializable {
             String word1 = this.senseGroupController1.getSelectedOrthForm();
             String word2 = this.senseGroupController2.getSelectedOrthForm();
 
-            this.similarityModel.calculateSemanticSimilarity(sourceSense1, sourceSense2, targetSense1, targetSense2);
-            this.similarityModel.calculatePhoneticSimilarity(word1, word2);
+            this.similarityModel.calculateSemanticSimilarity(
+                    sourceSense1, sourceSense2,
+                    targetSense1, targetSense2,
+                    this.candidateController.getSelectedSemAlg());
+            this.similarityModel.calculatePhoneticSimilarity(
+                    word1, word2,
+                    this.candidateController.getSelectedPhonAlg());
         } else {
             this.similarityModel.clearSimilarity();
         }
     }
 
     private boolean everyFieldHasSelection() {
-        return this.senseGroupController1.hasSelections() && this.senseGroupController2.hasSelections();
+        return this.senseGroupController1.hasSelections() && this.senseGroupController1.isReadyForSimilarityCalculations()
+                && this.senseGroupController2.hasSelections() && this.senseGroupController2.isReadyForSimilarityCalculations();
     }
 
     public List<Button> getButtons() {

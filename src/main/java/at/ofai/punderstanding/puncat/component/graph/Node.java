@@ -91,7 +91,8 @@ public class Node extends Group {
         return this.ellipse.getCenterY();
     }
 
-    @SuppressWarnings("")
+
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     private Rectangle getLabelBoundingBox() {
         Rectangle r = new Rectangle();
         r.xProperty().bind(this.labelWrapper.getLabel().layoutXProperty());

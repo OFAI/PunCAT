@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
@@ -36,11 +35,10 @@ public class Graph extends Group {
     private final GraphController controller;
     private final DoubleProperty childNodeDistanceX = new SimpleDoubleProperty();
     private final DoubleProperty childNodeDistanceY = new SimpleDoubleProperty();
-
     private final StringProperty selectedLineId = new SimpleStringProperty();
     private final ArrayList<Group> childNodePages = new ArrayList<>();
     private final InteractionLogger interactionLogger;
-    private ObjectProperty<Group> activeChildren = new SimpleObjectProperty<>();
+    private final ObjectProperty<Group> activeChildren = new SimpleObjectProperty<>();
     private Node rootNode;
 
     public Graph(GraphController controller, ReadOnlyDoubleProperty slotHeight, ReadOnlyDoubleProperty slotWidth) {

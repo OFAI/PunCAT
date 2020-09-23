@@ -20,7 +20,7 @@ import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
 
 public class Search {
     private final Map<String, String> word2ipaGER = new HashMap<>();
-    private final Map<String, String> word2ipaEN = new HashMap<>();
+    private final Map<String, String> word2ipaENG = new HashMap<>();
     private GermanetController germaNet;
     private WordnetController wordNet;
     private SemanticSimilarity semSimilarity;
@@ -44,7 +44,7 @@ public class Search {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] pair = line.split(cvsSplitBy);
-                this.word2ipaEN.put(pair[0], pair[1]);
+                this.word2ipaENG.put(pair[0], pair[1]);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,24 +60,23 @@ public class Search {
         }
     }
 
-    public Double calculateSemanticSimilarity(long sSense, int tSense) {
+    public double calculateSemanticSimilarity(long sSense, int tSense, SemanticSimilarity.algs selectedSemanticAlg) {
         var soureAsTargetSynset = this.germaNet.equivalentByWordnetOffset(sSense);
         var targetSynset = this.germaNet.getSynsetById(tSense);
         if (soureAsTargetSynset != null && targetSynset != null) {
-            return this.semSimilarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset);
+            return this.semSimilarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset, selectedSemanticAlg);
         } else {
             if (soureAsTargetSynset == null) {
-                // TODO: this can happen if a source is not mapped to GermaNet in the interlingual index
-                System.err.println("WordNet synset " + sSense + " not mapped to GermaNet");
-                return null;
+                System.err.println("WordNet synset " + sSense + " not mapped to GermaNet. Returning score 0.");
+                return 0;
             } else {
                 throw new RuntimeException("targetSynset null");
             }
         }
     }
 
-    public double calculatePhoneticSimilarity(String word1, String word2) {
-        return this.phonSimilarity.calculatePhoneticSimilarity(word1, word2);
+    public double calculatePhoneticSimilarity(String word1, String word2, PhoneticSimilarity.algs selectedPhonAlg) {
+        return this.phonSimilarity.calculatePhoneticSimilarity(word1, word2, selectedPhonAlg);
     }
 
     public Long germanetGetSynsetCumulativeFrequency(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
@@ -88,9 +87,15 @@ public class Search {
         return this.germaNet.getMostFrequentOrthForm(synset);
     }
 
-    public String getIpaTranscriptionEnglish(String word) {
-        String result = this.word2ipaEN.get(word.toLowerCase());
-        return result == null ? "" : result;
+    public String getIpaTranscriptionEnglish(String word, Synset synset) {
+        String baseForm = this.wordNet.getBaseForm(word, synset);
+        String result = this.word2ipaENG.get(baseForm.toLowerCase());
+        if (result == null) {
+            System.err.println("No IPA transcription found for " + word);
+            return "";
+        } else {
+            return result;
+        }
     }
 
     public String getIpaTranscriptionGerman(String word) {
@@ -106,7 +111,7 @@ public class Search {
         return germaNet.getSynsets(word);
     }
 
-    public de.tuebingen.uni.sfs.germanet.api.Synset mapWordnetSynsetToGermanet(long offset) {
+    public de.tuebingen.uni.sfs.germanet.api.Synset mapWordnetOffsetToGermanet(long offset) {
         return germaNet.equivalentByWordnetOffset(offset);
     }
 

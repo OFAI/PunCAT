@@ -34,7 +34,7 @@ public class WordnetController implements SemnetController<Synset> {
                 }
             }
         } catch (JWNLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return results;
     }
@@ -66,5 +66,13 @@ public class WordnetController implements SemnetController<Synset> {
 
     public Dictionary getObject() {
         return this.wordnet;
+    }
+
+    public String getBaseForm(String word, Synset synset) {
+        try {
+            return this.wordnet.getMorphologicalProcessor().lookupBaseForm(synset.getPOS(), word).getLemma();
+        } catch (JWNLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TableView?>
-<TableView xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="at.ofai.punderstanding.puncat.controller.CandidateController"
-           fx:id="candidateTable">
-
-</TableView>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Separator?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="at.ofai.punderstanding.puncat.controller.CandidateController"
+      spacing="5"
+      >
+    <Separator/>
+    <padding>
+        <Insets top="5.0"/>
+    </padding>
+    <HBox spacing="5" alignment="CENTER">
+        <ChoiceBox fx:id="semChoiceBox">
+            <tooltip>
+                <Tooltip text="Semantic similarity algorithm" showDelay="0s"/>
+            </tooltip>
+        </ChoiceBox>
+        <ChoiceBox fx:id="phonChoiceBox">
+            <tooltip>
+                <Tooltip text="Phonetic similarity algorithm" showDelay="0s"/>
+            </tooltip>
+        </ChoiceBox>
+    </HBox>
+    <TableView
+            fx:id="candidateTable">
+    </TableView>
+</VBox>

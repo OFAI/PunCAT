@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -13,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -21,6 +24,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -28,16 +33,40 @@ import org.json.JSONArray;
 
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
 import at.ofai.punderstanding.puncat.logging.LoggerValues;
+import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
+import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
 import at.ofai.punderstanding.puncat.model.CandidateModel;
 
 
 public class CandidateController implements Initializable {
+    private static final BiMap<SemanticSimilarity.algs, String> semAlgDisplayNames = HashBiMap.create();
+    private static final BiMap<PhoneticSimilarity.algs, String> phonAlgDisplayNames = HashBiMap.create();
+
+    static {
+        semAlgDisplayNames.put(SemanticSimilarity.algs.JiangAndConrath, "Jiang and Conrath");
+        semAlgDisplayNames.put(SemanticSimilarity.algs.LeacockAndChodorow, "Leacock and Chodorow");
+        semAlgDisplayNames.put(SemanticSimilarity.algs.Lin, "Lin");
+        semAlgDisplayNames.put(SemanticSimilarity.algs.Resnik, "Resnik");
+        semAlgDisplayNames.put(SemanticSimilarity.algs.WuAndPalmer, "Wu and Palmer");
+        semAlgDisplayNames.put(SemanticSimilarity.algs.SimplePath, "Simple path");
+
+        phonAlgDisplayNames.put(PhoneticSimilarity.algs.ALINE, "ALINE");
+    }
+
     private final ObservableList<CandidateModel> candidateTableContents = FXCollections.observableArrayList();
     private final StringProperty punCandidate = new SimpleStringProperty();
     private final StringProperty targetCandidate = new SimpleStringProperty();
     private final StringProperty semanticScore = new SimpleStringProperty();
     private final StringProperty phoneticScore = new SimpleStringProperty();
     private final InteractionLogger interactionLogger;
+    private final ObservableList<String> semAlgs = FXCollections.observableArrayList();
+    private final ObservableList<String> phonAlgs = FXCollections.observableArrayList();
+    private final ObjectProperty<SemanticSimilarity.algs> selectedSemAlg = new SimpleObjectProperty<>();
+    private final ObjectProperty<PhoneticSimilarity.algs> selectedPhonAlg = new SimpleObjectProperty<>();
+    @FXML
+    private ChoiceBox<String> phonChoiceBox;
+    @FXML
+    private ChoiceBox<String> semChoiceBox;
     @FXML
     private TableView<CandidateModel> candidateTable;
 
@@ -51,41 +80,52 @@ public class CandidateController implements Initializable {
 
         var punColumn = new TableColumn<CandidateModel, String>("Pun");
         var targetColumn = new TableColumn<CandidateModel, String>("Target");
-        var phonColumn = new TableColumn<CandidateModel, String>();
         var semColumn = new TableColumn<CandidateModel, String>();
+        var phonColumn = new TableColumn<CandidateModel, String>();
         var buttonColumn = new TableColumn<CandidateModel, Void>();
+
+        buttonColumn.setSortable(false);
+
+        semColumn.setMaxWidth(50);
+        semColumn.setMinWidth(50);
+        phonColumn.setMaxWidth(50);
+        phonColumn.setMinWidth(50);
+        buttonColumn.setMaxWidth(35);
+        buttonColumn.setMinWidth(35);
 
         punColumn.setCellValueFactory(new PropertyValueFactory<>("pun"));
         targetColumn.setCellValueFactory(new PropertyValueFactory<>("target"));
-        phonColumn.setCellValueFactory(new PropertyValueFactory<>("phon"));
         semColumn.setCellValueFactory(new PropertyValueFactory<>("sem"));
+        phonColumn.setCellValueFactory(new PropertyValueFactory<>("phon"));
         this.setButtonCellValueFactory(buttonColumn);
 
         this.setTextColor(punColumn);
         this.setTextColor(targetColumn);
-        this.setTextColor(phonColumn);
         this.setTextColor(semColumn);
+        this.setTextColor(phonColumn);
 
-        phonColumn.setGraphic(new Label("~phon") {{
-            prefWidthProperty().bind(phonColumn.widthProperty());
-            setTooltip(new Tooltip("Phonetic similarity score") {{
-                setShowDelay(Duration.millis(500));
-            }});
-        }});
         semColumn.setGraphic(new Label("~sem") {{
             prefWidthProperty().bind(semColumn.widthProperty());
             setTooltip(new Tooltip("Semantic similarity score") {{
                 setShowDelay(Duration.millis(500));
             }});
         }});
+        phonColumn.setGraphic(new Label("~phon") {{
+            prefWidthProperty().bind(phonColumn.widthProperty());
+            setTooltip(new Tooltip("Phonetic similarity score") {{
+                setShowDelay(Duration.millis(500));
+            }});
+        }});
 
         this.candidateTable.getColumns().add(punColumn);
         this.candidateTable.getColumns().add(targetColumn);
-        this.candidateTable.getColumns().add(phonColumn);
         this.candidateTable.getColumns().add(semColumn);
+        this.candidateTable.getColumns().add(phonColumn);
         this.candidateTable.getColumns().add(buttonColumn);
 
         this.candidateTable.sortPolicyProperty().set(param -> {
+            // this policy ensures that the first line in the table is
+            // not considered for sorting (i.e. its contents always remain on the first line)
             Comparator<CandidateModel> comparator = (r1, r2) -> {
                 if (r1.isCurrentCandidate()) {
                     return -1;
@@ -104,6 +144,28 @@ public class CandidateController implements Initializable {
         var c = new CandidateModel(this.punCandidate, this.targetCandidate, this.semanticScore, this.phoneticScore);
         this.candidateTableContents.add(c);
         this.candidateTable.setItems(this.candidateTableContents);
+
+        this.semAlgs.setAll(semAlgDisplayNames.values());
+        this.semChoiceBox.setItems(this.semAlgs);
+        this.semChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                this.selectedSemAlg.set(null);
+            } else {
+                this.selectedSemAlg.set(semAlgDisplayNames.inverse().get(newValue));
+            }
+        });
+        this.semChoiceBox.getSelectionModel().select(0);
+
+        this.phonAlgs.setAll(phonAlgDisplayNames.values());
+        this.phonChoiceBox.setItems(this.phonAlgs);
+        this.phonChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                this.selectedPhonAlg.set(null);
+            } else {
+                this.selectedPhonAlg.set(phonAlgDisplayNames.inverse().get(newValue));
+            }
+        });
+        this.phonChoiceBox.getSelectionModel().select(0);
     }
 
     private void setButtonCellValueFactory(TableColumn<CandidateModel, Void> buttonColumn) {
@@ -115,6 +177,7 @@ public class CandidateController implements Initializable {
 
             {
                 this.setAlignment(Pos.CENTER);
+                button.prefWidthProperty().bind(this.widthProperty());
             }
 
             @Override
@@ -210,5 +273,21 @@ public class CandidateController implements Initializable {
 
     public StringProperty phoneticScoreProperty() {
         return phoneticScore;
+    }
+
+    public SemanticSimilarity.algs getSelectedSemAlg() {
+        return selectedSemAlg.get();
+    }
+
+    public ObjectProperty<SemanticSimilarity.algs> selectedSemAlgProperty() {
+        return selectedSemAlg;
+    }
+
+    public PhoneticSimilarity.algs getSelectedPhonAlg() {
+        return selectedPhonAlg.get();
+    }
+
+    public ObjectProperty<PhoneticSimilarity.algs> selectedPhonAlgProperty() {
+        return selectedPhonAlg;
     }
 }

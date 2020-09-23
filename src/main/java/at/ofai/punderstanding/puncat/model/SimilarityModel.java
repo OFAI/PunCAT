@@ -6,6 +6,8 @@ import javafx.beans.property.StringProperty;
 import org.decimal4j.util.DoubleRounder;
 
 import at.ofai.punderstanding.puncat.logic.Search;
+import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
+import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
 
 
 public class SimilarityModel {
@@ -19,15 +21,15 @@ public class SimilarityModel {
         this.phoneticSimilarityScore.set("");
     }
 
-    public void calculateSemanticSimilarity(long sSense1, long sSense2, int tSense1, int tSense2) {
-        double s1 = this.search.calculateSemanticSimilarity(sSense1, tSense1);
-        double s2 = this.search.calculateSemanticSimilarity(sSense2, tSense2);
+    public void calculateSemanticSimilarity(long sSense1, long sSense2, int tSense1, int tSense2, SemanticSimilarity.algs selectedSemanticAlg) {
+        double s1 = this.search.calculateSemanticSimilarity(sSense1, tSense1, selectedSemanticAlg);
+        double s2 = this.search.calculateSemanticSimilarity(sSense2, tSense2, selectedSemanticAlg);
         double avg = DoubleRounder.round((s1 + s2) / 2, 2);
         this.semanticSimilarityScore.set(String.valueOf(avg));
     }
 
-    public void calculatePhoneticSimilarity(String word1, String word2) {
-        double p = this.search.calculatePhoneticSimilarity(word1, word2);
+    public void calculatePhoneticSimilarity(String word1, String word2, PhoneticSimilarity.algs selectedPhonAlg) {
+        double p = this.search.calculatePhoneticSimilarity(word1, word2, selectedPhonAlg);
         p = DoubleRounder.round(p, 2);
         this.phoneticSimilarityScore.set(String.valueOf(p));
     }

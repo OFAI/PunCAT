@@ -6,15 +6,16 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.ofai.punderstanding.puncat.controller.GraphController"
-      alignment="CENTER">
-    <Pane fx:id="graphPane" VBox.vgrow="ALWAYS"
-          style="-fx-border-color: lightgrey; -fx-border-width: 1; -fx-border-style: solid;
-             -fx-background-color: white;">
-    </Pane>
-    <HBox spacing="5" alignment="CENTER">
+      alignment="CENTER" fx:id="container">
+    <HBox fx:id="buttonHBox" spacing="5" alignment="CENTER">
         <Button fx:id="firstButton" text="&lt;&lt;" disable="true" onAction="#firstGraph"/>
         <Button fx:id="prevButton" text="&lt;" disable="true" onAction="#prevGraph"/>
         <Button fx:id="nextButton" text="&gt;" disable="true" onAction="#nextGraph"/>
         <Button fx:id="lastButton" text="&gt;&gt;" disable="true" onAction="#lastGraph"/>
     </HBox>
+    <Pane fx:id="graphPane" VBox.vgrow="ALWAYS"
+          style="-fx-border-color: lightgrey; -fx-border-width: 1; -fx-border-style: solid;
+             -fx-background-color: white;">
+    </Pane>
+
 </VBox>

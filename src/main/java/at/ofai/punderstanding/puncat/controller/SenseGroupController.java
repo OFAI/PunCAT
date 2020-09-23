@@ -8,9 +8,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -22,6 +20,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+
+import net.sf.extjwnl.data.Synset;
 
 import at.ofai.punderstanding.puncat.component.SenseCell;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
@@ -35,9 +35,9 @@ import at.ofai.punderstanding.puncat.model.SenseModelTarget;
 public class SenseGroupController implements Initializable {
     private final ObservableList<SenseModel> sourceList = FXCollections.observableArrayList();
     private final ObservableList<SenseModel> targetList = FXCollections.observableArrayList();
-    private final ObjectProperty<SenseModelSource> selectedSource = new SimpleObjectProperty<>();
-    private final ObjectProperty<SenseModelTarget> selectedTarget = new SimpleObjectProperty<>();
     private final StringProperty selectedOrthForm = new SimpleStringProperty();
+    private final BooleanProperty dontHandleNextSelectionEvent = new SimpleBooleanProperty(false);
+    private final BooleanProperty readyForSimilarityCalculations = new SimpleBooleanProperty(false);
     private final BooleanProperty noEquivalentInGermanet = new SimpleBooleanProperty(false);
     private final Label noResultLabel = new Label("No known equivalent in GermaNet!\nTry searching manually.");
     private final InteractionLogger interactionLogger = new InteractionLogger();
@@ -66,116 +66,130 @@ public class SenseGroupController implements Initializable {
         this.graphController = loader.getController();
         this.graphController.selectedNodeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                this.onNodeClicked(newValue);
+                this.onGraphNodeClicked(newValue);
             }
         });
         this.graphController.selectedLineIdProperty()
-                .addListener((observable, oldValue, newValue) -> this.onNodeLineChanged(newValue));
+                .addListener((observable, oldValue, newValue) -> this.onGraphRootScrolled(newValue));
 
         this.graphController.addLabel(this.noResultLabel);
         this.noResultLabel.visibleProperty().bind(Bindings.size(targetList).isEqualTo(0).and(this.noEquivalentInGermanet));
-
-        this.sourceKeyword.setOnAction(event -> this.onSourceKeywordChanged());
-        this.targetKeyword.setOnAction(event -> this.onTargetKeywordChanged());
 
         this.sourceListView.setCellFactory(SenseCell::new);
         this.targetListView.setCellFactory(SenseCell::new);
         this.sourceListView.setItems(this.sourceList);
         this.targetListView.setItems(this.targetList);
 
+        this.sourceKeyword.setOnAction(e -> this.onSearchForSourceKeyword());
+        this.targetKeyword.setOnAction(e -> this.onSearchForTargetKeyword());
+
         this.sourceListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            this.selectedSource.set((SenseModelSource) newValue);
-            this.onSourceSelection();
+            if (!this.dontHandleNextSelectionEvent.get() && newValue != null) {
+                this.onSourceSenseSelected();
+            }
         });
-
         this.targetListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            this.selectedTarget.set((SenseModelTarget) newValue);
-            this.onTargetSelection();
+            if (!this.dontHandleNextSelectionEvent.get() && newValue != null) {
+                this.onTargetSenseSelected();
+            }
         });
     }
 
-    private void onSourceKeywordChanged() {
-        String keyword = this.sourceKeyword.getText();
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
-                LoggerValues.NEW_VALUE, keyword,
-                LoggerValues.PANEL_ID, this.identifier));
+    private void onSearchForSourceKeyword() {
+        this.readyForSimilarityCalculations.set(false);
+        var wnSynsets = this.search.wordnetGetSenses(this.sourceKeyword.getText());
+        if (!wnSynsets.isEmpty()) {
+            this.fillSourceList(wnSynsets, this.sourceKeyword.getText());
+            this.selectInSourceList(wnSynsets.get(0));
 
-        var synsets = this.search.wordnetGetSenses(keyword);
-        var senseModels = synsets.stream().map(SenseModelSource::new).collect(Collectors.toList());
+            var equivalentGermanSynset = this.findGermanetEquivalentOrNull(wnSynsets.get(0).getOffset());
+            if (equivalentGermanSynset != null) {
+                this.noEquivalentInGermanet.set(false);
+                this.setTargetContents(equivalentGermanSynset);
+            } else {
+                // if there is no equivalent synset in GermaNet
+                this.noEquivalentInGermanet.set(true);
+                this.cleanUpTarget();
+                this.clearGraph();
+            }
 
-        var ipa = this.search.getIpaTranscriptionEnglish(keyword);  // TODO: missing ipa entries
-        senseModels.forEach(s -> s.setPronunciation(ipa));
+            interactionLogger.logThis(Map.of(
+                    LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
+                    LoggerValues.NEW_VALUE, this.sourceKeyword.getText(),
+                    LoggerValues.PANEL_ID, this.identifier,
+                    LoggerValues.AUTO_SELECTED_SYNSET_ID, this.getSelectedSourceId()));
+        } else {
+            // if no synset matches the keyword
+            this.cleanUpSource();
 
-        this.sourceList.setAll(senseModels);
-        this.sourceListView.getSelectionModel().select(0);  // onSourceSelection() gets called here
+            interactionLogger.logThis(Map.of(
+                    LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
+                    LoggerValues.NEW_VALUE, this.sourceKeyword.getText(),
+                    LoggerValues.PANEL_ID, this.identifier,
+                    LoggerValues.AUTO_SELECTED_SYNSET_ID, "no_result"));
+        }
+        this.readyForSimilarityCalculations.set(true);
     }
 
-    private void onSourceSelection() {
-        if (this.selectedSource.get() == null) {
-            this.clearTarget();
+    private void onSearchForTargetKeyword() {
+        this.readyForSimilarityCalculations.set(false);
+        var gnSynsets = this.search.germanetGetSenses(this.targetKeyword.getText());
+        if (!gnSynsets.isEmpty()) {
+            this.selectedOrthForm.set(this.targetKeyword.getText());
+            this.fillTargetList(gnSynsets, this.targetKeyword.getText());
+            this.selectInTargetList(gnSynsets.get(0));
+            this.buildGraph();
+
+            interactionLogger.logThis(Map.of(
+                    LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
+                    LoggerValues.NEW_KEYWORD, this.targetKeyword.getText(),
+                    LoggerValues.PANEL_ID, this.identifier,
+                    LoggerValues.AUTO_SELECTED_SYNSET_ID, this.getSelectedTargetId()));
         } else {
+            // if no synset matches the keyword
+            this.cleanUpTarget();
+            this.clearGraph();
+
+            interactionLogger.logThis(Map.of(
+                    LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
+                    LoggerValues.NEW_KEYWORD, this.targetKeyword.getText(),
+                    LoggerValues.PANEL_ID, this.identifier,
+                    LoggerValues.AUTO_SELECTED_SYNSET_ID, "no_result"));
+        }
+        this.readyForSimilarityCalculations.set(true);
+    }
+
+    private void onSourceSenseSelected() {
+        this.readyForSimilarityCalculations.set(false);
+        var selectedSource = (SenseModelSource) this.sourceListView.getSelectionModel().getSelectedItem();
+        var equivalentGermanetSynset = this.findGermanetEquivalentOrNull(selectedSource.getSynsetIdentifier());
+        if (equivalentGermanetSynset != null) {
+            this.noEquivalentInGermanet.set(false);
+            this.setTargetContents(equivalentGermanetSynset);
+        } else {
+            // if there is no equivalent synset in GermaNet
+            this.noEquivalentInGermanet.set(true);
+            this.cleanUpTarget();
+            this.clearGraph();
+        }
+        this.readyForSimilarityCalculations.set(true);
+
+        if (!this.dontHandleNextSelectionEvent.get()) {
             interactionLogger.logThis(Map.of(
                     LoggerValues.EVENT, LoggerValues.SOURCE_SENSE_SELECTED_EVENT,
                     LoggerValues.PANEL_ID, this.identifier,
                     LoggerValues.SELECTION_INDEX, this.sourceListView.getSelectionModel().getSelectedIndex(),
                     LoggerValues.SELECTED_SYNSET_ID, this.getSelectedSourceId())
             );
-
-            this.selectTargetOfSelectedSource();
         }
     }
 
-    private void selectTargetOfSelectedSource() {
-        var synset = search.mapWordnetSynsetToGermanet(selectedSource.get().getSynsetIdentifier());
-        if (synset == null) {
-            this.clearTarget();
-            this.noEquivalentInGermanet.setValue(true);
-        } else {
-            this.noEquivalentInGermanet.setValue(false);
-            var text = this.search.germanetGetMostFrequentOrthForm(synset);
-            this.targetKeyword.setText(text);
-            this.selectedOrthForm.set(text);
-            this.fillTargetList();
-            this.targetListView.getSelectionModel().select(
-                    this.targetList
-                            .stream()
-                            .filter(s -> s.getSynsetIdentifier().equals(synset.getId()))
-                            .findFirst()
-                            .orElse(null)
-            );
-        }
-    }
+    private void onTargetSenseSelected() {
+        this.readyForSimilarityCalculations.set(false);
+        this.buildGraph();
+        this.readyForSimilarityCalculations.set(true);
 
-    private void onTargetKeywordChanged() {
-        this.selectedOrthForm.set(this.targetKeyword.getText());
-        this.fillTargetList();
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
-                LoggerValues.NEW_KEYWORD, this.targetKeyword.getText(),
-                LoggerValues.PANEL_ID, this.identifier
-        ));
-        this.targetListView.getSelectionModel().select(0);
-    }
-
-    private void fillTargetList() {
-        String keyword = this.selectedOrthForm.get();
-        var synsets = this.search.germanetGetSenses(keyword);
-        var senseModels = synsets.stream().map(SenseModelTarget::new).collect(Collectors.toList());
-        var ipa = this.search.getIpaTranscriptionGerman(keyword);
-        senseModels.forEach(s -> s.setPronunciation(ipa));
-
-        this.targetList.setAll(senseModels);
-    }
-
-    private void onTargetSelection() {
-        if (this.selectedTarget.get() == null) {
-            this.clearGraph();
-            this.selectedOrthForm.set(null);
-        } else {
-            var synset = this.search.germanetGetSynsetById(this.selectedTarget.get().getSynsetIdentifier());
-            this.selectedOrthForm.set(this.search.germanetGetMostFrequentOrthForm(synset));
-            this.updateGraph();
+        if (!this.dontHandleNextSelectionEvent.get()) {
             interactionLogger.logThis(Map.of(
                     LoggerValues.EVENT, LoggerValues.TARGET_SENSE_SELECTED_EVENT,
                     LoggerValues.PANEL_ID, this.identifier,
@@ -185,12 +199,94 @@ public class SenseGroupController implements Initializable {
         }
     }
 
-    public void updateGraph() {
+    private void onGraphNodeClicked(String synsetIdString) {
+        this.readyForSimilarityCalculations.set(false);
+
+        var synset = this.search.germanetGetSynsetById(Integer.parseInt(synsetIdString));
+        this.setTargetContents(synset);
+
+        this.readyForSimilarityCalculations.set(true);
+    }
+
+    private void setTargetContents(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
+        var mostFrequentOrthForm = this.search.germanetGetMostFrequentOrthForm(synset);
+        this.targetKeyword.setText(mostFrequentOrthForm);
+        this.selectedOrthForm.set(mostFrequentOrthForm);
+        var listContents = this.search.germanetGetSenses(mostFrequentOrthForm);
+        this.fillTargetList(listContents, mostFrequentOrthForm);
+        this.selectInTargetList(synset);
+        this.buildGraph();
+    }
+
+    private void onGraphRootScrolled(String lexUnitId) {
+        this.readyForSimilarityCalculations.set(false);
+
+        this.selectedOrthForm.set(this.search.germanetGetOrthFormByLexUnitId(Integer.parseInt(lexUnitId)));
+
+        this.readyForSimilarityCalculations.set(true);
+    }
+
+    private void fillSourceList(List<Synset> wnSynsets, String keyword) {
+        var senseModels = wnSynsets.stream().map(SenseModelSource::new).collect(Collectors.toList());
+        for (int i = 0; i < wnSynsets.size(); i++) {
+            var ipa = this.search.getIpaTranscriptionEnglish(this.sourceKeyword.getText(), wnSynsets.get(i));
+            senseModels.get(i).setPronunciation(ipa);
+        }
+        this.sourceList.setAll(senseModels);
+    }
+
+    private void fillTargetList(List<de.tuebingen.uni.sfs.germanet.api.Synset> gnSynsets, String keyword) {
+        var senseModels = gnSynsets.stream().map(SenseModelTarget::new).collect(Collectors.toList());
+        var ipa = this.search.getIpaTranscriptionGerman(keyword);
+        senseModels.forEach(s -> s.setPronunciation(ipa));
+        this.targetList.setAll(senseModels);
+    }
+
+    private void selectInSourceList(Synset synset) {
+        this.dontHandleNextSelectionEvent.set(true);
+        this.sourceListView.getSelectionModel().select(
+                this.sourceList
+                        .stream()
+                        .filter(s -> s.getSynsetIdentifier().equals(synset.getOffset()))
+                        .findFirst()
+                        .orElseThrow(RuntimeException::new)
+        );
+        this.dontHandleNextSelectionEvent.set(false);
+    }
+
+    private void selectInTargetList(de.tuebingen.uni.sfs.germanet.api.Synset synset) {
+        this.dontHandleNextSelectionEvent.set(true);
+        this.targetListView.getSelectionModel().select(
+                this.targetList
+                        .stream()
+                        .filter(s -> s.getSynsetIdentifier().equals(synset.getId()))
+                        .findFirst()
+                        .orElseThrow(RuntimeException::new)
+        );
+        this.dontHandleNextSelectionEvent.set(false);
+    }
+
+    private de.tuebingen.uni.sfs.germanet.api.Synset findGermanetEquivalentOrNull(long offset) {
+        return this.search.mapWordnetOffsetToGermanet(offset);
+    }
+
+    public void buildGraph() {
         graphController.updateGraphData(
                 this.selectedOrthForm.get(),
-                this.selectedTarget.get(),
-                this.getHypernyms(this.selectedTarget.get()),
-                this.getHyponyms(this.selectedTarget.get()));
+                this.getSelectedTarget(),
+                this.getHypernyms(this.getSelectedTarget()),
+                this.getHyponyms(this.getSelectedTarget())
+        );
+    }
+
+    private void cleanUpSource() {
+        this.sourceList.clear();
+    }
+
+    private void cleanUpTarget() {
+        this.targetList.clear();
+        this.selectedOrthForm.set(null);
+
     }
 
     public List<SenseModelTarget> getHypernyms(SenseModelTarget selection) {
@@ -203,49 +299,46 @@ public class SenseGroupController implements Initializable {
         return hyponyms.stream().map(SenseModelTarget::new).collect(Collectors.toList());
     }
 
-    private void clearTarget() {
-        this.targetList.clear();
-        this.targetKeyword.setText("");
-        this.selectedOrthForm.set(null);
-        this.clearGraph();
-    }
-
     private void clearGraph() {
         graphController.clearContents();
+    }
+
+    public void setContentsByCorpusInstance(String firstLemma, String senseKey) {
+        this.readyForSimilarityCalculationsProperty().set(false);
+        this.sourceKeyword.setText(firstLemma);
+        var word = this.search.wordnetGetWordBySenseKey(senseKey);
+        var synsets = this.search.wordnetGetSenses(word.getLemma());
+        this.fillSourceList(synsets, firstLemma);
+
+        var germanetEquivalent = this.search.mapWordnetOffsetToGermanet(word.getSynset().getOffset());
+        if (germanetEquivalent != null) {
+            this.setTargetContents(germanetEquivalent);
+        } else {
+            this.noEquivalentInGermanet.set(true);
+        }
+        this.readyForSimilarityCalculationsProperty().set(true);
     }
 
     public void setSearch(Search search) {
         this.search = search;
     }
 
-    private void onNodeLineChanged(String lexUnitId) {
-        this.selectedOrthForm.set(this.search.germanetGetOrthFormByLexUnitId(Integer.parseInt(lexUnitId)));
+    public SenseModelSource getSelectedSource() {
+        return (SenseModelSource) this.sourceListView.getSelectionModel().getSelectedItem();
     }
 
-    private void onNodeClicked(String synsetIdString) {
-        var synset = this.search.germanetGetSynsetById(Integer.parseInt(synsetIdString));
-        this.targetKeyword.setText(this.search.germanetGetMostFrequentOrthForm(synset));
-        this.onTargetKeywordChanged();
-        this.targetListView.getSelectionModel().select(
-                this.targetList
-                        .stream()
-                        .filter(sm -> sm.getSynsetIdentifier().equals(synset.getId()))
-                        .findFirst()
-                        .orElse(null)
-        );
-    }
-
-    public boolean hasSelections() {
-        return this.selectedSource.get() != null && this.selectedTarget.get() != null &&
-                this.selectedOrthForm.get() != null && !this.selectedOrthForm.get().equals("");
+    public SenseModelTarget getSelectedTarget() {
+        return (SenseModelTarget) this.targetListView.getSelectionModel().getSelectedItem();
     }
 
     public long getSelectedSourceId() {
-        return this.selectedSource.get().getSynsetIdentifier();
+        var selection = (SenseModelSource) this.sourceListView.getSelectionModel().getSelectedItem();
+        return selection.getSynsetIdentifier();
     }
 
     public int getSelectedTargetId() {
-        return this.selectedTarget.get().getSynsetIdentifier();
+        var selection = (SenseModelTarget) this.targetListView.getSelectionModel().getSelectedItem();
+        return selection.getSynsetIdentifier();
     }
 
     public String getSelectedOrthForm() {
@@ -256,32 +349,21 @@ public class SenseGroupController implements Initializable {
         return selectedOrthForm;
     }
 
-    public ObjectProperty<SenseModelTarget> selectedTargetProperty() {
-        return selectedTarget;
+    public boolean isReadyForSimilarityCalculations() {
+        return readyForSimilarityCalculations.get();
     }
 
-    public void setContentsByCorpusInstance(String firstLemma, String senseKey) {
-        this.sourceKeyword.setText(firstLemma);
-        this.setSourceListBySenseKey(senseKey);
-    }
-
-    private void setSourceListBySenseKey(String senseKey) {
-        var word = this.search.wordnetGetWordBySenseKey(senseKey);
-        var synsets = this.search.wordnetGetSenses(word.getLemma());
-        var senseModels = synsets.stream().map(SenseModelSource::new).collect(Collectors.toList());
-
-        var ipa = this.search.getIpaTranscriptionEnglish(word.getLemma());  // TODO: missing ipa entries
-        senseModels.forEach(s -> s.setPronunciation(ipa));
-
-        this.sourceList.setAll(senseModels);
-        this.sourceListView.getSelectionModel().select(
-                this.sourceList.stream().filter(s -> s.getSynsetIdentifier().equals(word.getSynset().getOffset()))
-                        .findFirst()
-                        .orElse(null)
-        );  // onSourceSelection() gets called here
+    public BooleanProperty readyForSimilarityCalculationsProperty() {
+        return readyForSimilarityCalculations;
     }
 
     public void setIdentifier(int i) {
         this.identifier = i;
+        this.graphController.setIdentifier(i);
+    }
+
+    public boolean hasSelections() {
+        return this.getSelectedSource() != null && this.getSelectedTarget() != null &&
+                this.selectedOrthForm.get() != null && !this.selectedOrthForm.get().equals("");
     }
 }

@@ -9,7 +9,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
 
@@ -21,6 +23,10 @@ public class GraphController implements Initializable {
     private final StringProperty selectedLineId = new SimpleStringProperty();
     private final StringProperty selectedNode = new SimpleStringProperty();
     @FXML
+    private VBox container;
+    @FXML
+    private HBox buttonHBox;
+    @FXML
     private Button firstButton;
     @FXML
     private Button prevButton;
@@ -31,6 +37,7 @@ public class GraphController implements Initializable {
     @FXML
     private Pane graphPane;
     private Graph graph;
+    private int identifier;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -106,4 +113,16 @@ public class GraphController implements Initializable {
         label.setTextAlignment(TextAlignment.CENTER);
         this.graphPane.getChildren().add(label);
     }
+
+    private void moveButtonsUp() {
+        this.container.getChildren().remove(this.graphPane);
+        this.container.getChildren().add(this.graphPane);
+    }
+
+    public void setIdentifier(int i) {
+        this.identifier = i;
+        //if (i == 2) this.moveButtonsUp();
+    }
+
+
 }

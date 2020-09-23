@@ -57,7 +57,6 @@ public class GermanetController implements SemnetController<Synset> {
                 return germanet.getLexUnitByID(ir.getLexUnitId()).getSynset();
             }
         }
-
         return null;
     }
 
