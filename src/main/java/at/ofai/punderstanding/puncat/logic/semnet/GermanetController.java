@@ -1,6 +1,8 @@
 package at.ofai.punderstanding.puncat.logic.semnet;
 
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,16 +34,35 @@ public class GermanetController implements SemnetController<Synset> {
     private final GermaNet germanet;
     private final GermanetFrequencies frequencies;
 
-    public GermanetController() throws IOException, XMLStreamException {
-        this.germanet = new GermaNet(
-                getClass().getResource(ResourcePaths.germaNetLocation).getPath(),
-                getClass().getResource(ResourcePaths.nounFreq).getPath(),
-                getClass().getResource(ResourcePaths.verbFreq).getPath(),
-                getClass().getResource(ResourcePaths.adjFreq).getPath());
+    public GermanetController() {
+        /*
+        if (getClass().getProtectionDomain().getCodeSource().getLocation().toString().endsWith(".jar")) {
+            var p = Paths.get(URI.create(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()));
+            //this.germanet = new GermaNet();
+        } else {
+            this.germanet = new GermaNet(
+                    getClass().getResource(ResourcePaths.germaNetLocation).getPath(),
+                    getClass().getResource(ResourcePaths.nounFreq).getPath(),
+                    getClass().getResource(ResourcePaths.verbFreq).getPath(),
+                    getClass().getResource(ResourcePaths.adjFreq).getPath());
+        }
+         */
+        try {
+            this.germanet = new GermaNet(
+                    ResourcePaths.germaNetLocation.toFile(),
+                    ResourcePaths.nounFreq.toFile(),
+                    ResourcePaths.verbFreq.toFile(),
+                    ResourcePaths.adjFreq.toFile());
+        } catch (IOException | XMLStreamException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+
         this.frequencies = GermanetFrequencies.loadFrequencies(
-                getClass().getResource(ResourcePaths.nounFreq).getPath(),
-                getClass().getResource(ResourcePaths.verbFreq).getPath(),
-                getClass().getResource(ResourcePaths.adjFreq).getPath());
+                ResourcePaths.nounFreq,
+                ResourcePaths.verbFreq,
+                ResourcePaths.adjFreq);
     }
 
     @Override
@@ -84,14 +105,6 @@ public class GermanetController implements SemnetController<Synset> {
         } else {
             return null;
         }
-    }
-
-    public List<Long> getOffsetFromID(int id) {
-        List<Long> offsets = new ArrayList<>();
-        for (IliRecord ir : this.germanet.getSynsetByID(id).getIliRecords()) {
-            offsets.add(Long.parseLong(ir.getPwn30Id()));
-        }
-        return offsets;
     }
 
     public GermaNet getObject() {

@@ -3,6 +3,7 @@ package at.ofai.punderstanding.puncat.logic.semnet;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,20 +23,20 @@ public class GermanetFrequencies {
         this.frequenciesByWordCategories.put(WordCategory.adj, adjFreq);
     }
 
-    public static GermanetFrequencies loadFrequencies(String nomenPath, String verbenPath, String adjPath) {
+    public static GermanetFrequencies loadFrequencies(Path nomenPath, Path verbenPath, Path adjPath) {
         try {
-            Map<String, Long> nomenFreq = loadFile(new File(nomenPath));
-            Map<String, Long> verbenFreq = loadFile(new File(verbenPath));
-            Map<String, Long> adjFreq = loadFile(new File(adjPath));
+            Map<String, Long> nomenFreq = loadFile(nomenPath);
+            Map<String, Long> verbenFreq = loadFile(verbenPath);
+            Map<String, Long> adjFreq = loadFile(adjPath);
             return new GermanetFrequencies(nomenFreq, verbenFreq, adjFreq);
         } catch (IOException e) {
             throw new RuntimeException();
         }
     }
 
-    private static Map<String, Long> loadFile(File path) throws IOException {
+    private static Map<String, Long> loadFile(Path path) throws IOException {
         Map<String, Long> freqMap = new HashMap<>();
-        Files.lines(Paths.get(path.getPath()))
+        Files.lines(path)
                 .map(line -> line.split("\\s+"))
                 .forEach(splits -> {
                     String word = splits[0];

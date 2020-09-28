@@ -1,7 +1,10 @@
 package at.ofai.punderstanding.puncat.logic.similarity;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +17,12 @@ public class PhoneticSimilarity {
     private final Map<String, String> germanet2ipa = new HashMap<>();
 
     public PhoneticSimilarity() {
-        var csvFile = getClass().getResourceAsStream(ResourcePaths.germanet2ipaPath);
+        InputStream csvFile ;
+        try {
+            csvFile = new FileInputStream(ResourcePaths.germanet2ipaPath.toFile());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         String line;
         String csvSplitBy = ",";
 

@@ -81,6 +81,9 @@ public class Main extends Application {
         splashStage.show();
 
         var loader = new SearchLoader();
+        loader.setOnFailed(workerStateEvent -> {
+            throw new RuntimeException(loader.getException());
+        });
         loader.setOnSucceeded(t -> {
             this.interactionLogger = new InteractionLogger();
             this.interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));

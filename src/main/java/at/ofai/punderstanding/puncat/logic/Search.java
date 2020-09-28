@@ -1,7 +1,10 @@
 package at.ofai.punderstanding.puncat.logic;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,7 +32,13 @@ public class Search {
     private final PhoneticSimilarity phonSimilarity;
 
     public Search() {
-        var csvFile = getClass().getResourceAsStream(ResourcePaths.germanet2ipaPath);
+        //var csvFile = getClass().getResourceAsStream(ResourcePaths.germanet2ipaPath);
+        InputStream csvFile;
+        try {
+            csvFile = new FileInputStream(ResourcePaths.germanet2ipaPath.toFile());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         String line;
         String csvSplitBy = ",";
 
@@ -42,7 +51,11 @@ public class Search {
             throw new RuntimeException(e);
         }
 
-        csvFile = getClass().getResourceAsStream(ResourcePaths.wordnet2ipaPath);
+        try {
+            csvFile = new FileInputStream(ResourcePaths.wordnet2ipaPath.toFile());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] pair = line.split(csvSplitBy);
