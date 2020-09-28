@@ -21,9 +21,15 @@ public class SimilarityModel {
         this.phoneticSimilarityScore.set("");
     }
 
-    public void calculateSemanticSimilarity(long sSense1, long sSense2, int tSense1, int tSense2, SemanticSimilarity.algs selectedSemanticAlg) {
-        double s1 = this.search.calculateSemanticSimilarity(sSense1, tSense1, selectedSemanticAlg);
-        double s2 = this.search.calculateSemanticSimilarity(sSense2, tSense2, selectedSemanticAlg);
+    public void calculateSemanticSimilarity(SenseModelSource sSense1, SenseModelSource sSense2,
+                                            SenseModelTarget tSense1, SenseModelTarget tSense2,
+                                            SemanticSimilarity.algs selectedSemanticAlg) {
+        double s1 = this.search.calculateSemanticSimilarity(
+                sSense1.getPOS(), sSense1.getSynsetIdentifier(),
+                tSense1.getSynsetIdentifier(), selectedSemanticAlg);
+        double s2 = this.search.calculateSemanticSimilarity(
+                sSense2.getPOS(), sSense2.getSynsetIdentifier(),
+                tSense2.getSynsetIdentifier(), selectedSemanticAlg);
         double avg = DoubleRounder.round((s1 + s2) / 2, 2);
         this.semanticSimilarityScore.set(String.valueOf(avg));
     }

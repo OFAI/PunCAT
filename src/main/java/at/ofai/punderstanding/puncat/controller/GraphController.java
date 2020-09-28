@@ -114,14 +114,8 @@ public class GraphController implements Initializable {
         this.graphPane.getChildren().add(label);
     }
 
-    private void moveButtonsUp() {
-        this.container.getChildren().remove(this.graphPane);
-        this.container.getChildren().add(this.graphPane);
-    }
-
     public void setIdentifier(int i) {
         this.identifier = i;
-        //if (i == 2) this.moveButtonsUp();
     }
 
 

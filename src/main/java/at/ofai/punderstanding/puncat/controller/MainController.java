@@ -25,6 +25,10 @@ public class MainController implements Initializable {
     private final SimilarityModel similarityModel = new SimilarityModel();
     @FXML
     private GridPane container;
+    @FXML
+    private GridPane taskAndCandidateGridPane;
+    @FXML
+    private GridPane senseGroupsGridPane;
     private CandidateController candidateController;
     private SenseGroupController senseGroupController1;
     private SenseGroupController senseGroupController2;
@@ -38,7 +42,7 @@ public class MainController implements Initializable {
 
         loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupView.fxml"));
         try {
-            this.container.add(loader.load(), 1, 0);
+            this.senseGroupsGridPane.add(loader.load(), 0, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,7 +50,7 @@ public class MainController implements Initializable {
 
         loader = new FXMLLoader(getClass().getResource("/fxml/senseGroupView.fxml"));
         try {
-            this.container.add(loader.load(), 1, 1);
+            this.senseGroupsGridPane.add(loader.load(), 0, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,7 +58,7 @@ public class MainController implements Initializable {
 
         loader = new FXMLLoader(getClass().getResource("/fxml/candidateView.fxml"));
         try {
-            this.container.add(loader.load(), 0, 1);
+            this.taskAndCandidateGridPane.add(loader.load(), 0, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,7 +107,7 @@ public class MainController implements Initializable {
 
         var loader = new FXMLLoader(getClass().getResource("/fxml/taskView.fxml"));
         try {
-            this.container.add(loader.load(), 0, 0);
+            this.taskAndCandidateGridPane.add(loader.load(), 0, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -115,8 +119,8 @@ public class MainController implements Initializable {
         var imageText = QuoteTextFlow.build(corpusInstance.getText());
         this.taskController.insertQuote(imageText);
 
-        var keywordFlow = KeywordTextFlow.build(corpusInstance.getImg().keywords);
-        this.taskController.insertKeywords(keywordFlow);
+        var keywords = KeywordTextFlow.build(corpusInstance.getImg().keywords);
+        this.taskController.insertKeywords(keywords);
     }
 
     public JSONArray saveCandidates() {
@@ -129,12 +133,12 @@ public class MainController implements Initializable {
 
     public void maybeCalculateSimilarity() {
         if (this.everyFieldHasSelection()) {
-            long sourceSense1 = this.senseGroupController1.getSelectedSourceId();
-            long sourceSense2 = this.senseGroupController2.getSelectedSourceId();
-            int targetSense1 = this.senseGroupController1.getSelectedTargetId();
-            int targetSense2 = this.senseGroupController2.getSelectedTargetId();
-            String word1 = this.senseGroupController1.getSelectedOrthForm();
-            String word2 = this.senseGroupController2.getSelectedOrthForm();
+            var sourceSense1 = this.senseGroupController1.getSelectedSource();
+            var sourceSense2 = this.senseGroupController2.getSelectedSource();
+            var targetSense1 = this.senseGroupController1.getSelectedTarget();
+            var targetSense2 = this.senseGroupController2.getSelectedTarget();
+            var word1 = this.senseGroupController1.getSelectedOrthForm();
+            var word2 = this.senseGroupController2.getSelectedOrthForm();
 
             this.similarityModel.calculateSemanticSimilarity(
                     sourceSense1, sourceSense2,

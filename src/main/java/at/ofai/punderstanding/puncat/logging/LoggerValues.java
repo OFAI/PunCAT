@@ -1,6 +1,8 @@
 package at.ofai.punderstanding.puncat.logging;
 
 public class LoggerValues {
+    public static final String LOGGING_DISABLED = "interactionloggingdisabled";
+
     public static final String EVENT = "event";
 
     public static final String NEW_VALUE = "newValue";
@@ -49,5 +51,7 @@ public class LoggerValues {
 
     public static final String NEW_CANDIDATE_ADDED_EVENT = "New candidate added";
 
-    public static final String LOGGING_DISABLED = "interactionloggingdisabled";
+    public static final String SEM_ALG_CHANGED_EVENT = "Semantic algorithm changed";
+    public static final String PHON_ALG_CHANGED_EVENT = "Phonetic algorithm changed";
+    public static final String NEW_ALG = "Selected algorithm";
 }

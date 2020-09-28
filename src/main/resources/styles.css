@@ -1,18 +1,13 @@
-
-#candidate-table .table-column {
-    -fx-alignment: CENTER;
-}
-
-#candidate-table {
-    -fx-selection-bar: #d3d3d3;
-    -fx-selection-bar-non-focused: #d3d3d3;
+.root {
+    
+    -fx-font-size: 12;
 }
 
 .menu-bar {
     -fx-background-color: white;
 }
 
-.tab-pane .tab-header-area .tab-header-background {
+.sense-tab-pane .tab-header-area .tab-header-background {
     -fx-opacity: 0;
 }
 
@@ -23,13 +18,14 @@
 }
 
 .table-row-cell:filled:selected {
-    -fx-background: -fx-control-inner-background ;
-    -fx-background-color: -fx-table-cell-border-color, -fx-background ;
-    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: -fx-table-cell-border-color, -fx-background;
+    -fx-background-insets: 0, 0 0 1 0;
     -fx-table-cell-border-color: derive(-fx-color, 5%);
 }
+
 .table-row-cell:odd:filled:selected {
-    -fx-background: -fx-control-inner-background-alt ;
+    -fx-background: -fx-control-inner-background-alt;
 }
 
 .scroll-pane > .viewport {

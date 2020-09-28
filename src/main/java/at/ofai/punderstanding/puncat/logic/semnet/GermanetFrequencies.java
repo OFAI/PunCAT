@@ -7,20 +7,19 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import de.tuebingen.uni.sfs.germanet.api.LexUnit;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
+import de.tuebingen.uni.sfs.germanet.api.WordCategory;
 
 
 public class GermanetFrequencies {
-    private final Map<String, Map<String, Long>> wordCategoryMap;
+    private final Map<WordCategory, Map<String, Long>> frequenciesByWordCategories;
 
     public GermanetFrequencies(Map<String, Long> nomenFreq, Map<String, Long> verbenFreq, Map<String, Long> adjFreq) {
-        this.wordCategoryMap = new HashMap<>();
-        this.wordCategoryMap.put("nomen", nomenFreq);
-        this.wordCategoryMap.put("verben", verbenFreq);
-        this.wordCategoryMap.put("adj", adjFreq);
+        this.frequenciesByWordCategories = new HashMap<>();
+        this.frequenciesByWordCategories.put(WordCategory.nomen, nomenFreq);
+        this.frequenciesByWordCategories.put(WordCategory.verben, verbenFreq);
+        this.frequenciesByWordCategories.put(WordCategory.adj, adjFreq);
     }
 
     public static GermanetFrequencies loadFrequencies(String nomenPath, String verbenPath, String adjPath) {
@@ -48,9 +47,9 @@ public class GermanetFrequencies {
 
     public Long getSynsetCumulativeFrequency(Synset synset) {
         long frequency = 0L;
-        String wordCat = synset.getWordCategory().toString();
+        var wordCat = synset.getWordCategory();
         for (String form : synset.getAllOrthForms()) {
-            Long f = this.wordCategoryMap.get(wordCat).get(form);
+            Long f = this.frequenciesByWordCategories.get(wordCat).get(form);
             if (f != null) {
                 frequency += f;
             }
@@ -60,10 +59,10 @@ public class GermanetFrequencies {
 
     public String getMostFrequentOrthForm(Synset synset) {
         String mostFrequent = null;
+        var wordCat = synset.getWordCategory();
         long maxFreq = -1L;
-        String wordCat = synset.getWordCategory().toString();
-        for (String form : synset.getLexUnits().stream().map(LexUnit::getOrthForm).collect(Collectors.toList())) {
-            Long f = this.wordCategoryMap.get(wordCat).get(form);
+        for (String form : synset.getAllOrthForms()) {
+            Long f = this.frequenciesByWordCategories.get(wordCat).get(form);
             if (f == null) {
                 f = 0L;  // TODO: do something about the missing entries
             }
@@ -72,14 +71,14 @@ public class GermanetFrequencies {
                 mostFrequent = form;
             }
         }
-        if (maxFreq == 0) {
+        if (maxFreq <= 0) {
+            // if there is no frequency information for this synset, return the shortest orthForm
             var shortest = synset.getAllOrthForms().stream().min(Comparator.comparingInt(String::length));
             if (shortest.isPresent()) {
                 return shortest.get();
+            } else {
+                throw new RuntimeException("Empty synset: " + synset.getId());
             }
-        }
-        if (mostFrequent == null) {
-            throw new RuntimeException();
         }
         return mostFrequent;
     }

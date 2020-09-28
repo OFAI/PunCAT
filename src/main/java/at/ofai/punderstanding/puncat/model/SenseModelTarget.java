@@ -10,18 +10,21 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import de.tuebingen.uni.sfs.germanet.api.LexUnit;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
+import de.tuebingen.uni.sfs.germanet.api.WordCategory;
 
 
 public class SenseModelTarget implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
     private final IntegerProperty synsetIdentifier = new SimpleIntegerProperty();
+    private final WordCategory POS;
     private final BiMap<Integer, String> synonyms = HashBiMap.create();
 
     public SenseModelTarget(Synset synset) {
         this.setPronunciation("-");
         this.setDescription(String.join("; ", synset.getParaphrases()));
         this.setSynsetIdentifier(synset.getId());
+        this.POS = synset.getWordCategory();
 
         for (LexUnit lu : synset.getLexUnits()) {
             synonyms.put(lu.getId(), lu.getOrthForm());
@@ -73,5 +76,9 @@ public class SenseModelTarget implements SenseModel {
 
     public TextFlow getVisualRepr() {
         return new TextFlow();
+    }
+
+    public WordCategory getPOS() {
+        return POS;
     }
 }

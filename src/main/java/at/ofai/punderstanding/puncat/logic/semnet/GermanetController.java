@@ -3,21 +3,32 @@ package at.ofai.punderstanding.puncat.logic.semnet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import de.tuebingen.uni.sfs.germanet.api.ConRel;
-import de.tuebingen.uni.sfs.germanet.api.EwnRel;
 import de.tuebingen.uni.sfs.germanet.api.FilterConfig;
 import de.tuebingen.uni.sfs.germanet.api.GermaNet;
 import de.tuebingen.uni.sfs.germanet.api.IliRecord;
 import de.tuebingen.uni.sfs.germanet.api.RelDirection;
+import de.tuebingen.uni.sfs.germanet.api.SemanticUtils;
 import de.tuebingen.uni.sfs.germanet.api.Synset;
+import net.sf.extjwnl.data.POS;
 
 import at.ofai.punderstanding.puncat.logic.ResourcePaths;
 
 
 public class GermanetController implements SemnetController<Synset> {
+    static HashMap<POS, String> posToIndexSuffix = new HashMap<>();
+
+    static {
+        posToIndexSuffix.put(POS.NOUN, "-n");
+        posToIndexSuffix.put(POS.VERB, "-v");
+        posToIndexSuffix.put(POS.ADJECTIVE, "-a");
+        posToIndexSuffix.put(POS.ADVERB, "-r");
+    }
+
     private final GermaNet germanet;
     private final GermanetFrequencies frequencies;
 
@@ -40,24 +51,39 @@ public class GermanetController implements SemnetController<Synset> {
         return this.germanet.getSynsets(filterConfig);
     }
 
-    public Synset equivalentByWordnetOffset(long offset) {
-        String offsetString = Long.toString(offset);
-        for (IliRecord ir : this.germanet.getIliRecords()) {
-            if (ir.getPwn30Id().contains(offsetString) && ir.getEwnRelation() == EwnRel.synonym) {
-                return germanet.getLexUnitByID(ir.getLexUnitId()).getSynset();
+    public Synset equivalentByWordnetOffset(POS pos, long offset) {
+        String pwn30Id = offset + posToIndexSuffix.get(pos);
+        var synonym = new ArrayList<Synset>();
+        var near_synonym = new ArrayList<Synset>();
+        var has_hyponym = new ArrayList<Synset>();
+        var has_hypernym = new ArrayList<Synset>();
+        var other = new ArrayList<Synset>();
+
+        for (var ir : this.germanet.getIliRecords()) {
+            if (ir.getPwn30Id().contains(pwn30Id)) {
+                var relation = ir.getEwnRelation();
+                switch (relation) {
+                    case synonym -> synonym.add(germanet.getLexUnitByID(ir.getLexUnitId()).getSynset());
+                    case near_synonym -> near_synonym.add(germanet.getLexUnitByID(ir.getLexUnitId()).getSynset());
+                    case has_hyponym -> has_hyponym.add(germanet.getLexUnitByID(ir.getLexUnitId()).getSynset());
+                    case has_hypernym -> has_hypernym.add(germanet.getLexUnitByID(ir.getLexUnitId()).getSynset());
+                    default -> other.add(germanet.getLexUnitByID(ir.getLexUnitId()).getSynset());
+                }
             }
         }
-        for (IliRecord ir : this.germanet.getIliRecords()) {
-            if (ir.getPwn30Id().contains(offsetString) && ir.getEwnRelation() == EwnRel.near_synonym) {
-                return germanet.getLexUnitByID(ir.getLexUnitId()).getSynset();
-            }
+        if (!synonym.isEmpty()) {
+            return synonym.get(0);
+        } else if (!near_synonym.isEmpty()) {
+            return near_synonym.get(0);
+        } else if (!has_hyponym.isEmpty()) {
+            return has_hyponym.get(0);
+        } else if (!has_hypernym.isEmpty()) {
+            return has_hypernym.get(0);
+        } else if (!other.isEmpty()) {
+            return other.get(0); // TODO: consider more relations
+        } else {
+            return null;
         }
-        for (IliRecord ir : this.germanet.getIliRecords()) {
-            if (ir.getPwn30Id().contains(offsetString)) {
-                return germanet.getLexUnitByID(ir.getLexUnitId()).getSynset();
-            }
-        }
-        return null;
     }
 
     public List<Long> getOffsetFromID(int id) {
@@ -101,5 +127,13 @@ public class GermanetController implements SemnetController<Synset> {
 
     public String getLexUnitById(int lexUnitId) {
         return this.germanet.getLexUnitByID(lexUnitId).getOrthForm();
+    }
+
+    public SemanticUtils getSemanticUtils() {
+        try {
+            return this.germanet.getSemanticUtils();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

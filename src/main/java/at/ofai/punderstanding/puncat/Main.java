@@ -39,16 +39,15 @@ import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
 
 public class Main extends Application {
     private static final String icon = "/img/Computational_Pun-derstanding_head.png";
-    //GridPane activePane = null;
-    ObjectProperty<GridPane> activePane = new SimpleObjectProperty<>();
-    Stage stage;
-    BorderPane rootPane = new BorderPane();
-    StackPane mainViewContainer = new StackPane();
-    ArrayList<GridPane> mainPaneList = new ArrayList<>();
-    ArrayList<MainController> mainControllers = new ArrayList<>();
-    String userName = "";
-    Long startupInstant = 0L;
-    InteractionLogger interactionLogger;
+    private final ObjectProperty<GridPane> activePane = new SimpleObjectProperty<>();
+    private final BorderPane rootPane = new BorderPane();
+    private final StackPane mainViewContainer = new StackPane();
+    private final ArrayList<GridPane> mainPaneList = new ArrayList<>();
+    private final ArrayList<MainController> mainControllers = new ArrayList<>();
+    private InteractionLogger interactionLogger;
+    private Stage stage;
+    private String userName = "";
+    private Long startupInstant;
     private Search search;
 
     public static void main(String[] args) {
@@ -58,14 +57,17 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        this.stage.setTitle("PunCAT");
+        this.stage.setMaximized(true);
+        this.stage.getIcons().add(new Image(getClass().getResourceAsStream(icon)));
         this.stage.setOnCloseRequest(event -> {
-            this.saveCandidates();
+            this.saveCandidatesToFile();
             interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
         });
 
         var userNameStage = UsernameWindow.buildUsernameWindow();
         userNameStage.setOnHidden(event -> {
-            userName = UsernameWindow.getUserName();
+            this.userName = UsernameWindow.getUserName();
             this.build();
         });
         userNameStage.show();
@@ -73,16 +75,15 @@ public class Main extends Application {
 
     private void build() {
         this.startupInstant = Instant.now().toEpochMilli();
-        System.setProperty("puncatlogfilename",
-                "log_" + this.userName + "_" + this.startupInstant);
+        System.setProperty("puncatlogfilename", "log_" + this.userName + "_" + this.startupInstant);
 
         var splashStage = new SplashStage();
         splashStage.show();
 
-        var loader = new LoaderClass();
+        var loader = new SearchLoader();
         loader.setOnSucceeded(t -> {
-            interactionLogger = new InteractionLogger();
-            interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
+            this.interactionLogger = new InteractionLogger();
+            this.interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_STARTED_EVENT));
 
             this.search = (Search) t.getSource().getValue();
 
@@ -93,7 +94,6 @@ public class Main extends Application {
             this.activePane.get().setVisible(true);
 
             this.stage.show();
-
             splashStage.hide();
         });
         loader.start();
@@ -104,11 +104,7 @@ public class Main extends Application {
         this.rootPane.setCenter(mainViewContainer);
         Scene scene = new Scene(this.rootPane);
         scene.getStylesheets().add("/styles.css");
-
-        this.stage.setTitle("PunCAT");
         this.stage.setScene(scene);
-        this.stage.setMaximized(true);
-        this.stage.getIcons().add(new Image(getClass().getResourceAsStream(icon)));
     }
 
     private void buildMainPane(CorpusInstance corpusInstance) {
@@ -245,7 +241,7 @@ public class Main extends Application {
         this.activePane.get().setVisible(true);
     }
 
-    void saveCandidates() {
+    void saveCandidatesToFile() {
         JSONArray candidateList = new JSONArray();
         for (MainController mc : this.mainControllers) {
             var candidates = mc.saveCandidates();
@@ -260,12 +256,11 @@ public class Main extends Application {
         try {
             Files.writeString(file.toPath().resolve(Paths.get(fileName)), candidateList.toString(4), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("could not write results file");
+            throw new RuntimeException("could not write results file", e);
         }
     }
 
-    static class LoaderClass extends Service<Search> {
+    static class SearchLoader extends Service<Search> {
         @Override
         protected Task<Search> createTask() {
             return new Task<>() {

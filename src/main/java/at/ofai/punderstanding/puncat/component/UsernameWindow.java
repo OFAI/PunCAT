@@ -20,7 +20,7 @@ public class UsernameWindow {
         BorderPane userNamePane = new BorderPane();
         userNamePane.setPadding(new Insets(5));
 
-        Scene userNameScene = new Scene(userNamePane, 150, 100);
+        Scene userNameScene = new Scene(userNamePane, 200, 100);
 
         Stage userNameStage = new Stage(StageStyle.UTILITY);
         userNameStage.setTitle("PunCAT");

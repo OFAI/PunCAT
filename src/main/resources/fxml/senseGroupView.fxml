@@ -16,7 +16,7 @@
         <ColumnConstraints halignment="CENTER" percentWidth="70"/>
     </columnConstraints>
 
-    <TabPane GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <TabPane styleClass="sense-tab-pane" GridPane.columnIndex="0" GridPane.rowIndex="0">
             <Tab text="Source" closable="false">
                 <VBox spacing="5">
                     <TextField fx:id="sourceKeyword"/>

@@ -17,7 +17,7 @@ public class CandidateControllerTests {
     private static StringProperty targetProperty;
     private static StringProperty semanticSimilarityScoreProperty;
     private static StringProperty phoneticSimilarityScoreProperty;
-/*
+
     @BeforeAll
     static void configureEnvironment() {
         SharedConfig.configureEnvironment();
@@ -30,12 +30,10 @@ public class CandidateControllerTests {
         targetProperty = new SimpleStringProperty();
         semanticSimilarityScoreProperty = new SimpleStringProperty();
         phoneticSimilarityScoreProperty = new SimpleStringProperty();
-        candidateController.setReferences(
-                punProperty,
-                targetProperty,
-                semanticSimilarityScoreProperty,
-                phoneticSimilarityScoreProperty
-        );
+        candidateController.punCandidateProperty().bind(punProperty);
+        candidateController.targetCandidateProperty().bind(targetProperty);
+        candidateController.semanticScoreProperty().bind(semanticSimilarityScoreProperty);
+        candidateController.phoneticScoreProperty().bind(phoneticSimilarityScoreProperty);
     }
 
     @Test
@@ -92,5 +90,5 @@ public class CandidateControllerTests {
                 candidates.getJSONObject(1).get(LoggerValues.CANDIDATE_PHON)
         );
     }
- */
+
 }

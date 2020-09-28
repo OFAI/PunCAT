@@ -29,7 +29,9 @@ public class ALINE {
     }
 
     public static double similarity(String str1, String str2, double epsilon) {
-        // TODO: not very nice
+        str1 = removeUnhandledChar(str1);
+        str2 = removeUnhandledChar(str2);
+
         ALINE aline = new ALINE();
         aline.align(str1, str2, epsilon);
         double score12 = score(aline.S);
@@ -43,6 +45,16 @@ public class ALINE {
         double score22 = score(aline22.S);
 
         return score12 / Math.max(score11, score22);
+    }
+
+    private static String removeUnhandledChar(String ipaTranscription) {
+        var sb = new StringBuilder(ipaTranscription);
+        int charIndex = sb.indexOf("ː");
+        while (charIndex != -1) {
+            sb.deleteCharAt(charIndex);
+            charIndex = sb.indexOf("ː");
+        }
+        return sb.toString();
     }
 
     private static double score(SimpleMatrix S) {

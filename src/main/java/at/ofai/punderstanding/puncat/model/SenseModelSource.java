@@ -9,6 +9,7 @@ import javafx.scene.text.TextFlow;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 
@@ -17,6 +18,7 @@ public class SenseModelSource implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
     private final LongProperty synsetIdentifier = new SimpleLongProperty();
+    private final net.sf.extjwnl.data.POS POS;
     private final BiMap<Integer, String> synonyms = HashBiMap.create();
     private final TextFlow visualRepr = new TextFlow();
 
@@ -24,6 +26,7 @@ public class SenseModelSource implements SenseModel {
         this.setPronunciation("-");
         this.setDescription(synset.getGloss());
         this.setSynsetIdentifier(synset.getOffset());
+        this.POS = synset.getPOS();
 
         for (Word w : synset.getWords()) {
             this.synonyms.put(w.getLexId(), w.getLemma());
@@ -76,5 +79,9 @@ public class SenseModelSource implements SenseModel {
 
     public TextFlow getVisualRepr() {
         return visualRepr;
+    }
+
+    public net.sf.extjwnl.data.POS getPOS() {
+        return POS;
     }
 }

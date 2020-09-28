@@ -21,6 +21,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
+import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.Synset;
 
 import at.ofai.punderstanding.puncat.component.SenseCell;
@@ -39,7 +40,7 @@ public class SenseGroupController implements Initializable {
     private final BooleanProperty dontHandleNextSelectionEvent = new SimpleBooleanProperty(false);
     private final BooleanProperty readyForSimilarityCalculations = new SimpleBooleanProperty(false);
     private final BooleanProperty noEquivalentInGermanet = new SimpleBooleanProperty(false);
-    private final Label noResultLabel = new Label("No known equivalent in GermaNet!\nTry searching manually.");
+    private final Label noResultLabel = new Label("No known equivalent in GermaNet!");
     private final InteractionLogger interactionLogger = new InteractionLogger();
     @FXML
     private GridPane container;
@@ -99,13 +100,14 @@ public class SenseGroupController implements Initializable {
         this.readyForSimilarityCalculations.set(false);
         var wnSynsets = this.search.wordnetGetSenses(this.sourceKeyword.getText());
         if (!wnSynsets.isEmpty()) {
-            this.fillSourceList(wnSynsets, this.sourceKeyword.getText());
+            this.fillSourceList(wnSynsets);
             this.selectInSourceList(wnSynsets.get(0));
 
-            var equivalentGermanSynset = this.findGermanetEquivalentOrNull(wnSynsets.get(0).getOffset());
-            if (equivalentGermanSynset != null) {
+            var equivalentGermanetSynset = this.wordnetSynsetToGermanetOrNull(
+                    wnSynsets.get(0).getPOS(), wnSynsets.get(0).getOffset());
+            if (equivalentGermanetSynset != null) {
                 this.noEquivalentInGermanet.set(false);
-                this.setTargetContents(equivalentGermanSynset);
+                this.setTargetContents(equivalentGermanetSynset);
             } else {
                 // if there is no equivalent synset in GermaNet
                 this.noEquivalentInGermanet.set(true);
@@ -162,7 +164,8 @@ public class SenseGroupController implements Initializable {
     private void onSourceSenseSelected() {
         this.readyForSimilarityCalculations.set(false);
         var selectedSource = (SenseModelSource) this.sourceListView.getSelectionModel().getSelectedItem();
-        var equivalentGermanetSynset = this.findGermanetEquivalentOrNull(selectedSource.getSynsetIdentifier());
+        var equivalentGermanetSynset = this.wordnetSynsetToGermanetOrNull(
+                selectedSource.getPOS(), selectedSource.getSynsetIdentifier());
         if (equivalentGermanetSynset != null) {
             this.noEquivalentInGermanet.set(false);
             this.setTargetContents(equivalentGermanetSynset);
@@ -226,7 +229,7 @@ public class SenseGroupController implements Initializable {
         this.readyForSimilarityCalculations.set(true);
     }
 
-    private void fillSourceList(List<Synset> wnSynsets, String keyword) {
+    private void fillSourceList(List<Synset> wnSynsets) {
         var senseModels = wnSynsets.stream().map(SenseModelSource::new).collect(Collectors.toList());
         for (int i = 0; i < wnSynsets.size(); i++) {
             var ipa = this.search.getIpaTranscriptionEnglish(this.sourceKeyword.getText(), wnSynsets.get(i));
@@ -266,8 +269,8 @@ public class SenseGroupController implements Initializable {
         this.dontHandleNextSelectionEvent.set(false);
     }
 
-    private de.tuebingen.uni.sfs.germanet.api.Synset findGermanetEquivalentOrNull(long offset) {
-        return this.search.mapWordnetOffsetToGermanet(offset);
+    private de.tuebingen.uni.sfs.germanet.api.Synset wordnetSynsetToGermanetOrNull(POS pos, long offset) {
+        return this.search.wordnetSynsetToGermanetOrNull(pos, offset);
     }
 
     public void buildGraph() {
@@ -285,6 +288,7 @@ public class SenseGroupController implements Initializable {
 
     private void cleanUpTarget() {
         this.targetList.clear();
+        this.targetKeyword.setText("");
         this.selectedOrthForm.set(null);
 
     }
@@ -308,11 +312,15 @@ public class SenseGroupController implements Initializable {
         this.sourceKeyword.setText(firstLemma);
         var word = this.search.wordnetGetWordBySenseKey(senseKey);
         var synsets = this.search.wordnetGetSenses(word.getLemma());
-        this.fillSourceList(synsets, firstLemma);
+        this.fillSourceList(synsets);
+        this.selectInSourceList(word.getSynset());
+        this.sourceListView.scrollTo(this.getSelectedSource());
 
-        var germanetEquivalent = this.search.mapWordnetOffsetToGermanet(word.getSynset().getOffset());
+        var germanetEquivalent = this.search.wordnetSynsetToGermanetOrNull(
+                word.getSynset().getPOS(), word.getSynset().getOffset());
         if (germanetEquivalent != null) {
             this.setTargetContents(germanetEquivalent);
+            this.targetListView.scrollTo(this.getSelectedTarget());
         } else {
             this.noEquivalentInGermanet.set(true);
         }

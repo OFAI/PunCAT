@@ -8,7 +8,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 
@@ -19,55 +21,58 @@ import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
 
 
 public class Search {
-    private final Map<String, String> word2ipaGER = new HashMap<>();
-    private final Map<String, String> word2ipaENG = new HashMap<>();
-    private GermanetController germaNet;
-    private WordnetController wordNet;
-    private SemanticSimilarity semSimilarity;
-    private PhoneticSimilarity phonSimilarity;
+    private final Map<String, String> germanet2ipa = new HashMap<>();
+    private final Map<String, String> wordnet2ipa = new HashMap<>();
+    private final GermanetController germaNet;
+    private final WordnetController wordNet;
+    private final SemanticSimilarity semSimilarity;
+    private final PhoneticSimilarity phonSimilarity;
 
     public Search() {
         var csvFile = getClass().getResourceAsStream(ResourcePaths.germanet2ipaPath);
         String line;
-        String cvsSplitBy = ",";
+        String csvSplitBy = ",";
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
             while ((line = br.readLine()) != null) {
-                String[] pair = line.split(cvsSplitBy);
-                this.word2ipaGER.put(pair[0], pair[1]);
+                String[] pair = line.split(csvSplitBy);
+                this.germanet2ipa.put(pair[0], pair[1]);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         csvFile = getClass().getResourceAsStream(ResourcePaths.wordnet2ipaPath);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile))) {
             while ((line = br.readLine()) != null) {
-                String[] pair = line.split(cvsSplitBy);
-                this.word2ipaENG.put(pair[0], pair[1]);
+                String[] pair = line.split(csvSplitBy);
+                this.wordnet2ipa.put(pair[0], pair[1]);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         try {
             this.wordNet = new WordnetController();
             this.germaNet = new GermanetController();
-            this.semSimilarity = new SemanticSimilarity(this.germaNet.getObject());
-            this.phonSimilarity = new PhoneticSimilarity(word2ipaGER);
+            this.semSimilarity = new SemanticSimilarity(this.germaNet.getSemanticUtils());
+            this.phonSimilarity = new PhoneticSimilarity();
         } catch (Exception e) {
-            e.printStackTrace();  // TODO: better handling of germanet/wordnet exceptions
+            throw new RuntimeException(e);
         }
     }
 
-    public double calculateSemanticSimilarity(long sSense, int tSense, SemanticSimilarity.algs selectedSemanticAlg) {
-        var soureAsTargetSynset = this.germaNet.equivalentByWordnetOffset(sSense);
-        var targetSynset = this.germaNet.getSynsetById(tSense);
+    public double calculateSemanticSimilarity(POS sSensePOS, long sSenseOffset,
+                                              int tSenseId,
+                                              SemanticSimilarity.algs selectedSemanticAlg) {
+        var soureAsTargetSynset = this.germaNet.equivalentByWordnetOffset(sSensePOS, sSenseOffset);
+        var targetSynset = this.germaNet.getSynsetById(tSenseId);
         if (soureAsTargetSynset != null && targetSynset != null) {
             return this.semSimilarity.calculateSemanticSimilarity(soureAsTargetSynset, targetSynset, selectedSemanticAlg);
         } else {
             if (soureAsTargetSynset == null) {
-                System.err.println("WordNet synset " + sSense + " not mapped to GermaNet. Returning score 0.");
+                System.err.printf("WordNet Synset %d (%s) not mapped to GermaNet. Returning score 0.%n",
+                        sSenseOffset, sSensePOS);
                 return 0;
             } else {
                 throw new RuntimeException("targetSynset null");
@@ -88,8 +93,9 @@ public class Search {
     }
 
     public String getIpaTranscriptionEnglish(String word, Synset synset) {
-        String baseForm = this.wordNet.getBaseForm(word, synset);
-        String result = this.word2ipaENG.get(baseForm.toLowerCase());
+        String baseForm = this.wordNet.getBaseFormOrNull(word.toLowerCase(), synset);
+        String result;
+        result = this.wordnet2ipa.get(Objects.requireNonNullElse(baseForm, word).toLowerCase());
         if (result == null) {
             System.err.println("No IPA transcription found for " + word);
             return "";
@@ -99,7 +105,7 @@ public class Search {
     }
 
     public String getIpaTranscriptionGerman(String word) {
-        String result = this.word2ipaGER.get(word.toLowerCase());
+        String result = this.germanet2ipa.get(word.toLowerCase());
         return result == null ? "" : result;
     }
 
@@ -111,8 +117,8 @@ public class Search {
         return germaNet.getSynsets(word);
     }
 
-    public de.tuebingen.uni.sfs.germanet.api.Synset mapWordnetOffsetToGermanet(long offset) {
-        return germaNet.equivalentByWordnetOffset(offset);
+    public de.tuebingen.uni.sfs.germanet.api.Synset wordnetSynsetToGermanetOrNull(POS pos, long offset) {
+        return germaNet.equivalentByWordnetOffset(pos, offset);
     }
 
     public List<de.tuebingen.uni.sfs.germanet.api.Synset> germanetGetHypernymsOrderedByFrequency(int synsetId) {

@@ -15,8 +15,15 @@
         <ColumnConstraints halignment="CENTER" percentWidth="25"/>
         <ColumnConstraints halignment="CENTER" percentWidth="75"/>
     </columnConstraints>
-    <rowConstraints>
-        <RowConstraints percentHeight="50"/>
-        <RowConstraints percentHeight="50"/>
-    </rowConstraints>
+    <GridPane fx:id="taskAndCandidateGridPane" GridPane.columnIndex="0" GridPane.rowIndex="0" vgap="10.0">
+    </GridPane>
+    <GridPane fx:id="senseGroupsGridPane" GridPane.columnIndex="1" GridPane.rowIndex="0" vgap="10.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+        </rowConstraints>
+    </GridPane>
 </GridPane>

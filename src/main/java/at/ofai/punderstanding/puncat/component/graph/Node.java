@@ -126,10 +126,7 @@ public class Node extends Group {
 
     static class LabelWrapper {
         private static final InteractionLogger interactionLogger = new InteractionLogger();
-        // TODO: extend TextFlow?
         private final Font normalFont = Font.font(Font.getDefault().getName(), FontWeight.NORMAL, Font.getDefault().getSize());
-        //private final String normalStyle = "-fx-cursor: hand; fx-font-weight: normal;";
-        //private final String boldStyle = "-fx-cursor: default; fx-font-weight: bold;";
         private final Font boldFont = Font.font(Font.getDefault().getName(), FontWeight.BOLD, Font.getDefault().getSize());
         private final TextFlow labelFlow = new TextFlow();
         private final StringProperty activeLineId = new SimpleStringProperty();

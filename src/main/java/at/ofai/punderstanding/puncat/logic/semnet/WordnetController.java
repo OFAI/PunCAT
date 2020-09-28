@@ -47,30 +47,26 @@ public class WordnetController implements SemnetController<Synset> {
         }
     }
 
-    public List<String> getWordsByOffset(Long offset) {
-        var words = new ArrayList<String>();
-        for (POS p : POS.getAllPOS()) {
-            try {
-                Synset synset = this.wordnet.getSynsetAt(p, offset);
-                if (synset != null) {
-                    words.addAll(this.wordnet.getSynsetAt(p, offset).getWords().
-                            stream().map(Word::toString).collect(Collectors.toList())
-                    );
-                }
-            } catch (JWNLException e) {
-                e.printStackTrace();
-            }
-        }
-        return words;
-    }
-
     public Dictionary getObject() {
         return this.wordnet;
     }
 
-    public String getBaseForm(String word, Synset synset) {
+    public String getBaseFormOrNull(String word, Synset synset) {
         try {
-            return this.wordnet.getMorphologicalProcessor().lookupBaseForm(synset.getPOS(), word).getLemma();
+            var baseForm = this.wordnet.getMorphologicalProcessor().lookupBaseForm(synset.getPOS(), word);
+            if (baseForm != null) {
+                return baseForm.getLemma();
+            } else {
+                return null;
+            }
+        } catch (JWNLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Synset getSynsetAt(POS pos, long offset) {
+        try {
+            return this.wordnet.getSynsetAt(pos, offset);
         } catch (JWNLException e) {
             throw new RuntimeException(e);
         }

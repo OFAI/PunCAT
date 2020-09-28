@@ -22,6 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import com.google.common.collect.BiMap;
@@ -86,10 +87,10 @@ public class CandidateController implements Initializable {
 
         buttonColumn.setSortable(false);
 
-        semColumn.setMaxWidth(50);
-        semColumn.setMinWidth(50);
-        phonColumn.setMaxWidth(50);
-        phonColumn.setMinWidth(50);
+        semColumn.setMaxWidth(60);
+        semColumn.setMinWidth(60);
+        phonColumn.setMaxWidth(60);
+        phonColumn.setMinWidth(60);
         buttonColumn.setMaxWidth(35);
         buttonColumn.setMinWidth(35);
 
@@ -152,6 +153,11 @@ public class CandidateController implements Initializable {
                 this.selectedSemAlg.set(null);
             } else {
                 this.selectedSemAlg.set(semAlgDisplayNames.inverse().get(newValue));
+
+                interactionLogger.logThis(Map.of(
+                        LoggerValues.EVENT, LoggerValues.SEM_ALG_CHANGED_EVENT,
+                        LoggerValues.NEW_ALG, semAlgDisplayNames.inverse().get(newValue)
+                ));
             }
         });
         this.semChoiceBox.getSelectionModel().select(0);
@@ -163,6 +169,11 @@ public class CandidateController implements Initializable {
                 this.selectedPhonAlg.set(null);
             } else {
                 this.selectedPhonAlg.set(phonAlgDisplayNames.inverse().get(newValue));
+
+                interactionLogger.logThis(Map.of(
+                        LoggerValues.EVENT, LoggerValues.PHON_ALG_CHANGED_EVENT,
+                        LoggerValues.NEW_ALG, phonAlgDisplayNames.inverse().get(newValue)
+                ));
             }
         });
         this.phonChoiceBox.getSelectionModel().select(0);
@@ -228,19 +239,20 @@ public class CandidateController implements Initializable {
     }
 
     public void newCandidate() {
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.NEW_CANDIDATE_ADDED_EVENT,
-                LoggerValues.CANDIDATE_PUN, this.punCandidate.getValue(),
-                LoggerValues.CANDIDATE_TARGET, this.targetCandidate.getValue(),
-                LoggerValues.CANDIDATE_SEM, Double.parseDouble(this.semanticScore.getValue()),
-                LoggerValues.CANDIDATE_PHON, Double.parseDouble(this.phoneticScore.getValue())
-        ));
-
-        this.candidateTableContents.add(new CandidateModel(
+        var newCandidate = new CandidateModel(
                 this.punCandidate.getValue(),
                 this.targetCandidate.getValue(),
                 this.semanticScore.getValue(),
-                this.phoneticScore.getValue()));
+                this.phoneticScore.getValue());
+        this.candidateTableContents.add(newCandidate);
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.NEW_CANDIDATE_ADDED_EVENT,
+                LoggerValues.CANDIDATE_PUN, newCandidate.getPun(),
+                LoggerValues.CANDIDATE_TARGET, newCandidate.getTarget(),
+                LoggerValues.CANDIDATE_SEM, Double.parseDouble(newCandidate.getSem()),
+                LoggerValues.CANDIDATE_PHON, Double.parseDouble(newCandidate.getPhon())
+        ));
     }
 
     public JSONArray candidatesToJsonArray() {
