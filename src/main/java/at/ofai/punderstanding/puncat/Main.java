@@ -32,6 +32,7 @@ import at.ofai.punderstanding.puncat.component.UsernameWindow;
 import at.ofai.punderstanding.puncat.controller.MainController;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
 import at.ofai.punderstanding.puncat.logging.LoggerValues;
+import at.ofai.punderstanding.puncat.logic.ResourcePaths;
 import at.ofai.punderstanding.puncat.logic.Search;
 import at.ofai.punderstanding.puncat.model.corpus.Corpus;
 import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
@@ -51,7 +52,16 @@ public class Main extends Application {
     private Search search;
 
     public static void main(String[] args) {
-        launch();
+        if (args.length == 1) {
+            ResourcePaths.resourceJson = args[0];
+            ResourcePaths.init();
+            launch();
+        } else if (args.length == 0) {
+            ResourcePaths.init();
+            launch();
+        } else {
+            throw new RuntimeException("Unexpected number of program arguments");
+        }
     }
 
     @Override

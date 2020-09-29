@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import at.ofai.punderstanding.puncat.logic.ResourcePaths;
 import at.ofai.punderstanding.puncat.logic.Search;
 import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
 import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
@@ -24,6 +25,7 @@ public class SearchTests {
     @BeforeAll
     static void configureEnvironment() {
         SharedConfig.configureEnvironment();
+        ResourcePaths.init();
         search = new Search();
     }
 

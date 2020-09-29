@@ -1,5 +1,6 @@
 package at.ofai.punderstanding.puncat.logic;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -19,12 +20,19 @@ public class ResourcePaths {
     public static Path verbFreq;
     public static Path adjFreq;
 
-    static {
+    public static String resourceJson = "/resourcepaths.json";
+
+
+    public static void init() {
         JSONTokener tokener;
         try {
-            tokener = new JSONTokener(ResourcePaths.class.getResourceAsStream("/resourcepaths.json"));
-        } catch (NullPointerException e) {
-            throw new RuntimeException("resourcepaths.json not found", e);
+            if (Paths.get(resourceJson).isAbsolute()) {
+                tokener = new JSONTokener(new FileInputStream(resourceJson));
+            } else {
+                tokener = new JSONTokener(ResourcePaths.class.getResourceAsStream(resourceJson));
+            }
+        } catch (NullPointerException | FileNotFoundException e) {
+            throw new RuntimeException(resourceJson + " not found");
         }
 
         JSONObject jsonFile = new JSONObject(tokener);
