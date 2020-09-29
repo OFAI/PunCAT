@@ -27,6 +27,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map;
+
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -44,6 +45,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javafx.stage.WindowEvent;
 import org.json.JSONArray;
 
 import at.ofai.punderstanding.puncat.component.SplashStage;
@@ -198,8 +200,9 @@ public class Main extends Application {
         var menuBar = new MenuBar();
         var fileMenu = new Menu("File");
         var openItem = new MenuItem("Open corpus");
+        var exit = new MenuItem("Exit");
         menuBar.getMenus().add(fileMenu);
-        fileMenu.getItems().add(openItem);
+        fileMenu.getItems().addAll(openItem, exit);
 
         openItem.setOnAction(event -> {
             File file = new FileChooser().showOpenDialog(stage);
@@ -207,6 +210,10 @@ public class Main extends Application {
                 parseXml(file);
             }
         });
+        exit.setOnAction(event ->
+                stage
+                .fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST))
+        );
         return menuBar;
     }
 
