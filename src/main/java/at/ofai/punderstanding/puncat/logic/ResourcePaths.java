@@ -1,9 +1,11 @@
 package at.ofai.punderstanding.puncat.logic;
 
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -19,13 +21,28 @@ public class ResourcePaths {
 
     static {
         JSONTokener tokener;
-        if (ResourcePaths.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith(".jar")) {
-            tokener = new JSONTokener(ResourcePaths.class.getResourceAsStream("/resourcepaths_jar.json"));
-        } else {
+        try {
             tokener = new JSONTokener(ResourcePaths.class.getResourceAsStream("/resourcepaths.json"));
+        } catch (NullPointerException e) {
+            throw new RuntimeException("resourcepaths.json not found", e);
         }
-        JSONObject paths = new JSONObject(tokener);
 
+        JSONObject jsonFile = new JSONObject(tokener);
+        JSONObject paths;
+        if (ResourcePaths.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith(".jar")) {
+            try {
+                paths = jsonFile.getJSONObject("jar");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                paths = jsonFile.getJSONObject("normal");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
         germanet2ipaPath = parsePath(paths.get("germanet2ipaPath").toString());
         wordnet2ipaPath = parsePath(paths.get("wordnet2ipaPath").toString());
         germaNetLocation = parsePath(paths.get("germaNetLocation").toString());
@@ -36,13 +53,21 @@ public class ResourcePaths {
 
     private static Path parsePath(String pathString) {
         var path = Paths.get(pathString);
+        Path absolutePath;
         if (!path.isAbsolute()) {
             try {
-                return Paths.get(ResourcePaths.class.getResource(pathString).toURI());
+                absolutePath = Paths.get(ResourcePaths.class.getResource(pathString).toURI());
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            absolutePath = path;
+        }
 
-        } else return path;
+        if (absolutePath.toFile().exists()) {
+            return absolutePath;
+        } else {
+            throw new RuntimeException(absolutePath + " does not exist", new FileNotFoundException());
+        }
     }
 }
