@@ -210,6 +210,12 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
                     <mainClass>at.ofai.punderstanding.puncat.Main</mainClass>
                     <includePathExceptionsInClasspath>true <!-- required for the FranzXaver dependency -->
                     </includePathExceptionsInClasspath>
+                    <options>
+                        <option>-Xms1g</option>
+                        <option>-Xmx2g</option>
+                        <!--suppress CheckTagEmptyBody -->
+                        <commandlineArgs></commandlineArgs>
+                    </options>
                 </configuration>
             </plugin>
             <plugin>

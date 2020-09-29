@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -34,38 +33,26 @@ import org.json.JSONTokener;
 
 
 public class ResourcePaths {
+    private static final String resourceJsonFileName = "resourcepaths.json";
     public static Path germanet2ipaPath;
     public static Path wordnet2ipaPath;
-
     public static Path germaNetLocation;
     public static Path nounFreq;
     public static Path verbFreq;
     public static Path adjFreq;
-
-    private static final String resourceJsonFileName = "resourcepaths.json";
     public static String resourcePath;
     private static boolean thisIsAJarFile;
 
 
     public static void init() {
-        thisIsAJarFile = getCodeSource().toString().endsWith(".jar");
+        thisIsAJarFile = getCodeSourceURI().toString().endsWith(".jar");
 
         if (resourcePath == null) {
-            Path jarPath;
+            Path codePath = Paths.get(getCodeSourceURI());
             if (thisIsAJarFile) {
-                try {
-                    jarPath = Paths.get(getCodeSource().toURI()).getParent();
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                try {
-                    jarPath = Paths.get(getCodeSource().toURI());
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
+                codePath = codePath.getParent();
             }
-            resourcePath = Paths.get(jarPath.toString(), resourceJsonFileName).toString();
+            resourcePath = Paths.get(codePath.toString(), resourceJsonFileName).toString();
         }
 
         InputStream tokenerStream;
@@ -99,8 +86,12 @@ public class ResourcePaths {
         adjFreq = parsePath(paths.get("adjFreq").toString());
     }
 
-    private static URL getCodeSource() {
-        return ResourcePaths.class.getProtectionDomain().getCodeSource().getLocation();
+    private static URI getCodeSourceURI() {
+        try {
+            return ResourcePaths.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static Path parsePath(String pathString) {
@@ -109,9 +100,9 @@ public class ResourcePaths {
         if (!path.isAbsolute()) {
             Path codePath;
             if (thisIsAJarFile) {
-                codePath = Paths.get(getCodeSource().getPath()).getParent();
+                codePath = Paths.get(getCodeSourceURI()).getParent();
             } else {
-                codePath = Paths.get(getCodeSource().getPath());
+                codePath = Paths.get(getCodeSourceURI());
             }
             absolutePath = Paths.get(codePath.toString(), pathString);
         } else {
