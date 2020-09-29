@@ -72,7 +72,7 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         if (args.length == 1) {
-            ResourcePaths.resourceJson = args[0];
+            ResourcePaths.resourcePath = args[0];
             ResourcePaths.init();
             launch();
         } else if (args.length == 0) {
@@ -100,6 +100,7 @@ public class Main extends Application {
             this.build();
         });
         userNameStage.show();
+        userNameStage.requestFocus();
     }
 
     private void build() {

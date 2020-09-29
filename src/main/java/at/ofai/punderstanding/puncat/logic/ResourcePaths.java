@@ -21,7 +21,10 @@ package at.ofai.punderstanding.puncat.logic;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -39,24 +42,42 @@ public class ResourcePaths {
     public static Path verbFreq;
     public static Path adjFreq;
 
-    public static String resourceJson = "/resourcepaths.json";
+    private static final String resourceJsonFileName = "resourcepaths.json";
+    public static String resourcePath;
+    private static boolean thisIsAJarFile;
 
 
     public static void init() {
-        JSONTokener tokener;
-        try {
-            if (Paths.get(resourceJson).isAbsolute()) {
-                tokener = new JSONTokener(new FileInputStream(resourceJson));
+        thisIsAJarFile = getCodeSource().toString().endsWith(".jar");
+
+        if (resourcePath == null) {
+            Path jarPath;
+            if (thisIsAJarFile) {
+                try {
+                    jarPath = Paths.get(getCodeSource().toURI()).getParent();
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
-                tokener = new JSONTokener(ResourcePaths.class.getResourceAsStream(resourceJson));
+                try {
+                    jarPath = Paths.get(getCodeSource().toURI());
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        } catch (NullPointerException | FileNotFoundException e) {
-            throw new RuntimeException(resourceJson + " not found");
+            resourcePath = Paths.get(jarPath.toString(), resourceJsonFileName).toString();
         }
 
+        InputStream tokenerStream;
+        try {
+            tokenerStream = new FileInputStream(resourcePath);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("no resourcepaths.json found at " + resourcePath, e);
+        }
+        var tokener = new JSONTokener(tokenerStream);
         JSONObject jsonFile = new JSONObject(tokener);
         JSONObject paths;
-        if (ResourcePaths.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith(".jar")) {
+        if (thisIsAJarFile) {
             try {
                 paths = jsonFile.getJSONObject("jar");
             } catch (JSONException e) {
@@ -78,19 +99,24 @@ public class ResourcePaths {
         adjFreq = parsePath(paths.get("adjFreq").toString());
     }
 
+    private static URL getCodeSource() {
+        return ResourcePaths.class.getProtectionDomain().getCodeSource().getLocation();
+    }
+
     private static Path parsePath(String pathString) {
         var path = Paths.get(pathString);
         Path absolutePath;
         if (!path.isAbsolute()) {
-            try {
-                absolutePath = Paths.get(ResourcePaths.class.getResource(pathString).toURI());
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
+            Path codePath;
+            if (thisIsAJarFile) {
+                codePath = Paths.get(getCodeSource().getPath()).getParent();
+            } else {
+                codePath = Paths.get(getCodeSource().getPath());
             }
+            absolutePath = Paths.get(codePath.toString(), pathString);
         } else {
             absolutePath = path;
         }
-
         if (absolutePath.toFile().exists()) {
             return absolutePath;
         } else {

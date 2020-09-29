@@ -8,11 +8,11 @@
     "adjFreq": "c:/git/puncat_data/GN_V150_FREQ/adj_freqs_decow14_16.txt"
   },
   "normal": {
-    "germanet2ipaPath": "/data/ipa/germanet2ipaLowercase.csv",
-    "wordnet2ipaPath": "/data/ipa/wordnet2ipaLowercase.csv",
-    "germaNetLocation": "/data/GN_V150_XML/",
-    "nounFreq": "/data/GN_V150_FREQ/noun_freqs_decow14_16.txt",
-    "verbFreq": "/data/GN_V150_FREQ/verb_freqs_decow14_16.txt",
-    "adjFreq": "/data/GN_V150_FREQ/adj_freqs_decow14_16.txt"
+    "germanet2ipaPath": "data/ipa/germanet2ipaLowercase.csv",
+    "wordnet2ipaPath": "data/ipa/wordnet2ipaLowercase.csv",
+    "germaNetLocation": "data/GN_V150_XML/",
+    "nounFreq": "data/GN_V150_FREQ/noun_freqs_decow14_16.txt",
+    "verbFreq": "data/GN_V150_FREQ/verb_freqs_decow14_16.txt",
+    "adjFreq": "data/GN_V150_FREQ/adj_freqs_decow14_16.txt"
   }
 }
