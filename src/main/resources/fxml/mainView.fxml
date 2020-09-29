@@ -37,6 +37,9 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
         <ColumnConstraints halignment="CENTER" percentWidth="75"/>
     </columnConstraints>
     <GridPane fx:id="taskAndCandidateGridPane" GridPane.columnIndex="0" GridPane.rowIndex="0" vgap="10.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
     </GridPane>
     <GridPane fx:id="senseGroupsGridPane" GridPane.columnIndex="1" GridPane.rowIndex="0" vgap="10.0">
         <columnConstraints>

@@ -27,7 +27,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.ofai.punderstanding.puncat.controller.GraphController"
-      alignment="CENTER" fx:id="container">
+      alignment="CENTER" fx:id="container" spacing="5">
     <HBox fx:id="buttonHBox" spacing="5" alignment="CENTER">
         <Button fx:id="firstButton" text="&lt;&lt;" disable="true" onAction="#firstGraph"/>
         <Button fx:id="prevButton" text="&lt;" disable="true" onAction="#prevGraph"/>
