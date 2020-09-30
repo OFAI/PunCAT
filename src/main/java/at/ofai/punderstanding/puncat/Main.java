@@ -210,8 +210,7 @@ public class Main extends Application {
             }
         });
         exit.setOnAction(event ->
-                stage
-                .fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST))
+                stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST))
         );
         return menuBar;
     }

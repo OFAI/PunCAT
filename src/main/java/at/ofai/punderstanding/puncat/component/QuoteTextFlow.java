@@ -37,7 +37,7 @@ public class QuoteTextFlow {
 
         var secondPartString = corpusText.getText().get(1);
         if (secondPartString.endsWith(System.lineSeparator())) {
-            secondPartString = secondPartString.substring(0, secondPartString.length()-2);
+            secondPartString = secondPartString.substring(0, secondPartString.length() - 2);
         }
         if (!secondPartString.isEmpty() && Character.isLetter(secondPartString.charAt(0))) {
             secondPartString = " " + secondPartString;

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 
 import de.tuebingen.uni.sfs.germanet.api.ConRel;
@@ -52,18 +51,6 @@ public class GermanetController implements SemnetController<Synset> {
     private final GermanetFrequencies frequencies;
 
     public GermanetController() {
-        /*
-        if (getClass().getProtectionDomain().getCodeSource().getLocation().toString().endsWith(".jar")) {
-            var p = Paths.get(URI.create(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()));
-            //this.germanet = new GermaNet();
-        } else {
-            this.germanet = new GermaNet(
-                    getClass().getResource(ResourcePaths.germaNetLocation).getPath(),
-                    getClass().getResource(ResourcePaths.nounFreq).getPath(),
-                    getClass().getResource(ResourcePaths.verbFreq).getPath(),
-                    getClass().getResource(ResourcePaths.adjFreq).getPath());
-        }
-         */
         try {
             this.germanet = new GermaNet(
                     ResourcePaths.germaNetLocation.toFile(),

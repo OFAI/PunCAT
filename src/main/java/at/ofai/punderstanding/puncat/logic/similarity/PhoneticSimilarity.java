@@ -36,7 +36,7 @@ public class PhoneticSimilarity {
     private final Map<String, String> germanet2ipa = new HashMap<>();
 
     public PhoneticSimilarity() {
-        InputStream csvFile ;
+        InputStream csvFile;
         try {
             csvFile = new FileInputStream(ResourcePaths.germanet2ipaPath.toFile());
         } catch (FileNotFoundException e) {

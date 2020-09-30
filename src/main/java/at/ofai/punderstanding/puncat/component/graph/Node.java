@@ -51,8 +51,8 @@ public class Node extends Group {
     private final LabelWrapper labelWrapper;
     private final StringProperty selectedLineId = new SimpleStringProperty();
     private final InteractionLogger interactionLogger;
-    Instant scrollStartRegistered = Instant.now();
     private final Ellipse ellipse;
+    Instant scrollStartRegistered = Instant.now();
 
     public Node(BiMap<Integer, String> text, DoubleProperty x, DoubleProperty y, boolean isRoot) {
         this.interactionLogger = new InteractionLogger();
@@ -63,7 +63,7 @@ public class Node extends Group {
 
 
         this.labelWrapper = new LabelWrapper(text, ellipse.centerXProperty(), ellipse.centerYProperty(), isRoot);
-        double radiusX = Math.max(labelWrapper.getWidth() / 2 + labelPadding+10, minRadiusX);
+        double radiusX = Math.max(labelWrapper.getWidth() / 2 + labelPadding + 10, minRadiusX);
         double radiusY = Math.max(labelWrapper.getHeight() / 2 + labelPadding, minRadiusY);
         ellipse.setRadiusX(radiusX);
         ellipse.setRadiusY(radiusY);
