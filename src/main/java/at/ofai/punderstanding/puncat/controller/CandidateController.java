@@ -188,6 +188,8 @@ public class CandidateController implements Initializable {
             }
         });
         this.phonChoiceBox.getSelectionModel().select(0);
+
+
     }
 
     private void setButtonCellValueFactory(TableColumn<CandidateModel, Void> buttonColumn) {

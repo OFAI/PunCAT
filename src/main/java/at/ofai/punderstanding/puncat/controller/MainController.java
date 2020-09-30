@@ -179,4 +179,8 @@ public class MainController implements Initializable {
     public List<Button> getButtons() {
         return this.taskController.getButtons();
     }
+
+    public GridPane getContainer() {
+        return container;
+    }
 }

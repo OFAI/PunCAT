@@ -28,6 +28,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="at.ofai.punderstanding.puncat.controller.SenseGroupController"
@@ -36,8 +37,11 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
         <ColumnConstraints halignment="CENTER" percentWidth="30"/>
         <ColumnConstraints halignment="CENTER" percentWidth="70"/>
     </columnConstraints>
+    <rowConstraints>
+        <RowConstraints/>
+    </rowConstraints>
 
-    <TabPane styleClass="sense-tab-pane" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <TabPane fx:id="tabpane" styleClass="sense-tab-pane" GridPane.columnIndex="0" GridPane.rowIndex="0">
             <Tab text="Source" closable="false">
                 <VBox spacing="5">
                     <TextField fx:id="sourceKeyword"/>

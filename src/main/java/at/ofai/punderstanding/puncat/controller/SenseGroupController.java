@@ -37,6 +37,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
@@ -61,6 +62,8 @@ public class SenseGroupController implements Initializable {
     private final BooleanProperty noEquivalentInGermanet = new SimpleBooleanProperty(false);
     private final Label noResultLabel = new Label("No known equivalent in GermaNet!");
     private final InteractionLogger interactionLogger = new InteractionLogger();
+    @FXML
+    public TabPane tabpane;
     @FXML
     private GridPane container;
     @FXML
@@ -113,6 +116,10 @@ public class SenseGroupController implements Initializable {
                 this.onTargetSenseSelected();
             }
         });
+
+        this.tabpane.prefHeightProperty().bind(this.container.heightProperty());
+        this.sourceListView.prefHeightProperty().bind(this.tabpane.heightProperty());
+        this.targetListView.prefHeightProperty().bind(this.tabpane.heightProperty());
     }
 
     private void onSearchForSourceKeyword() {

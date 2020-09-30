@@ -19,6 +19,7 @@
 
 package at.ofai.punderstanding.puncat;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,6 +35,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -43,6 +45,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import javafx.stage.WindowEvent;
@@ -137,6 +140,7 @@ public class Main extends Application {
     private void buildRootStage() {
         this.rootPane.setTop(createMenubar());
         this.rootPane.setCenter(mainViewContainer);
+        // Scene scene = new Scene(this.rootPane, Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
         Scene scene = new Scene(this.rootPane);
         scene.getStylesheets().add("/styles.css");
         this.stage.setScene(scene);
