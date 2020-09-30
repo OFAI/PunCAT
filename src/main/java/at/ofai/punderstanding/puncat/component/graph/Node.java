@@ -63,7 +63,7 @@ public class Node extends Group {
 
 
         this.labelWrapper = new LabelWrapper(text, ellipse.centerXProperty(), ellipse.centerYProperty(), isRoot);
-        double radiusX = Math.max(labelWrapper.getWidth() / 2 + labelPadding, minRadiusX);
+        double radiusX = Math.max(labelWrapper.getWidth() / 2 + labelPadding+10, minRadiusX);
         double radiusY = Math.max(labelWrapper.getHeight() / 2 + labelPadding, minRadiusY);
         ellipse.setRadiusX(radiusX);
         ellipse.setRadiusY(radiusY);
@@ -126,7 +126,6 @@ public class Node extends Group {
     }
 
     public void enableScrollListener() {
-        // TODO: disable for a short while after each scroll event
         this.setOnScroll(event -> {
             if (Instant.now().minusMillis(500L).isAfter(scrollStartRegistered)) {
                 scrollStartRegistered = Instant.now();
@@ -145,19 +144,19 @@ public class Node extends Group {
 
     static class LabelWrapper {
         private static final InteractionLogger interactionLogger = new InteractionLogger();
-        private final Font normalFont = Font.font(Font.getDefault().getName(), FontWeight.NORMAL, Font.getDefault().getSize());
-        private final Font boldFont = Font.font(Font.getDefault().getName(), FontWeight.BOLD, Font.getDefault().getSize());
         private final TextFlow labelFlow = new TextFlow();
         private final StringProperty activeLineId = new SimpleStringProperty();
         private ArrayList<Text> labelParts = new ArrayList<>();
         private Text activeLine = null;
 
         LabelWrapper(BiMap<Integer, String> text, DoubleProperty x, DoubleProperty y, boolean isRoot) {
+            var normalFont = Font.font(Font.getDefault().getName(), FontWeight.NORMAL, Font.getDefault().getSize());
+            var boldFont = Font.font(Font.getDefault().getName(), FontWeight.BOLD, Font.getDefault().getSize());
             for (Integer key : text.keySet()) {
                 Text line = new Text(text.get(key));
                 line.setId(key.toString());
-                line.setFont(this.boldFont);
-                //line.setStyle(this.boldStyle);
+                line.setStyle("-fx-font-weight: bold");
+                line.setFont(boldFont);
                 line.setTextAlignment(TextAlignment.CENTER);
                 labelParts.add(line);
             }
@@ -172,8 +171,8 @@ public class Node extends Group {
             Text widestText = Collections.max(this.labelParts, Comparator.comparing(l -> l.getLayoutBounds().getWidth()));
             this.labelFlow.setPrefWidth(widestText.getLayoutBounds().getWidth());
             for (Text t : this.labelParts) {
-                t.setFont(this.normalFont);
-                //t.setStyle(this.normalStyle);
+                t.setFont(normalFont);
+                t.setStyle("-fx-font-weight: normal");
             }
 
             if (isRoot) {
@@ -206,8 +205,7 @@ public class Node extends Group {
         }
 
         void removeBold() {
-            this.activeLine.setFont(this.normalFont);
-            //this.activeLine.setStyle(this.normalStyle);
+            this.activeLine.setStyle("-fx-font-weight: normal");
         }
 
         void scrollActiveLine(ScrollEvent event) {
@@ -218,7 +216,7 @@ public class Node extends Group {
             } else {
                 this.setActiveLine(this.activeLine = this.labelParts.get(Math.floorMod(i + 1, this.labelParts.size())));
             }
-            this.activeLine.setFont(this.boldFont);
+            this.activeLine.setStyle("-fx-font-weight: bold");
 
             interactionLogger.logThis(Map.of(
                     LoggerValues.EVENT, LoggerValues.SELECTION_ON_ROOT_NODE,
@@ -242,7 +240,7 @@ public class Node extends Group {
                     t.setUnderline(false);
                 });
                 t.setOnMouseEntered(event -> {
-                    if (t.getFont() == this.normalFont) {
+                    if (t != this.activeLine) {
                         t.setUnderline(true);
                     }
                 });
@@ -252,12 +250,10 @@ public class Node extends Group {
 
         void setActiveLine(Text t) {
             if (this.activeLine != null) {
-                this.activeLine.setFont(this.normalFont);
-                //this.activeLine.setStyle(this.normalStyle);
+                this.activeLine.setStyle("-fx-font-weight: normal");
             }
             this.activeLine = t;
-            this.activeLine.setFont(this.boldFont);
-            //this.activeLine.setStyle(this.boldStyle);
+            this.activeLine.setStyle("-fx-font-weight: bold");
             this.activeLineId.setValue(this.activeLine.getId());
         }
 
@@ -282,7 +278,6 @@ public class Node extends Group {
         }
 
         public void setSelectedLine(String textToSelect) {
-            // TODO
             var line = this.labelParts.stream()
                     .filter(t -> t.getText().toLowerCase().equals(textToSelect.toLowerCase()))
                     .findFirst();

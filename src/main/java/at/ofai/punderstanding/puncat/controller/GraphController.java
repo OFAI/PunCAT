@@ -136,6 +136,4 @@ public class GraphController implements Initializable {
     public void setIdentifier(int i) {
         this.identifier = i;
     }
-
-
 }

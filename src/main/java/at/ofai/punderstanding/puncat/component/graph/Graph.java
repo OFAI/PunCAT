@@ -203,7 +203,6 @@ public class Graph extends Group {
             tr.play();
         }
         tt.play();
-
     }
 
     private void setVisibleChildren(Group children) {
