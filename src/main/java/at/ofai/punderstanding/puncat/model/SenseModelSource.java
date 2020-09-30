@@ -28,7 +28,6 @@ import javafx.scene.text.TextFlow;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 

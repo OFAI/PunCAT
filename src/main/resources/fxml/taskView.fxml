@@ -28,6 +28,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
@@ -64,7 +65,9 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
                 -fx-border-style: solid;
                 -fx-background-color: white;"/>
 
-    <ImageView fx:id="imageView" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <StackPane fx:id="imageViewContainer" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <ImageView fx:id="imageView" preserveRatio="true"/>
+    </StackPane>
 
     <TextFlow fx:id="keywordTextFlow" GridPane.columnIndex="0" GridPane.rowIndex="3">
         <Text text="Keywords: " style="-fx-font-weight: bold"/>

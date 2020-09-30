@@ -20,8 +20,6 @@
 package at.ofai.punderstanding.puncat.logic.semnet;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,7 +29,6 @@ import javax.xml.stream.XMLStreamException;
 import de.tuebingen.uni.sfs.germanet.api.ConRel;
 import de.tuebingen.uni.sfs.germanet.api.FilterConfig;
 import de.tuebingen.uni.sfs.germanet.api.GermaNet;
-import de.tuebingen.uni.sfs.germanet.api.IliRecord;
 import de.tuebingen.uni.sfs.germanet.api.RelDirection;
 import de.tuebingen.uni.sfs.germanet.api.SemanticUtils;
 import de.tuebingen.uni.sfs.germanet.api.Synset;

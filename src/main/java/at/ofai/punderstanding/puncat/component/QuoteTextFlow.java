@@ -19,7 +19,6 @@
 
 package at.ofai.punderstanding.puncat.component;
 
-import javafx.geometry.Insets;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;

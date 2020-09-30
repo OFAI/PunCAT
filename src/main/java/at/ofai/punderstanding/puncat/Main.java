@@ -19,7 +19,6 @@
 
 package at.ofai.punderstanding.puncat;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,14 +27,12 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Map;
-
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -45,10 +42,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import javafx.stage.WindowEvent;
+
 import org.json.JSONArray;
 
 import at.ofai.punderstanding.puncat.component.SplashStage;
@@ -140,7 +136,6 @@ public class Main extends Application {
     private void buildRootStage() {
         this.rootPane.setTop(createMenubar());
         this.rootPane.setCenter(mainViewContainer);
-        // Scene scene = new Scene(this.rootPane, Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
         Scene scene = new Scene(this.rootPane);
         scene.getStylesheets().add("/styles.css");
         this.stage.setScene(scene);
@@ -164,7 +159,7 @@ public class Main extends Application {
         this.mainControllers.add(mc);
 
         if (corpusInstance != null) {
-            mc.loadCorpusInstance(corpusInstance);
+            mc.loadCorpusInstance(corpusInstance, this.stage);
             var buttons = mc.getButtons();
             buttons.get(0).setOnAction(event -> this.firstPane());
             buttons.get(1).setOnAction(event -> this.prevPane());

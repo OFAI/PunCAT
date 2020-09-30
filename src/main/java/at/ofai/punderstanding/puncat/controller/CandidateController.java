@@ -19,13 +19,11 @@
 
 package at.ofai.punderstanding.puncat.controller;
 
-import at.ofai.punderstanding.puncat.logging.InteractionLogger;
-import at.ofai.punderstanding.puncat.logging.LoggerValues;
-import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
-import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
-import at.ofai.punderstanding.puncat.model.CandidateModel;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,19 +33,28 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.json.JSONArray;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.ResourceBundle;
+import at.ofai.punderstanding.puncat.logging.InteractionLogger;
+import at.ofai.punderstanding.puncat.logging.LoggerValues;
+import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
+import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
+import at.ofai.punderstanding.puncat.model.CandidateModel;
 
 
 public class CandidateController implements Initializable {

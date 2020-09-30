@@ -33,7 +33,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
     <columnConstraints>
-        <ColumnConstraints halignment="CENTER" percentWidth="25"/>
+        <ColumnConstraints halignment="CENTER" percentWidth="25" hgrow="NEVER"/>
         <ColumnConstraints halignment="CENTER" percentWidth="75"/>
     </columnConstraints>
     <rowConstraints>

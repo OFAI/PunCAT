@@ -30,6 +30,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import org.json.JSONArray;
 
@@ -114,7 +115,7 @@ public class MainController implements Initializable {
         this.senseGroupController2.setSearch(search);
     }
 
-    public void loadCorpusInstance(CorpusInstance corpusInstance) {
+    public void loadCorpusInstance(CorpusInstance corpusInstance, Stage stage) {
         this.corpusInstanceId = corpusInstance.getId();
 
         this.senseGroupController1.setContentsByCorpusInstance(
@@ -133,7 +134,7 @@ public class MainController implements Initializable {
         this.taskController = loader.getController();
 
         var image = new Image(corpusInstance.getImg().src, true);
-        this.taskController.insertImage(image);
+        this.taskController.insertImage(image, stage);
 
         var imageText = QuoteTextFlow.build(corpusInstance.getText());
         this.taskController.insertQuote(imageText);

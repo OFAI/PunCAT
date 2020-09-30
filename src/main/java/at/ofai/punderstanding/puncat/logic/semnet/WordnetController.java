@@ -21,7 +21,6 @@ package at.ofai.punderstanding.puncat.logic.semnet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
