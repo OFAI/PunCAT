@@ -47,12 +47,17 @@ public class ResourcePaths {
     public static void init() {
         thisIsAJarFile = getCodeSourceURI().toString().endsWith(".jar");
 
+        var codePath = Paths.get(getCodeSourceURI());
+        if (thisIsAJarFile) {
+            codePath = codePath.getParent();
+        }
+
         if (resourcePath == null) {
-            Path codePath = Paths.get(getCodeSourceURI());
-            if (thisIsAJarFile) {
-                codePath = codePath.getParent();
-            }
             resourcePath = Paths.get(codePath.toString(), resourceJsonFileName).toString();
+        } else {
+            if (!Paths.get(resourcePath).isAbsolute()) {
+                resourcePath = Paths.get(codePath.toString(), resourcePath).toString();
+            }
         }
 
         InputStream tokenerStream;

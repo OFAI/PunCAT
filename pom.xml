@@ -214,9 +214,9 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
                         <option>-Xms1g</option>
                         <option>-Xmx2g</option>
                         <option>-Dfile.encoding=UTF-8</option>
-                        <!--suppress CheckTagEmptyBody -->
-                        <commandlineArgs></commandlineArgs>
                     </options>
+                    <!--suppress CheckTagEmptyBody -->
+                    <commandlineArgs></commandlineArgs>
                 </configuration>
             </plugin>
             <plugin>
