@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 
 import de.tuebingen.uni.sfs.germanet.api.ConRel;
@@ -137,7 +138,7 @@ public class GermanetController implements SemnetController<Synset> {
 
     public List<Synset> getHypernyms(int synsetId) {
         Synset synset = this.germanet.getSynsetByID(synsetId);
-        List<Synset> relations = synset.getRelatedSynsets(ConRel.has_hypernym, RelDirection.incoming);
+        List<Synset> relations = synset.getRelatedSynsets(ConRel.has_hypernym, RelDirection.outgoing);
         relations.sort(Comparator.comparing(frequencies::getSynsetCumulativeFrequency));
         return relations;
 
@@ -145,7 +146,7 @@ public class GermanetController implements SemnetController<Synset> {
 
     public List<Synset> getHyponyms(int synsetId) {
         Synset synset = this.germanet.getSynsetByID(synsetId);
-        List<Synset> relations = synset.getRelatedSynsets(ConRel.has_hyponym, RelDirection.incoming);
+        List<Synset> relations = synset.getRelatedSynsets(ConRel.has_hyponym, RelDirection.outgoing);
         relations.sort(Comparator.comparing(frequencies::getSynsetCumulativeFrequency));
         return relations;
     }
