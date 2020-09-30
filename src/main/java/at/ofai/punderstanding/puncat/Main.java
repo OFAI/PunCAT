@@ -293,7 +293,9 @@ public class Main extends Application {
             throw new RuntimeException("could not create results folder");
         }
         try {
-            Files.writeString(file.toPath().resolve(Paths.get(fileName)), candidateList.toString(4), StandardCharsets.UTF_8);
+            var savePath = file.toPath().resolve(Paths.get(fileName));
+            Files.writeString(savePath, candidateList.toString(4), StandardCharsets.UTF_8);
+            System.out.println("results saved to: " + savePath);
         } catch (IOException e) {
             throw new RuntimeException("could not write results file", e);
         }
