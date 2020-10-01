@@ -53,10 +53,10 @@ public class GermanetController implements SemnetController<Synset> {
     public GermanetController() {
         try {
             this.germanet = new GermaNet(
-                    ResourcePaths.germaNetLocation.toFile(),
-                    ResourcePaths.nounFreq.toFile(),
-                    ResourcePaths.verbFreq.toFile(),
-                    ResourcePaths.adjFreq.toFile());
+                    ResourcePaths.germanet.toFile(),
+                    ResourcePaths.nounfreq.toFile(),
+                    ResourcePaths.verbfreq.toFile(),
+                    ResourcePaths.adjfreq.toFile());
         } catch (IOException | XMLStreamException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -64,9 +64,9 @@ public class GermanetController implements SemnetController<Synset> {
 
 
         this.frequencies = GermanetFrequencies.loadFrequencies(
-                ResourcePaths.nounFreq,
-                ResourcePaths.verbFreq,
-                ResourcePaths.adjFreq);
+                ResourcePaths.nounfreq,
+                ResourcePaths.verbfreq,
+                ResourcePaths.adjfreq);
     }
 
     @Override

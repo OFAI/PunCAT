@@ -54,7 +54,7 @@ public class Search {
         //var csvFile = getClass().getResourceAsStream(ResourcePaths.germanet2ipaPath);
         InputStream csvFile;
         try {
-            csvFile = new FileInputStream(ResourcePaths.germanet2ipaPath.toFile());
+            csvFile = new FileInputStream(ResourcePaths.germanet2ipa.toFile());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -71,7 +71,7 @@ public class Search {
         }
 
         try {
-            csvFile = new FileInputStream(ResourcePaths.wordnet2ipaPath.toFile());
+            csvFile = new FileInputStream(ResourcePaths.wordnet2ipa.toFile());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

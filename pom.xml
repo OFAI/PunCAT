@@ -88,6 +88,14 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
                                             </manifestEntries>
                                         </transformer>
                                     </transformers>
+                                    <filters>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>puncat_resources/**</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -152,13 +160,6 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>2.3.3</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <!-- SVG loader for JFX -->
-            <groupId>com.github.afester.javafx</groupId>
-            <artifactId>FranzXaver</artifactId>
-            <version>0.1</version>
         </dependency>
 
         <!-- logging dependencies -->
@@ -199,7 +200,6 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -208,8 +208,6 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
                 <version>0.0.4</version>
                 <configuration>
                     <mainClass>at.ofai.punderstanding.puncat.Main</mainClass>
-                    <includePathExceptionsInClasspath>true <!-- required for the FranzXaver dependency -->
-                    </includePathExceptionsInClasspath>
                     <options>
                         <option>-Xms1g</option>
                         <option>-Xmx2g</option>

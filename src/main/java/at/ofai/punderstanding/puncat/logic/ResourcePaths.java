@@ -27,25 +27,23 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 
 public class ResourcePaths {
     private static final String resourceJsonFileName = "resourcepaths.json";
-    public static Path germanet2ipaPath;
-    public static Path wordnet2ipaPath;
-    public static Path germaNetLocation;
-    public static Path nounFreq;
-    public static Path verbFreq;
-    public static Path adjFreq;
+    public static Path germanet2ipa;
+    public static Path wordnet2ipa;
+    public static Path germanet;
+    public static Path nounfreq;
+    public static Path verbfreq;
+    public static Path adjfreq;
     public static String resourcePath;
-    private static boolean thisIsAJarFile;
 
 
     public static void init() {
-        thisIsAJarFile = getCodeSourceURI().toString().endsWith(".jar");
+        boolean thisIsAJarFile = getCodeSourceURI().toString().endsWith(".jar");
 
         var codePath = Paths.get(getCodeSourceURI());
         if (thisIsAJarFile) {
@@ -67,28 +65,14 @@ public class ResourcePaths {
             throw new RuntimeException("no resourcepaths.json found at " + resourcePath, e);
         }
         var tokener = new JSONTokener(tokenerStream);
-        JSONObject jsonFile = new JSONObject(tokener);
-        JSONObject paths;
-        if (thisIsAJarFile) {
-            try {
-                paths = jsonFile.getJSONObject("jar");
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            try {
-                paths = jsonFile.getJSONObject("normal");
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+        JSONObject paths = new JSONObject(tokener);
 
-        }
-        germanet2ipaPath = parsePath(paths.get("germanet2ipaPath").toString());
-        wordnet2ipaPath = parsePath(paths.get("wordnet2ipaPath").toString());
-        germaNetLocation = parsePath(paths.get("germaNetLocation").toString());
-        nounFreq = parsePath(paths.get("nounFreq").toString());
-        verbFreq = parsePath(paths.get("verbFreq").toString());
-        adjFreq = parsePath(paths.get("adjFreq").toString());
+        germanet2ipa = parsePath(paths.get("germanet2ipa").toString());
+        wordnet2ipa = parsePath(paths.get("wordnet2ipa").toString());
+        germanet = parsePath(paths.get("germanet").toString());
+        nounfreq = parsePath(paths.get("nounfreq").toString());
+        verbfreq = parsePath(paths.get("verbfreq").toString());
+        adjfreq = parsePath(paths.get("adjfreq").toString());
     }
 
     private static URI getCodeSourceURI() {
@@ -102,16 +86,10 @@ public class ResourcePaths {
     private static Path parsePath(String pathString) {
         var path = Paths.get(pathString);
         Path absolutePath;
-        if (!path.isAbsolute()) {
-            Path codePath;
-            if (thisIsAJarFile) {
-                codePath = Paths.get(getCodeSourceURI()).getParent();
-            } else {
-                codePath = Paths.get(getCodeSourceURI());
-            }
-            absolutePath = Paths.get(codePath.toString(), pathString);
-        } else {
+        if (path.isAbsolute()) {
             absolutePath = path;
+        } else {
+            absolutePath = Paths.get(Paths.get(resourcePath).getParent().toString(), pathString);
         }
         if (absolutePath.toFile().exists()) {
             return absolutePath;

@@ -1,6 +1,5 @@
 /.idea
 /target
-/src/main/resources/data/
 /logs
 /results
 *.iml

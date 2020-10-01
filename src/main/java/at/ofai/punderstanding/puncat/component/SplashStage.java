@@ -22,10 +22,10 @@ package at.ofai.punderstanding.puncat.component;
 import java.io.InputStream;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -36,11 +36,10 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import afester.javafx.svg.SvgLoader;
-
 
 public class SplashStage extends Stage {
-    private static final String splashImg = "/img/Computational_Pun-derstanding_logo.svg";
+    //private static final String splashImg = "/img/Computational_Pun-derstanding_logo.svg";
+    private static final String splashImg = "/img/Computational_Pun-derstanding_logo.png";
     private static final String icon = "/img/Computational_Pun-derstanding_head.png";
 
     public SplashStage() {
@@ -61,12 +60,10 @@ public class SplashStage extends Stage {
         StackPane.setAlignment(loadingLabel, Pos.TOP_RIGHT);
 
         InputStream svgFile = getClass().getResourceAsStream(splashImg);
-        SvgLoader loader = new SvgLoader();
-        Group svgImage = loader.loadSvg(svgFile);
-        svgImage.setScaleX((splashWidth - 5) / svgImage.getBoundsInParent().getWidth());
-        svgImage.setScaleY((splashHeight - 5) / svgImage.getBoundsInParent().getHeight());
 
-        Group puncat = new Group(svgImage);
+        var puncat = new ImageView(new Image(svgFile));
+        puncat.setPreserveRatio(true);
+        puncat.setFitHeight(splashHeight);
         StackPane.setAlignment(puncat, Pos.BOTTOM_CENTER);
 
         StackPane puncatPane = new StackPane();

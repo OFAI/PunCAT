@@ -45,8 +45,6 @@ public class Corpus {
     ArrayList<CorpusInstance> instances;
 
     public static Corpus parseCorpus(File xml) {
-        //String xml = "C:/git/ref/puncat.xml";
-
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(Corpus.class);
