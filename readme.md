@@ -15,7 +15,7 @@ These resources can be found here: https://jobim.ofai.at/gitlab/mate.lajko/punca
 **Building a JAR file:**
 
 1. Run `mvn compile package -P jar` from the project directory
-
+3. You can find the JAR file in the shade directory
 2. Run the JAR file: `java -jar puncat.jar -Xms1g -Xmx2g`
 
 
