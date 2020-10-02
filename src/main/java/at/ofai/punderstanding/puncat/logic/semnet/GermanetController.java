@@ -71,6 +71,9 @@ public class GermanetController implements SemnetController<Synset> {
 
     @Override
     public List<Synset> getSynsets(String word) {
+        if (word.toLowerCase().equals("gnroot")) {
+            return List.of(this.germanet.getSynsetByID(GermaNet.GNROOT_ID));
+        }
         FilterConfig filterConfig = new FilterConfig(word);
         filterConfig.setIgnoreCase(true);
         return this.germanet.getSynsets(filterConfig);
@@ -143,6 +146,9 @@ public class GermanetController implements SemnetController<Synset> {
     }
 
     public String getLexUnitById(int lexUnitId) {
+        if (lexUnitId == 72133) {
+            return this.germanet.getSynsetByID(GermaNet.GNROOT_ID).getLexUnits().get(0).getOrthForm();
+        }
         return this.germanet.getLexUnitByID(lexUnitId).getOrthForm();
     }
 
