@@ -45,15 +45,15 @@ public class LoggerValues {
     public static final String NEXT_TASK_BUTTON_CLICKED_EVENT = "'Next task (>)' button clicked";
     public static final String LAST_TASK_BUTTON_CLICKED_EVENT = "'Last task (>>)' button clicked";
 
-    public static final String PREV_TASK_IDX = "prevTaskIdx";
-    public static final String NEXT_TASK_IDX = "nextTaskIdx";
+    public static final String PREV_INSTANCE_ID = "prevInstanceId";
+    public static final String CURRENT_INSTANCE_ID = "currentInstanceId";
 
     public static final Object FIRST_GRAPH_BUTTON_CLICKED_EVENT = "'First graph' button clicked";
     public static final String PREV_GRAPH_BUTTON_CLICKED_EVENT = "'Prev graph' button clicked";
     public static final String NEXT_GRAPH_BUTTON_CLICKED_EVENT = "'Next graph' button clicked";
     public static final Object LAST_GRAPH_BUTTON_CLICKED_EVENT = "'Last graph' button clicked";
     public static final String PREV_GRAPH_IDX = "prevGraphIdx";
-    public static final String NEXT_GRAPH_IDX = "nextGraphIdx";
+    public static final String CURRENT_GRAPH_IDX = "currentGraphIdx";
 
     public static final String SOURCE_KEYWORD_CHANGED_EVENT = "Source keyword changed";
     public static final String SOURCE_SENSE_SELECTED_EVENT = "Source sense selected";
@@ -73,4 +73,7 @@ public class LoggerValues {
     public static final String SEM_ALG_CHANGED_EVENT = "Semantic algorithm changed";
     public static final String PHON_ALG_CHANGED_EVENT = "Phonetic algorithm changed";
     public static final String NEW_ALG = "Selected algorithm";
+
+    public static final String CORPUS_OPENED_EVENT = "Corpus xml file opened";
+    public static final String CORPUS_FILE = "file";
 }

@@ -217,7 +217,7 @@ public class Graph extends Group {
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.FIRST_GRAPH_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_GRAPH_IDX, idx,
-                LoggerValues.NEXT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
+                LoggerValues.CURRENT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
 
         if (idx != 0) {
             this.setVisibleChildren(this.childNodePages.get(0));
@@ -230,7 +230,7 @@ public class Graph extends Group {
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.PREV_GRAPH_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_GRAPH_IDX, idx,
-                LoggerValues.NEXT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
+                LoggerValues.CURRENT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
 
         if (idx != 0) {
             this.setVisibleChildren(this.childNodePages.get(idx - 1));
@@ -243,7 +243,7 @@ public class Graph extends Group {
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_GRAPH_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_GRAPH_IDX, idx,
-                LoggerValues.NEXT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
+                LoggerValues.CURRENT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
 
         if (idx != this.childNodePages.size() - 1) {
             this.setVisibleChildren(this.childNodePages.get(idx + 1));
@@ -256,7 +256,7 @@ public class Graph extends Group {
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.LAST_GRAPH_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_GRAPH_IDX, idx,
-                LoggerValues.NEXT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
+                LoggerValues.CURRENT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
 
         if (idx != this.childNodePages.size() - 1) {
             this.setVisibleChildren(this.childNodePages.get(this.childNodePages.size() - 1));

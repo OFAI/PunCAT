@@ -176,6 +176,12 @@ public class Main extends Application {
 
     private void parseXml(File file) {
         Corpus corpus = Corpus.parseCorpus(file);
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.CORPUS_OPENED_EVENT,
+                LoggerValues.CORPUS_FILE, file.getAbsolutePath())
+        );
+
         if (corpus.size() == 0) {
             return;
         }
@@ -215,13 +221,12 @@ public class Main extends Application {
         return menuBar;
     }
 
+    private MainController getControllerOfMainPane(GridPane pane) {
+        return this.mainControllers.get(this.mainPaneList.indexOf(pane));
+    }
+
     private void firstPane() {
         int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_TASK_IDX, idx,
-                LoggerValues.NEXT_TASK_IDX, idx == 0 ? 0 : idx - 1));
 
         if (idx == 0) {
             return;
@@ -229,15 +234,17 @@ public class Main extends Application {
         this.activePane.get().setVisible(false);
         this.activePane.set(this.mainPaneList.get(0));
         this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getControllerOfMainPane(this.activePane.get());
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
     }
 
     private void prevPane() {
         int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_TASK_IDX, idx,
-                LoggerValues.NEXT_TASK_IDX, idx == 0 ? 0 : idx - 1));
 
         if (idx == 0) {
             return;
@@ -245,15 +252,17 @@ public class Main extends Application {
         this.activePane.get().setVisible(false);
         this.activePane.set(this.mainPaneList.get(idx - 1));
         this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getControllerOfMainPane(this.activePane.get());
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
     }
 
     private void nextPane() {
         int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_TASK_IDX, idx,
-                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size() - 1 ? this.mainPaneList.size() - 1 : idx + 1));
 
         if (idx == this.mainPaneList.size() - 1) {
             return;
@@ -261,15 +270,17 @@ public class Main extends Application {
         this.activePane.get().setVisible(false);
         this.activePane.set(this.mainPaneList.get(idx + 1));
         this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getControllerOfMainPane(this.activePane.get());
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
     }
 
     private void lastPane() {
         int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_TASK_IDX, idx,
-                LoggerValues.NEXT_TASK_IDX, idx == this.mainPaneList.size() - 1 ? this.mainPaneList.size() - 1 : idx + 1));
 
         if (idx == this.mainPaneList.size() - 1) {
             return;
@@ -277,6 +288,13 @@ public class Main extends Application {
         this.activePane.get().setVisible(false);
         this.activePane.set(this.mainPaneList.get(this.mainPaneList.size() - 1));
         this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getControllerOfMainPane(this.activePane.get());
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
     }
 
     void saveCandidatesToFile() {
