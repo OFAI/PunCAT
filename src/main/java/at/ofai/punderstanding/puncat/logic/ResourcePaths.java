@@ -43,7 +43,7 @@ public class ResourcePaths {
 
 
     public static void init() {
-        boolean thisIsAJarFile = getCodeSourceURI().toString().endsWith(".jar");
+        boolean thisIsAJarFile = Paths.get(getCodeSourceURI()).toFile().isFile();
 
         var codePath = Paths.get(getCodeSourceURI());
         if (thisIsAJarFile) {
