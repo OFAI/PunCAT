@@ -28,7 +28,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
         </File>
         <File name="simple_appender" fileName="logs/${sys:puncatlogfilename}.txt">
             <PatternLayout>
-                <Pattern>%d{DEFAULT}\n%m%n\n\n</Pattern>
+                <Pattern>%d{ISO8601}%m%n\n</Pattern>
             </PatternLayout>
         </File>
         <Console name="Console" target="SYSTEM_OUT">
