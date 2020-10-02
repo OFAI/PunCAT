@@ -20,10 +20,12 @@
 package at.ofai.punderstanding.puncat.controller;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -112,24 +114,58 @@ public class CandidateController implements Initializable {
         buttonColumn.setMaxWidth(35);
         buttonColumn.setMinWidth(35);
 
-        punColumn.setCellValueFactory(new PropertyValueFactory<>("pun"));
-        targetColumn.setCellValueFactory(new PropertyValueFactory<>("target"));
-        semColumn.setCellValueFactory(new PropertyValueFactory<>("sem"));
-        phonColumn.setCellValueFactory(new PropertyValueFactory<>("phon"));
+        semColumn.setStyle("-fx-alignment: CENTER-RIGHT;");
+        phonColumn.setStyle("-fx-alignment: CENTER-RIGHT;");
+
         this.setButtonCellValueFactory(buttonColumn);
 
-        this.setTextColor(punColumn);
-        this.setTextColor(targetColumn);
-        this.setTextColor(semColumn);
-        this.setTextColor(phonColumn);
+        punColumn.setCellValueFactory(new PropertyValueFactory<>("pun"));
+        targetColumn.setCellValueFactory(new PropertyValueFactory<>("target"));
+        semColumn.setCellValueFactory(p -> new StringBinding() {
 
-        semColumn.setGraphic(new Label("~sem") {{
+            {
+                super.bind(p.getValue().semProperty());
+            }
+
+            @Override
+            protected String computeValue() {
+                var semValue = p.getValue().getSem();
+                if (!semValue.isEmpty()) {
+                    return new DecimalFormat("#").format(Double.parseDouble(semValue) * 100);
+                } else {
+                    return "";
+                }
+            }
+        });
+        phonColumn.setCellValueFactory(p -> new StringBinding() {
+
+            {
+                super.bind(p.getValue().phonProperty());
+            }
+
+            @Override
+            protected String computeValue() {
+                var phonValue = p.getValue().getPhon();
+                if (!phonValue.isEmpty()) {
+                    return new DecimalFormat("#").format(Double.parseDouble(phonValue) * 100);
+                } else {
+                    return "";
+                }
+            }
+        });
+
+        this.setContentStyle(punColumn, false);
+        this.setContentStyle(targetColumn, false);
+        this.setContentStyle(semColumn, true);
+        this.setContentStyle(phonColumn, true);
+
+        semColumn.setGraphic(new Label("sem %") {{
             prefWidthProperty().bind(semColumn.widthProperty());
             setTooltip(new Tooltip("Semantic similarity score") {{
                 setShowDelay(Duration.millis(500));
             }});
         }});
-        phonColumn.setGraphic(new Label("~phon") {{
+        phonColumn.setGraphic(new Label("phon %") {{
             prefWidthProperty().bind(phonColumn.widthProperty());
             setTooltip(new Tooltip("Phonetic similarity score") {{
                 setShowDelay(Duration.millis(500));
@@ -208,7 +244,6 @@ public class CandidateController implements Initializable {
 
             {
                 this.setAlignment(Pos.CENTER);
-                button.prefWidthProperty().bind(this.widthProperty());
             }
 
             @Override
@@ -236,7 +271,7 @@ public class CandidateController implements Initializable {
         });
     }
 
-    private void setTextColor(TableColumn<CandidateModel, String> tableColumn) {
+    private void setContentStyle(TableColumn<CandidateModel, String> tableColumn, boolean numberColumn) {
         tableColumn.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -249,9 +284,11 @@ public class CandidateController implements Initializable {
                     this.setText(item);
                     var candidate = getTableView().getItems().get(getIndex());
                     if (candidate.isCurrentCandidate()) {
-                        this.setStyle("-fx-font-weight: bold; -fx-alignment: center;");
+                        this.setAlignment(numberColumn ? Pos.CENTER_RIGHT : Pos.CENTER);
+                        this.setStyle("-fx-font-weight: bold;");
                     } else {
-                        this.setStyle("-fx-font-weight: normal; -fx-alignment: center;");
+                        this.setAlignment(numberColumn ? Pos.CENTER_RIGHT : Pos.CENTER);
+                        this.setStyle("-fx-font-weight: normal;");
                     }
                 }
             }
