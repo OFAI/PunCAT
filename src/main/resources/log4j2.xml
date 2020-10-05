@@ -28,7 +28,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
         </File>
         <File name="simple_appender" fileName="logs/${sys:puncatlogfilename}.txt">
             <PatternLayout>
-                <Pattern>%d{DEFAULT_PERIOD}%m%n\n</Pattern>
+                <Pattern>%d{DEFAULT_PERIOD}%m%n</Pattern>
             </PatternLayout>
         </File>
         <Console name="Console" target="SYSTEM_OUT">
