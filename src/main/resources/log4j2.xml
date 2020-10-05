@@ -28,16 +28,15 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
         </File>
         <File name="simple_appender" fileName="logs/${sys:puncatlogfilename}.txt">
             <PatternLayout>
-                <Pattern>%d{ISO8601}%m%n\n</Pattern>
+                <Pattern>%d{DEFAULT_PERIOD}%m%n\n</Pattern>
             </PatternLayout>
         </File>
         <Console name="Console" target="SYSTEM_OUT">
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.apache.batik" level="OFF"/>
         <Logger name="de.tuebingen.uni.sfs.germanet.api" level="info"/>
-        <Root level="error">
+        <Root level="warn">
             <AppenderRef ref="Console"/>
         </Root>
         <Logger name="json_logger" level="trace" additivity="false">
