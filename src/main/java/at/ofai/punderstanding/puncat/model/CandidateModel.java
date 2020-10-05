@@ -30,6 +30,8 @@ public class CandidateModel {
     private final StringProperty target = new SimpleStringProperty();
     private final StringProperty sem = new SimpleStringProperty();
     private final StringProperty phon = new SimpleStringProperty();
+    private final StringProperty semAlg = new SimpleStringProperty();
+    private final StringProperty phonAlg = new SimpleStringProperty();
     private final BooleanProperty hasEmptyValues = new SimpleBooleanProperty();
     private final boolean currentCandidate;
 
@@ -112,5 +114,29 @@ public class CandidateModel {
 
     public boolean isCurrentCandidate() {
         return currentCandidate;
+    }
+
+    public String getSemAlg() {
+        return semAlg.get();
+    }
+
+    public StringProperty semAlgProperty() {
+        return semAlg;
+    }
+
+    public void setSemAlg(String semAlg) {
+        this.semAlg.set(semAlg);
+    }
+
+    public String getPhonAlg() {
+        return phonAlg.get();
+    }
+
+    public StringProperty phonAlgProperty() {
+        return phonAlg;
+    }
+
+    public void setPhonAlg(String phonAlg) {
+        this.phonAlg.set(phonAlg);
     }
 }

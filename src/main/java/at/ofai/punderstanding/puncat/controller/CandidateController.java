@@ -23,8 +23,10 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -301,6 +303,8 @@ public class CandidateController implements Initializable {
                 this.targetCandidate.getValue(),
                 this.semanticScore.getValue(),
                 this.phoneticScore.getValue());
+        newCandidate.semAlgProperty().set(semAlgDisplayNames.get(this.selectedSemAlg.get()));
+        newCandidate.phonAlgProperty().set(phonAlgDisplayNames.get(this.selectedPhonAlg.get()));
         this.candidateTableContents.add(newCandidate);
 
         interactionLogger.logThis(Map.of(
@@ -322,10 +326,16 @@ public class CandidateController implements Initializable {
                     LoggerValues.CANDIDATE_PUN, candidate.getPun(),
                     LoggerValues.CANDIDATE_TARGET, candidate.getTarget(),
                     LoggerValues.CANDIDATE_SEM, Double.parseDouble(candidate.getSem()),
-                    LoggerValues.CANDIDATE_PHON, Double.parseDouble(candidate.getPhon())
+                    LoggerValues.CANDIDATE_PHON, Double.parseDouble(candidate.getPhon()),
+                    LoggerValues.CANDIDATE_SEM_ALG, candidate.semAlgProperty().get(),
+                    LoggerValues.CANDIDATE_PHON_ALG, candidate.phonAlgProperty().get()
             ));
         }
         return new JSONArray(candidates);
+    }
+
+    public List<CandidateModel> getStoredCandidates() {
+        return this.candidateTableContents.stream().filter(c -> !c.isCurrentCandidate()).collect(Collectors.toList());
     }
 
     public StringProperty punCandidateProperty() {

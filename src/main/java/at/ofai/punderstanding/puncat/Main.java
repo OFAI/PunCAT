@@ -20,6 +20,7 @@
 package at.ofai.punderstanding.puncat;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,6 +46,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import com.opencsv.CSVWriter;
 import org.json.JSONArray;
 
 import at.ofai.punderstanding.puncat.component.SplashStage;
@@ -91,7 +93,7 @@ public class Main extends Application {
         this.stage.setMaximized(true);
         this.stage.getIcons().add(new Image(getClass().getResourceAsStream(icon)));
         this.stage.setOnCloseRequest(event -> {
-            this.saveCandidatesToFile();
+            this.saveCandidatesToJson();
             interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
         });
 
@@ -205,17 +207,31 @@ public class Main extends Application {
         var menuBar = new MenuBar();
         var fileMenu = new Menu("File");
         var openItem = new MenuItem("Open corpus");
-        var exit = new MenuItem("Exit");
+        var exitItem = new MenuItem("Exit");
+        var exportItem = new MenuItem("Export candidates");
         menuBar.getMenus().add(fileMenu);
-        fileMenu.getItems().addAll(openItem, exit);
+        fileMenu.getItems().addAll(openItem, exportItem, exitItem);
 
         openItem.setOnAction(event -> {
-            File file = new FileChooser().showOpenDialog(stage);
+            var fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Xml files", "*.xml"));
+            fileChooser.setTitle("Select resource file");
+            File file = fileChooser.showOpenDialog(stage);
             if (file != null) {
                 parseXml(file);
             }
         });
-        exit.setOnAction(event ->
+        exportItem.setOnAction(event -> {
+            var fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Csv files", "*.csv"));
+            fileChooser.setTitle("Select export location");
+            fileChooser.setInitialFileName("puncat_export.csv");
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null) {
+                this.saveCandidatesToCsv(file);
+            }
+        });
+        exitItem.setOnAction(event ->
                 stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST))
         );
         return menuBar;
@@ -297,10 +313,10 @@ public class Main extends Application {
                 LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
     }
 
-    void saveCandidatesToFile() {
+    private void saveCandidatesToJson() {
         JSONArray candidateList = new JSONArray();
         for (MainController mc : this.mainControllers) {
-            var candidates = mc.saveCandidates();
+            var candidates = mc.candidatesToJSONArray();
             candidateList.put(Map.of(mc.getCorpusInstanceId(), candidates));
         }
 
@@ -316,6 +332,46 @@ public class Main extends Application {
         } catch (IOException e) {
             throw new RuntimeException("could not write results file", e);
         }
+    }
+
+    private void saveCandidatesToCsv(File path) {
+        CSVWriter writer;
+        try {
+            writer = new CSVWriter(new FileWriter(path));
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't open file for writing: " + path, e);
+        }
+        writer.writeNext(new String[]{"instanceId", "instanceText", "pun", "target", "phon", "sem", "phonAlg", "semAlg"});
+        for (MainController mc : this.mainControllers) {
+            var instanceId = mc.getCorpusInstanceId();
+            var candidates = mc.getCandidates();
+            for (var candidate : candidates) {
+                var corpusInstance = mc.getCorpusInstance();
+                String instanceText = "";
+                if (corpusInstance != null) {
+                    instanceText = corpusInstance.getText().toString();
+                }
+                String[] values = new String[]{
+                        instanceId, instanceText,
+                        candidate.getPun(), candidate.getTarget(),
+                        candidate.getPhon(), candidate.getSem(),
+                        candidate.getPhonAlg(), candidate.getSemAlg()
+                };
+                writer.writeNext(values);
+            }
+
+        }
+
+        try {
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.CSV_EXPORT_EVENT,
+                LoggerValues.CSV_PATH, path.toPath().toString().replace("\\", "/")
+        ));
     }
 
     static class SearchLoader extends Service<Search> {

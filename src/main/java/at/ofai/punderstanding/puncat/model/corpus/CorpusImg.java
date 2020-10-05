@@ -30,11 +30,6 @@ public class CorpusImg {
     @XmlElement(name = "keyword")
     public ArrayList<String> keywords;
 
-    public void printAll() {
-        System.out.println("src: " + this.src);
-        System.out.println("keywords: " + this.keywords);
-    }
-
     public void setSrc(String src) {
         this.src = src;
     }

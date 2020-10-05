@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import at.ofai.punderstanding.puncat.component.KeywordTextFlow;
 import at.ofai.punderstanding.puncat.component.QuoteTextFlow;
 import at.ofai.punderstanding.puncat.logic.Search;
+import at.ofai.punderstanding.puncat.model.CandidateModel;
 import at.ofai.punderstanding.puncat.model.SimilarityModel;
 import at.ofai.punderstanding.puncat.model.corpus.CorpusInstance;
 
@@ -53,7 +54,8 @@ public class MainController implements Initializable {
     private SenseGroupController senseGroupController1;
     private SenseGroupController senseGroupController2;
     private TaskController taskController = null;
-    private String corpusInstanceId = "unnamed_task";
+    private String corpusInstanceId = "i";
+    private CorpusInstance corpusInstance = null;
 
 
     @Override
@@ -116,6 +118,7 @@ public class MainController implements Initializable {
     }
 
     public void loadCorpusInstance(CorpusInstance corpusInstance, Stage stage) {
+        this.corpusInstance = corpusInstance;
         this.corpusInstanceId = corpusInstance.getId();
 
         this.senseGroupController1.setContentsByCorpusInstance(
@@ -143,8 +146,12 @@ public class MainController implements Initializable {
         this.taskController.insertKeywords(keywords);
     }
 
-    public JSONArray saveCandidates() {
+    public JSONArray candidatesToJSONArray() {
         return this.candidateController.candidatesToJsonArray();
+    }
+
+    public List<CandidateModel> getCandidates() {
+        return this.candidateController.getStoredCandidates();
     }
 
     public String getCorpusInstanceId() {
@@ -183,5 +190,9 @@ public class MainController implements Initializable {
 
     public GridPane getContainer() {
         return container;
+    }
+
+    public CorpusInstance getCorpusInstance() {
+        return corpusInstance;
     }
 }

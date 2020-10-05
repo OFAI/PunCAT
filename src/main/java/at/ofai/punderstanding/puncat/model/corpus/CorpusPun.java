@@ -37,12 +37,6 @@ public class CorpusPun {
     @XmlAttribute(name = "second_sense")
     String secondSense;
 
-    public void printAll() {
-        System.out.println("pun: " + pun);
-        System.out.println("firstLemma: " + firstLemma + ", firstSense: " + firstSense);
-        System.out.println("secondLemma: " + secondLemma + ", secondSense: " + secondSense);
-    }
-
     public String getPun() {
         return pun;
     }

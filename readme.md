@@ -42,7 +42,7 @@ Detailed steps for both IntelliJ and Eclipse can also be found [here](https://op
 2. Browse to the root directory of the repository
 3. Click **Run** > **Edit Configurations…**
 4. Click **Maven** on the right sidebar
-5. Browse to **PunCAT** > **Plugins** > javafx > **javafx:run**
+5. Browse to **PunCAT** > **Plugins** > **javafx** > **javafx:run**
 6. Right click **javafx:run** and select **Create [puncat javafx:run]**
 7. It is probably a good idea to add the goal `clean` to the very beginning of the **Command line** field
 8. Click **OK**

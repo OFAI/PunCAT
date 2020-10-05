@@ -36,6 +36,8 @@ public class LoggerValues {
     public static final String CANDIDATE_TARGET = "target";
     public static final String CANDIDATE_PHON = "phon";
     public static final String CANDIDATE_SEM = "sem";
+    public static final String CANDIDATE_SEM_ALG = "semAlg";
+    public static final String CANDIDATE_PHON_ALG = "phonAlg";
 
     public static final String PUNCAT_STARTED_EVENT = "PunCAT started";
     public static final String PUNCAT_CLOSED_EVENT = "PunCAT closed";
@@ -76,4 +78,7 @@ public class LoggerValues {
 
     public static final String CORPUS_OPENED_EVENT = "Corpus xml file opened";
     public static final String CORPUS_FILE = "file";
+
+    public static final Object CSV_EXPORT_EVENT = "Csv exported";
+    public static final String CSV_PATH = "Csv path";
 }

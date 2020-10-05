@@ -31,12 +31,6 @@ public class CorpusInstance {
     @XmlElement
     CorpusText text;
 
-    public void printAll() {
-        System.out.println("id: " + this.id);
-        this.img.printAll();
-        this.text.printAll();
-    }
-
     public String getId() {
         return id;
     }

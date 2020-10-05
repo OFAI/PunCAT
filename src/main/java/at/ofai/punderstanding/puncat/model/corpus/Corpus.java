@@ -115,9 +115,4 @@ public class Corpus {
         return instances.get(0);
     }
 
-    public void printAll() {
-        for (CorpusInstance ci : this.instances) {
-            ci.printAll();
-        }
-    }
 }

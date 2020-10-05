@@ -20,6 +20,7 @@
 package at.ofai.punderstanding.puncat.model.corpus;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -33,17 +34,23 @@ public class CorpusText {
     @XmlElement
     CorpusPun pun;
 
-    public void printAll() {
-        System.out.println("text: " + text);
-        pun.printAll();
-    }
-
     public ArrayList<String> getText() {
         return text;
     }
 
     public CorpusPun getPun() {
         return pun;
+    }
+
+    @Override
+    public String toString() {
+        var begin = text.get(0);
+        var mid = pun.getPun();
+        var end = text.get(1);
+        if (!end.isEmpty() && Character.isLetter(end.charAt(0))) {
+            end = " " + end;
+        }
+        return begin + " " + mid + end;
     }
 
     static class CorpusTextAdapter extends XmlAdapter<String, String> {
