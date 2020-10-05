@@ -1,7 +1,10 @@
+*.iml
 /.idea
 /target
 /logs
 /results
-*.iml
-/shade/
 /src/main/resources/resourcepaths.json
+
+
+/launch4j/out/
+/launch4j/puncat.jar
