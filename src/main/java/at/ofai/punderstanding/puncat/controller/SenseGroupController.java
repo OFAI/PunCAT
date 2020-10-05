@@ -37,6 +37,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -59,11 +60,15 @@ public class SenseGroupController implements Initializable {
     private final StringProperty selectedOrthForm = new SimpleStringProperty();
     private final BooleanProperty dontHandleNextSelectionEvent = new SimpleBooleanProperty(false);
     private final BooleanProperty readyForSimilarityCalculations = new SimpleBooleanProperty(false);
-    private final BooleanProperty noEquivalentInGermanet = new SimpleBooleanProperty(false);
-    private final Label noResultLabel = new Label("No known equivalent in GermaNet!");
+    private final BooleanProperty noEquivalentInGermanetProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty unknownSourceProperty = new SimpleBooleanProperty(false);
+    private final Label noEquivalentLabel = new Label("No known equivalent in GermaNet!");
+    private final Label unknownSourceLabel = new Label("Source language word unknown.\nPlease enter a new source word.");
     private final InteractionLogger interactionLogger = new InteractionLogger();
     @FXML
-    public TabPane tabpane;
+    private TabPane tabpane;
+    @FXML
+    private Tab targetTab;
     @FXML
     private GridPane container;
     @FXML
@@ -95,15 +100,35 @@ public class SenseGroupController implements Initializable {
         this.graphController.selectedLineIdProperty()
                 .addListener((observable, oldValue, newValue) -> this.onGraphRootScrolled(newValue));
 
-        this.graphController.addLabel(this.noResultLabel);
-        this.noResultLabel.visibleProperty().bind(Bindings.size(targetList).isEqualTo(0).and(this.noEquivalentInGermanet));
+        this.graphController.addLabel(this.noEquivalentLabel);
+        this.noEquivalentLabel.visibleProperty().bind(
+                Bindings.size(targetList).isEqualTo(0)
+                        .and(Bindings.size(sourceList).isNotEqualTo(0))
+                        .and(this.noEquivalentInGermanetProperty)
+        );
+        this.graphController.addLabel(this.unknownSourceLabel);
+        this.unknownSourceLabel.visibleProperty().bind(this.unknownSourceProperty);
 
         this.sourceListView.setCellFactory(SenseCell::new);
         this.targetListView.setCellFactory(SenseCell::new);
         this.sourceListView.setItems(this.sourceList);
         this.targetListView.setItems(this.targetList);
 
-        this.sourceKeyword.setOnAction(e -> this.onSearchForSourceKeyword());
+        // Disable the Target tab if there is no selection in the Source tab
+        this.targetTab.disableProperty().bind(this.sourceListView.getSelectionModel().selectedItemProperty().isNull());
+
+        this.sourceKeyword.setOnAction(e -> {
+            this.onSearchForSourceKeyword();
+            // The current input is invalid if sourceKeyword has text, but sourceList is empty.
+            // In this case apply relevant CSS and show info label. Othervise remove this CSS and hide info label.
+            if (!this.sourceKeyword.getText().isEmpty() && this.sourceList.isEmpty()) {
+                this.sourceKeyword.getStyleClass().add("invalid-input");
+                this.unknownSourceProperty.set(true);
+            } else {
+                this.sourceKeyword.getStyleClass().remove("invalid-input");
+                this.unknownSourceProperty.set(false);
+            }
+        });
         this.targetKeyword.setOnAction(e -> this.onSearchForTargetKeyword());
 
         this.sourceListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -131,14 +156,14 @@ public class SenseGroupController implements Initializable {
 
             var equivalentGermanetSynset = this.wordnetSynsetToGermanetOrNull(
                     wnSynsets.get(0).getPOS(), wnSynsets.get(0).getOffset());
+
             if (equivalentGermanetSynset != null) {
-                this.noEquivalentInGermanet.set(false);
+                this.noEquivalentInGermanetProperty.set(false);
                 this.setTargetContents(equivalentGermanetSynset);
             } else {
                 // if there is no equivalent synset in GermaNet
-                this.noEquivalentInGermanet.set(true);
-                this.cleanUpTarget();
-                this.clearGraph();
+                this.noEquivalentInGermanetProperty.set(true);
+                this.clearTarget();
             }
 
             interactionLogger.logThis(Map.of(
@@ -148,7 +173,7 @@ public class SenseGroupController implements Initializable {
                     LoggerValues.AUTO_SELECTED_SYNSET_ID, this.getSelectedSourceId()));
         } else {
             // if no synset matches the keyword
-            this.cleanUpSource();
+            this.clearSource();
 
             interactionLogger.logThis(Map.of(
                     LoggerValues.EVENT, LoggerValues.SOURCE_KEYWORD_CHANGED_EVENT,
@@ -175,8 +200,7 @@ public class SenseGroupController implements Initializable {
                     LoggerValues.AUTO_SELECTED_SYNSET_ID, this.getSelectedTargetId()));
         } else {
             // if no synset matches the keyword
-            this.cleanUpTarget();
-            this.clearGraph();
+            this.clearTarget();
 
             interactionLogger.logThis(Map.of(
                     LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
@@ -193,13 +217,12 @@ public class SenseGroupController implements Initializable {
         var equivalentGermanetSynset = this.wordnetSynsetToGermanetOrNull(
                 selectedSource.getPOS(), selectedSource.getSynsetIdentifier());
         if (equivalentGermanetSynset != null) {
-            this.noEquivalentInGermanet.set(false);
+            this.noEquivalentInGermanetProperty.set(false);
             this.setTargetContents(equivalentGermanetSynset);
         } else {
             // if there is no equivalent synset in GermaNet
-            this.noEquivalentInGermanet.set(true);
-            this.cleanUpTarget();
-            this.clearGraph();
+            this.noEquivalentInGermanetProperty.set(true);
+            this.clearTarget();
         }
         this.readyForSimilarityCalculations.set(true);
 
@@ -308,15 +331,16 @@ public class SenseGroupController implements Initializable {
         );
     }
 
-    private void cleanUpSource() {
+    private void clearSource() {
         this.sourceList.clear();
+        this.clearTarget();
     }
 
-    private void cleanUpTarget() {
+    private void clearTarget() {
         this.targetList.clear();
         this.targetKeyword.setText("");
         this.selectedOrthForm.set(null);
-
+        this.clearGraph();
     }
 
     public List<SenseModelTarget> getHypernyms(SenseModelTarget selection) {
@@ -348,7 +372,7 @@ public class SenseGroupController implements Initializable {
             this.setTargetContents(germanetEquivalent);
             this.targetListView.scrollTo(this.getSelectedTarget());
         } else {
-            this.noEquivalentInGermanet.set(true);
+            this.noEquivalentInGermanetProperty.set(true);
         }
         this.readyForSimilarityCalculationsProperty().set(true);
     }

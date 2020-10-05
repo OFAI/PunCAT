@@ -30,13 +30,9 @@ public interface SenseModel {
 
     String getPronunciation();
 
-    void setPronunciation(String pronunciation);
-
     BiMap<Integer, String> getSynonyms();
 
     String getDescription();
 
-    Number getSynsetIdentifier();  // TODO: this always requires typecasting
-
-    TextFlow getVisualRepr();
+    Number getSynsetIdentifier();
 }

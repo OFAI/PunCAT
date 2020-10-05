@@ -110,9 +110,4 @@ public class Corpus {
     public ArrayList<CorpusInstance> getInstances() {
         return instances;
     }
-
-    public CorpusInstance getModel(int i) {
-        return instances.get(0);
-    }
-
 }

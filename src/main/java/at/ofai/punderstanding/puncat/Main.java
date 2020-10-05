@@ -214,7 +214,7 @@ public class Main extends Application {
 
         openItem.setOnAction(event -> {
             var fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Xml files", "*.xml"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
             fileChooser.setTitle("Select resource file");
             File file = fileChooser.showOpenDialog(stage);
             if (file != null) {
@@ -223,7 +223,7 @@ public class Main extends Application {
         });
         exportItem.setOnAction(event -> {
             var fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Csv files", "*.csv"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
             fileChooser.setTitle("Select export location");
             fileChooser.setInitialFileName("puncat_export.csv");
             File file = fileChooser.showSaveDialog(stage);
@@ -253,6 +253,7 @@ public class Main extends Application {
 
         var prevController = this.mainControllers.get(idx);
         var currentController = this.getControllerOfMainPane(this.activePane.get());
+
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
@@ -271,6 +272,7 @@ public class Main extends Application {
 
         var prevController = this.mainControllers.get(idx);
         var currentController = this.getControllerOfMainPane(this.activePane.get());
+
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
@@ -289,6 +291,7 @@ public class Main extends Application {
 
         var prevController = this.mainControllers.get(idx);
         var currentController = this.getControllerOfMainPane(this.activePane.get());
+
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
@@ -307,6 +310,7 @@ public class Main extends Application {
 
         var prevController = this.mainControllers.get(idx);
         var currentController = this.getControllerOfMainPane(this.activePane.get());
+
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
                 LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),

@@ -120,23 +120,23 @@ public class CandidateModel {
         return semAlg.get();
     }
 
-    public StringProperty semAlgProperty() {
-        return semAlg;
-    }
-
     public void setSemAlg(String semAlg) {
         this.semAlg.set(semAlg);
+    }
+
+    public StringProperty semAlgProperty() {
+        return semAlg;
     }
 
     public String getPhonAlg() {
         return phonAlg.get();
     }
 
-    public StringProperty phonAlgProperty() {
-        return phonAlg;
-    }
-
     public void setPhonAlg(String phonAlg) {
         this.phonAlg.set(phonAlg);
+    }
+
+    public StringProperty phonAlgProperty() {
+        return phonAlg;
     }
 }

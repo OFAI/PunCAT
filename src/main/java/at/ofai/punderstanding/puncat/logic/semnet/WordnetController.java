@@ -30,18 +30,13 @@ import net.sf.extjwnl.data.Word;
 import net.sf.extjwnl.dictionary.Dictionary;
 
 
-public class WordnetController implements SemnetController<Synset> {
+public class WordnetController {
     private final Dictionary wordnet;
 
     public WordnetController() throws JWNLException {
         this.wordnet = Dictionary.getDefaultResourceInstance();
     }
 
-    public WordnetController(Dictionary wordnet) {
-        this.wordnet = wordnet;
-    }
-
-    @Override
     public List<Synset> getSynsets(String word) {
         var results = new ArrayList<Synset>();
         try {
@@ -65,10 +60,6 @@ public class WordnetController implements SemnetController<Synset> {
         }
     }
 
-    public Dictionary getObject() {
-        return this.wordnet;
-    }
-
     public String getBaseFormOrNull(String word, Synset synset) {
         try {
             var baseForm = this.wordnet.getMorphologicalProcessor().lookupBaseForm(synset.getPOS(), word);
@@ -82,11 +73,4 @@ public class WordnetController implements SemnetController<Synset> {
         }
     }
 
-    public Synset getSynsetAt(POS pos, long offset) {
-        try {
-            return this.wordnet.getSynsetAt(pos, offset);
-        } catch (JWNLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

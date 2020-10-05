@@ -56,6 +56,7 @@ public class LoggerValues {
     public static final Object LAST_GRAPH_BUTTON_CLICKED_EVENT = "'Last graph' button clicked";
     public static final String PREV_GRAPH_IDX = "prevGraphIdx";
     public static final String CURRENT_GRAPH_IDX = "currentGraphIdx";
+    public static final String GRAPH_PANE_ID = "Graph pane id";
 
     public static final String SOURCE_KEYWORD_CHANGED_EVENT = "Source keyword changed";
     public static final String SOURCE_SENSE_SELECTED_EVENT = "Source sense selected";

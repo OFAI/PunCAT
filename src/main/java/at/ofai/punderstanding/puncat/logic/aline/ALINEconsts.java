@@ -29,10 +29,10 @@ import java.util.Map;
 public class ALINEconsts {
     public static final List<String> consonants = new ArrayList<>();
     public static final Map<String, Double> similarityMatrix = new HashMap<>();
-    public static HashSet<String> R_v = new HashSet<>();
-    public static HashSet<String> R_c = new HashSet<>();
-    public static Map<String, Integer> salience = new HashMap<>();
-    public static Map<String, Map<String, String>> featureMatrix = new HashMap<>();
+    public static final HashSet<String> R_v = new HashSet<>();
+    public static final HashSet<String> R_c = new HashSet<>();
+    public static final Map<String, Integer> salience = new HashMap<>();
+    public static final Map<String, Map<String, String>> featureMatrix = new HashMap<>();
 
     static {
         consonants.add("B");

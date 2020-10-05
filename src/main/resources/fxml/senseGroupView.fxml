@@ -48,7 +48,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
                     <ListView fx:id="sourceListView"/>
                 </VBox>
             </Tab>
-            <Tab text="Target" closable="false">
+            <Tab text="Target" closable="false" fx:id="targetTab">
                 <VBox spacing="5">
                     <TextField fx:id="targetKeyword"/>
                     <ListView fx:id="targetListView"/>

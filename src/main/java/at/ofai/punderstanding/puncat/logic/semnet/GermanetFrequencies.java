@@ -82,7 +82,7 @@ public class GermanetFrequencies {
         for (String form : synset.getAllOrthForms()) {
             Long f = this.frequenciesByWordCategories.get(wordCat).get(form);
             if (f == null) {
-                f = 0L;  // TODO: do something about the missing entries
+                f = 0L;
             }
             if (f > maxFreq) {
                 maxFreq = f;

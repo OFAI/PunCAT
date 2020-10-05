@@ -59,12 +59,12 @@ public class Graph extends Group {
     private final InteractionLogger interactionLogger;
     private final ObjectProperty<Group> activeChildren = new SimpleObjectProperty<>();
     private Node rootNode;
+    private int identifier;
 
     public Graph(GraphController controller, ReadOnlyDoubleProperty slotHeight, ReadOnlyDoubleProperty slotWidth) {
         this.controller = controller;
         this.interactionLogger = new InteractionLogger();
 
-        // TODO: check this on a higher resolution
         this.childNodeDistanceX.bind(slotWidth.multiply(0.4));
         this.childNodeDistanceY.bind(slotHeight.multiply(0.4));
     }
@@ -112,7 +112,6 @@ public class Graph extends Group {
     }
 
     private void addNodes(Group childGroup, List<SenseModelTarget> senses, boolean above) {
-        // TODO: simplify
         if (senses.isEmpty()) {
             return;
         }
@@ -216,6 +215,7 @@ public class Graph extends Group {
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.FIRST_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.GRAPH_PANE_ID, this.identifier,
                 LoggerValues.PREV_GRAPH_IDX, idx,
                 LoggerValues.CURRENT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
 
@@ -229,6 +229,7 @@ public class Graph extends Group {
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.PREV_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.GRAPH_PANE_ID, this.identifier,
                 LoggerValues.PREV_GRAPH_IDX, idx,
                 LoggerValues.CURRENT_GRAPH_IDX, idx == 0 ? 0 : idx - 1));
 
@@ -242,6 +243,7 @@ public class Graph extends Group {
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.NEXT_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.GRAPH_PANE_ID, this.identifier,
                 LoggerValues.PREV_GRAPH_IDX, idx,
                 LoggerValues.CURRENT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
 
@@ -255,6 +257,7 @@ public class Graph extends Group {
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.LAST_GRAPH_BUTTON_CLICKED_EVENT,
+                LoggerValues.GRAPH_PANE_ID, this.identifier,
                 LoggerValues.PREV_GRAPH_IDX, idx,
                 LoggerValues.CURRENT_GRAPH_IDX, idx == this.childNodePages.size() - 1 ? this.childNodePages.size() - 1 : idx + 1));
 
@@ -278,5 +281,9 @@ public class Graph extends Group {
             nextButton.setDisable(noActive || lastPage || onePageOrNoPages);
             lastButton.setDisable(noActive || lastPage || onePageOrNoPages);
         });
+    }
+
+    public void setIdentifier(int identifier) {
+        this.identifier = identifier;
     }
 }

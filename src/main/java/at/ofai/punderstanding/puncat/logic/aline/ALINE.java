@@ -90,6 +90,7 @@ public class ALINE {
         return Collections.max(rowMax) / 100;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public List<List<List<String>>> align(String str1, String str2, double epsilon) {
         int m = str1.length();
         int n = str2.length();
@@ -229,6 +230,7 @@ public class ALINE {
         return this.C_sub - this.delta(p, q) - V(p) - V(q);
     }
 
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     private double sigma_skip(String s) {
         return C_skip;
     }

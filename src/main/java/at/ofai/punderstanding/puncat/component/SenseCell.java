@@ -42,10 +42,6 @@ public class SenseCell extends ListCell<SenseModel> {
         this.textFlow.getChildren().addAll(this.pronunciation, this.synonyms, this.description);
     }
 
-    public boolean hasContent() {
-        return this.getGraphic() != null;
-    }
-
     @Override
     protected void updateItem(SenseModel item, boolean empty) {
         super.updateItem(item, empty);

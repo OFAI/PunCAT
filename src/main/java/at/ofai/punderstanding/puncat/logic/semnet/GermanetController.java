@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import de.tuebingen.uni.sfs.germanet.api.ConRel;
+import de.tuebingen.uni.sfs.germanet.api.EwnRel;
 import de.tuebingen.uni.sfs.germanet.api.FilterConfig;
 import de.tuebingen.uni.sfs.germanet.api.GermaNet;
 import de.tuebingen.uni.sfs.germanet.api.RelDirection;
@@ -37,8 +38,8 @@ import net.sf.extjwnl.data.POS;
 import at.ofai.punderstanding.puncat.logic.ResourcePaths;
 
 
-public class GermanetController implements SemnetController<Synset> {
-    static HashMap<POS, String> posToIndexSuffix = new HashMap<>();
+public class GermanetController {
+    static final HashMap<POS, String> posToIndexSuffix = new HashMap<>();
 
     static {
         posToIndexSuffix.put(POS.NOUN, "-n");
@@ -69,7 +70,6 @@ public class GermanetController implements SemnetController<Synset> {
                 ResourcePaths.adjfreq);
     }
 
-    @Override
     public List<Synset> getSynsets(String word) {
         if (word.toLowerCase().equals("gnroot")) {
             return List.of(this.germanet.getSynsetByID(GermaNet.GNROOT_ID));
@@ -112,10 +112,6 @@ public class GermanetController implements SemnetController<Synset> {
         } else {
             return null;
         }
-    }
-
-    public GermaNet getObject() {
-        return this.germanet;
     }
 
     public Long getSynsetCumulativeFrequency(Synset synset) {

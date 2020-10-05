@@ -17,6 +17,8 @@
   along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -28,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import at.ofai.punderstanding.puncat.controller.CandidateController;
 import at.ofai.punderstanding.puncat.logging.LoggerValues;
+import at.ofai.punderstanding.puncat.logic.similarity.PhoneticSimilarity;
+import at.ofai.punderstanding.puncat.logic.similarity.SemanticSimilarity;
 
 
 public class CandidateControllerTests {
@@ -36,6 +40,8 @@ public class CandidateControllerTests {
     private static StringProperty targetProperty;
     private static StringProperty semanticSimilarityScoreProperty;
     private static StringProperty phoneticSimilarityScoreProperty;
+    private static ObjectProperty<SemanticSimilarity.algs> semanticAlgorithmProperty;
+    private static ObjectProperty<PhoneticSimilarity.algs> phoneticAlgorithmProperty;
 
     @BeforeAll
     static void configureEnvironment() {
@@ -49,10 +55,14 @@ public class CandidateControllerTests {
         targetProperty = new SimpleStringProperty();
         semanticSimilarityScoreProperty = new SimpleStringProperty();
         phoneticSimilarityScoreProperty = new SimpleStringProperty();
+        semanticAlgorithmProperty = new SimpleObjectProperty<>();
+        phoneticAlgorithmProperty = new SimpleObjectProperty<>();
         candidateController.punCandidateProperty().bind(punProperty);
         candidateController.targetCandidateProperty().bind(targetProperty);
         candidateController.semanticScoreProperty().bind(semanticSimilarityScoreProperty);
         candidateController.phoneticScoreProperty().bind(phoneticSimilarityScoreProperty);
+        candidateController.selectedSemAlgProperty().bind(semanticAlgorithmProperty);
+        candidateController.selectedPhonAlgProperty().bind(phoneticAlgorithmProperty);
     }
 
     @Test
@@ -61,6 +71,8 @@ public class CandidateControllerTests {
         targetProperty.setValue("this is the target");
         semanticSimilarityScoreProperty.setValue("0.9");
         phoneticSimilarityScoreProperty.setValue("0.5");
+        semanticAlgorithmProperty.set(SemanticSimilarity.algs.JiangAndConrath);
+        phoneticAlgorithmProperty.set(PhoneticSimilarity.algs.ALINE);
         candidateController.newCandidate();
 
         String prevPun = punProperty.getValue();
@@ -107,6 +119,14 @@ public class CandidateControllerTests {
         assertEquals(
                 Double.parseDouble(phoneticSimilarityScoreProperty.getValue()),
                 candidates.getJSONObject(1).get(LoggerValues.CANDIDATE_PHON)
+        );
+        assertEquals(
+                "Jiang and Conrath",
+                candidates.getJSONObject(1).get(LoggerValues.CANDIDATE_SEM_ALG)
+        );
+        assertEquals(
+                "ALINE",
+                candidates.getJSONObject(1).get(LoggerValues.CANDIDATE_PHON_ALG)
         );
     }
 

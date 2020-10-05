@@ -28,7 +28,6 @@ import at.ofai.punderstanding.puncat.model.corpus.CorpusText;
 
 public class QuoteTextFlow {
     public static TextFlow build(CorpusText corpusText) {
-        // TODO: parse xml with whitespace intact
         var firstPartString = corpusText.getText().get(0);
         if (!firstPartString.isEmpty()) {
             firstPartString += " ";
