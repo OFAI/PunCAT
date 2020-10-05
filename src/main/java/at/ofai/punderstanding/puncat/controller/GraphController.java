@@ -69,6 +69,7 @@ public class GraphController implements Initializable {
     public void updateGraphData(String selectedText, SenseModelTarget root, List<SenseModelTarget> hypernyms, List<SenseModelTarget> hyponyms) {
         this.clearContents();
         this.graph = new Graph(this, graphPane.heightProperty(), graphPane.widthProperty());
+        this.graph.setIdentifier(this.identifier);
         this.graph.configButtonDisable(firstButton, prevButton, nextButton, lastButton);
         this.graphPane.getChildren().add(this.graph);
 
