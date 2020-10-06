@@ -51,7 +51,7 @@ public class SplashStage extends Stage {
         this.setWidth(splashWidth);
         this.setHeight(splashHeight);
         this.initStyle(StageStyle.UNDECORATED);
-        this.setTitle("PunCAT");
+        this.setTitle("Loading PunCAT");
 
         var loadingLabel = new Label("PunCAT\nis loading…");
         loadingLabel.setTextAlignment(TextAlignment.CENTER);
