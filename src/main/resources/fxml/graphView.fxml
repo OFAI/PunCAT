@@ -30,22 +30,22 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
       fx:controller="at.ofai.punderstanding.puncat.controller.GraphController"
       alignment="CENTER" fx:id="container" spacing="5">
     <HBox fx:id="buttonHBox" spacing="5" alignment="CENTER">
-        <Button fx:id="firstButton" text="&lt;&lt;" disable="true" onAction="#firstGraph">
+        <Button fx:id="firstButton" disable="true" onAction="#firstGraph">
             <tooltip>
                 <Tooltip text="Jump to the first set of relations"/>
             </tooltip>
         </Button>
-        <Button fx:id="prevButton" text="&lt;" disable="true" onAction="#prevGraph">
+        <Button fx:id="prevButton" disable="true" onAction="#prevGraph">
             <tooltip>
                 <Tooltip text="Step to the previous set of relations"/>
             </tooltip>
         </Button>
-        <Button fx:id="nextButton" text="&gt;" disable="true" onAction="#nextGraph">
+        <Button fx:id="nextButton" disable="true" onAction="#nextGraph">
             <tooltip>
                 <Tooltip text="Step to the next set of relations"/>
             </tooltip>
         </Button>
-        <Button fx:id="lastButton" text="&gt;&gt;" disable="true" onAction="#lastGraph">
+        <Button fx:id="lastButton" disable="true" onAction="#lastGraph">
             <tooltip>
                 <Tooltip text="Jump to the last set of relations"/>
             </tooltip>

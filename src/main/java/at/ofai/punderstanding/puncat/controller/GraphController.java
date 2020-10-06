@@ -34,6 +34,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
 
+import org.controlsfx.glyphfont.FontAwesome;
+
+import at.ofai.punderstanding.puncat.component.ArrowButton;
 import at.ofai.punderstanding.puncat.component.graph.Graph;
 import at.ofai.punderstanding.puncat.model.SenseModelTarget;
 
@@ -64,6 +67,11 @@ public class GraphController implements Initializable {
         clipRect.widthProperty().bind(this.graphPane.widthProperty());
         clipRect.heightProperty().bind(this.graphPane.heightProperty());
         this.graphPane.setClip(clipRect);
+
+        ArrowButton.setArrows(firstButton, FontAwesome.Glyph.ANGLE_DOUBLE_LEFT);
+        ArrowButton.setArrows(prevButton, FontAwesome.Glyph.ANGLE_LEFT);
+        ArrowButton.setArrows(nextButton, FontAwesome.Glyph.ANGLE_RIGHT);
+        ArrowButton.setArrows(lastButton, FontAwesome.Glyph.ANGLE_DOUBLE_RIGHT);
     }
 
     public void updateGraphData(String selectedText, SenseModelTarget root, List<SenseModelTarget> hypernyms, List<SenseModelTarget> hyponyms) {

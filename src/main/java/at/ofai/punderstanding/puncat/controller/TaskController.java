@@ -39,7 +39,8 @@ import javafx.stage.Stage;
 
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
-import org.controlsfx.glyphfont.GlyphFontRegistry;
+
+import at.ofai.punderstanding.puncat.component.ArrowButton;
 
 
 public class TaskController implements Initializable {
@@ -64,16 +65,13 @@ public class TaskController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var fontAwesome = GlyphFontRegistry.font("FontAwesome");
-        this.setButtonLayout(firstButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_DOUBLE_LEFT));
-        this.setButtonLayout(prevButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_LEFT));
-        this.setButtonLayout(nextButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_RIGHT));
-        this.setButtonLayout(lastButton, fontAwesome.create(FontAwesome.Glyph.ANGLE_DOUBLE_RIGHT));
+        ArrowButton.setArrows(firstButton, FontAwesome.Glyph.ANGLE_DOUBLE_LEFT);
+        ArrowButton.setArrows(prevButton, FontAwesome.Glyph.ANGLE_LEFT);
+        ArrowButton.setArrows(nextButton, FontAwesome.Glyph.ANGLE_RIGHT);
+        ArrowButton.setArrows(lastButton, FontAwesome.Glyph.ANGLE_DOUBLE_RIGHT);
 
         this.keywordTextFlow.prefWidthProperty().bind(this.container.widthProperty());
 
-        //this.imageView.fitWidthProperty().bind(this.container.widthProperty());
-        //this.imageViewContainer.maxWidthProperty().bind(this.container.widthProperty());
         this.imageViewContainer.maxWidth(100);
 
         this.quoteScrollPane.setFitToWidth(true);
