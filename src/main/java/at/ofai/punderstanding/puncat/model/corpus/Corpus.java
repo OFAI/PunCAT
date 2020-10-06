@@ -97,6 +97,9 @@ public class Corpus {
 
     private static void updateImagePaths(File xml, Corpus corpus) {
         for (var ci : corpus.getInstances()) {
+            if (ci.getImg() == null) {
+                continue;
+            }
             var fileName = ci.getImg().src;
             if (fileName != null) {
                 fileName = Path.of(xml.getParent(), fileName).toUri().toString();

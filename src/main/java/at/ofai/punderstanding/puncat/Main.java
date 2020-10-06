@@ -184,6 +184,7 @@ public class Main extends Application {
         } catch (Exception e) {
             // This handles unrecoverable problems with the xml,
             // like when it is not well-formed or there is no text element.
+            e.printStackTrace();
             var alert = new Alert(Alert.AlertType.ERROR, "The provided XML file seems invalid.");
             var result = alert.showAndWait();
             if (result.isPresent()) {

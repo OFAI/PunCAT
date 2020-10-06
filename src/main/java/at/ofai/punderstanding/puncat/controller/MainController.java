@@ -136,17 +136,16 @@ public class MainController implements Initializable {
         }
         this.taskController = loader.getController();
 
-        var imgPath = corpusInstance.getImg().src;
-        if (imgPath != null) {
-            var image = new Image(corpusInstance.getImg().src, true);
-            this.taskController.insertImage(image, stage);
-        }
-
         var imageText = QuoteTextFlow.build(corpusInstance.getText());
         this.taskController.insertQuote(imageText);
 
-        var keywords = KeywordText.build(corpusInstance.getImg().keywords);
-        this.taskController.insertKeywords(keywords);
+        if (corpusInstance.getImg() != null) {
+            var image = new Image(corpusInstance.getImg().src, true);
+            this.taskController.insertImage(image, stage);
+
+            var keywords = KeywordText.build(corpusInstance.getImg().keywords);
+            this.taskController.insertKeywords(keywords);
+        }
     }
 
     public JSONArray candidatesToJSONArray() {
