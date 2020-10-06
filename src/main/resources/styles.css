@@ -69,3 +69,15 @@
     -fx-background-radius: 3, 2, 4, 0;
     -fx-prompt-text-fill: transparent;
 }
+
+.list-cell:filled:selected {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-background, -fx-cell-focus-inner-border, -fx-background;
+    -fx-text-fill: white;
+}
+
+.list-view:focused .list-cell:filled:selected {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-background, -fx-cell-focus-inner-border, -fx-background;
+    -fx-text-fill: white;
+}
