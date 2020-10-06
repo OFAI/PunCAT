@@ -57,9 +57,9 @@ public class SenseCell extends ListCell<SenseModel> {
 
             if (item instanceof SenseModelSource
                     && !((SenseModelSource) item).hasGermanetEquivalent()) {
-                this.pronunciation.setFill(Color.LIGHTGRAY);
-                this.synonyms.setFill(Color.LIGHTGRAY);
-                this.description.setFill(Color.LIGHTGRAY);
+                this.pronunciation.setFill(Color.web("#6b6a67"));
+                this.synonyms.setFill(Color.web("#6b6a67"));
+                this.description.setFill(Color.web("#6b6a67"));
             } else {
                 this.pronunciation.setFill(Color.BLACK);
                 this.synonyms.setFill(Color.BLACK);
