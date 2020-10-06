@@ -19,7 +19,9 @@
 
 package at.ofai.punderstanding.puncat.model;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -36,6 +38,7 @@ public class SenseModelSource implements SenseModel {
     private final StringProperty pronunciation = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
     private final LongProperty synsetIdentifier = new SimpleLongProperty();
+    private final BooleanProperty hasGermanetEquivalent = new SimpleBooleanProperty();
     private final net.sf.extjwnl.data.POS POS;
     private final BiMap<Integer, String> synonyms = HashBiMap.create();
     private final TextFlow visualRepr = new TextFlow();
@@ -95,8 +98,12 @@ public class SenseModelSource implements SenseModel {
         this.synsetIdentifier.set(synsetIdentifier);
     }
 
-    public TextFlow getVisualRepr() {
-        return visualRepr;
+    public boolean hasGermanetEquivalent() {
+        return hasGermanetEquivalent.get();
+    }
+
+    public BooleanProperty hasGermanetEquivalentProperty() {
+        return hasGermanetEquivalent;
     }
 
     public net.sf.extjwnl.data.POS getPOS() {

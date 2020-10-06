@@ -20,7 +20,6 @@
 package at.ofai.punderstanding.puncat.model;
 
 import javafx.beans.property.StringProperty;
-import javafx.scene.text.TextFlow;
 
 import com.google.common.collect.BiMap;
 

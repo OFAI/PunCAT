@@ -200,7 +200,9 @@ public class SenseGroupController implements Initializable {
                     LoggerValues.AUTO_SELECTED_SYNSET_ID, this.getSelectedTargetId()));
         } else {
             // if no synset matches the keyword
-            this.clearTarget();
+            this.targetList.clear();
+            this.selectedOrthForm.set(null);
+            this.clearGraph();
 
             interactionLogger.logThis(Map.of(
                     LoggerValues.EVENT, LoggerValues.TARGET_KEYWORD_CHANGED_EVENT,
@@ -280,11 +282,23 @@ public class SenseGroupController implements Initializable {
 
     private void fillSourceList(List<Synset> wnSynsets) {
         var senseModels = wnSynsets.stream().map(SenseModelSource::new).collect(Collectors.toList());
+        for (var sm : senseModels) {
+            sm.hasGermanetEquivalentProperty().set(
+                    null != this.search.wordnetSynsetToGermanetOrNull(sm.getPOS(), sm.getSynsetIdentifier())
+            );
+        }
         for (int i = 0; i < wnSynsets.size(); i++) {
             var ipa = this.search.getIpaTranscriptionEnglish(this.sourceKeyword.getText(), wnSynsets.get(i));
             senseModels.get(i).setPronunciation(ipa);
         }
         this.sourceList.setAll(senseModels);
+        sourceListView.getItems().sort((o1, o2) -> {
+            if (((SenseModelSource) o1).hasGermanetEquivalent() && !((SenseModelSource) o2).hasGermanetEquivalent())
+                return -1;
+            else if (((SenseModelSource) o2).hasGermanetEquivalent() && !((SenseModelSource) o1).hasGermanetEquivalent())
+                return 1;
+            else return 0;
+        });
     }
 
     private void fillTargetList(List<de.tuebingen.uni.sfs.germanet.api.Synset> gnSynsets, String keyword) {
