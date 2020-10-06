@@ -25,14 +25,31 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Tooltip?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.ofai.punderstanding.puncat.controller.GraphController"
       alignment="CENTER" fx:id="container" spacing="5">
     <HBox fx:id="buttonHBox" spacing="5" alignment="CENTER">
-        <Button fx:id="firstButton" text="&lt;&lt;" disable="true" onAction="#firstGraph"/>
-        <Button fx:id="prevButton" text="&lt;" disable="true" onAction="#prevGraph"/>
-        <Button fx:id="nextButton" text="&gt;" disable="true" onAction="#nextGraph"/>
-        <Button fx:id="lastButton" text="&gt;&gt;" disable="true" onAction="#lastGraph"/>
+        <Button fx:id="firstButton" text="&lt;&lt;" disable="true" onAction="#firstGraph">
+            <tooltip>
+                <Tooltip text="Jump to the first set of relations"/>
+            </tooltip>
+        </Button>
+        <Button fx:id="prevButton" text="&lt;" disable="true" onAction="#prevGraph">
+            <tooltip>
+                <Tooltip text="Step to the previous set of relations"/>
+            </tooltip>
+        </Button>
+        <Button fx:id="nextButton" text="&gt;" disable="true" onAction="#nextGraph">
+            <tooltip>
+                <Tooltip text="Step to the next set of relations"/>
+            </tooltip>
+        </Button>
+        <Button fx:id="lastButton" text="&gt;&gt;" disable="true" onAction="#lastGraph">
+            <tooltip>
+                <Tooltip text="Jump to the last set of relations"/>
+            </tooltip>
+        </Button>
     </HBox>
     <Pane fx:id="graphPane" VBox.vgrow="ALWAYS"
           style="-fx-border-color: lightgrey; -fx-border-width: 1; -fx-border-style: solid;
