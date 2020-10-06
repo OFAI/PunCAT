@@ -34,7 +34,7 @@ import javafx.stage.Stage;
 
 import org.json.JSONArray;
 
-import at.ofai.punderstanding.puncat.component.KeywordTextFlow;
+import at.ofai.punderstanding.puncat.component.KeywordText;
 import at.ofai.punderstanding.puncat.component.QuoteTextFlow;
 import at.ofai.punderstanding.puncat.logic.Search;
 import at.ofai.punderstanding.puncat.model.CandidateModel;
@@ -136,13 +136,16 @@ public class MainController implements Initializable {
         }
         this.taskController = loader.getController();
 
-        var image = new Image(corpusInstance.getImg().src, true);
-        this.taskController.insertImage(image, stage);
+        var imgPath = corpusInstance.getImg().src;
+        if (imgPath != null) {
+            var image = new Image(corpusInstance.getImg().src, true);
+            this.taskController.insertImage(image, stage);
+        }
 
         var imageText = QuoteTextFlow.build(corpusInstance.getText());
         this.taskController.insertQuote(imageText);
 
-        var keywords = KeywordTextFlow.build(corpusInstance.getImg().keywords);
+        var keywords = KeywordText.build(corpusInstance.getImg().keywords);
         this.taskController.insertKeywords(keywords);
     }
 

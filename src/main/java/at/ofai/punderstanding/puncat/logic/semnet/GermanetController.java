@@ -27,7 +27,6 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import de.tuebingen.uni.sfs.germanet.api.ConRel;
-import de.tuebingen.uni.sfs.germanet.api.EwnRel;
 import de.tuebingen.uni.sfs.germanet.api.FilterConfig;
 import de.tuebingen.uni.sfs.germanet.api.GermaNet;
 import de.tuebingen.uni.sfs.germanet.api.RelDirection;

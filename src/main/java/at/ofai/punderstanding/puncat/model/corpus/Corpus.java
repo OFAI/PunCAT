@@ -42,15 +42,14 @@ import org.xml.sax.XMLReader;
 @XmlRootElement(name = "corpus")
 public class Corpus {
     @XmlElement(name = "instance")
-    ArrayList<CorpusInstance> instances;
+    ArrayList<CorpusInstance> instances = new ArrayList<>();
 
-    public static Corpus parseCorpus(File xml) {
+    public static Corpus parseCorpus(File xml) throws Exception {
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(Corpus.class);
         } catch (JAXBException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
 
         SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -58,21 +57,21 @@ public class Corpus {
             spf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             spf.setFeature("http://xml.org/sax/features/validation", false);
         } catch (ParserConfigurationException | SAXNotRecognizedException | SAXNotSupportedException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
 
         XMLReader xmlReader;
         try {
             xmlReader = spf.newSAXParser().getXMLReader();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
 
         InputSource inputSource;
         try {
             inputSource = new InputSource(new FileReader(xml));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         SAXSource source = new SAXSource(xmlReader, inputSource);
 
@@ -80,17 +79,18 @@ public class Corpus {
         try {
             unmarshaller = jc.createUnmarshaller();
         } catch (JAXBException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
-        Corpus corpus = null;
+        Corpus corpus;
         try {
             corpus = (Corpus) unmarshaller.unmarshal(source);
         } catch (JAXBException e) {
-            e.printStackTrace();
+            throw new Exception(e);
         }
 
-        assert corpus != null;
-        updateImagePaths(xml, corpus);
+        if (corpus.instances.size() > 0) {
+            updateImagePaths(xml, corpus);
+        }
 
         return corpus;
     }
@@ -98,8 +98,10 @@ public class Corpus {
     private static void updateImagePaths(File xml, Corpus corpus) {
         for (var ci : corpus.getInstances()) {
             var fileName = ci.getImg().src;
-            fileName = Path.of(xml.getParent(), fileName).toUri().toString();
-            ci.getImg().setSrc(fileName);
+            if (fileName != null) {
+                fileName = Path.of(xml.getParent(), fileName).toUri().toString();
+                ci.getImg().setSrc(fileName);
+            }
         }
     }
 

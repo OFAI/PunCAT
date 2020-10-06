@@ -35,6 +35,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -177,13 +178,25 @@ public class Main extends Application {
     }
 
     private void parseXml(File file) {
-        Corpus corpus = Corpus.parseCorpus(file);
+        Corpus corpus = null;
+        try {
+            corpus = Corpus.parseCorpus(file);
+        } catch (Exception e) {
+            // This handles unrecoverable problems with the xml,
+            // like when it is not well-formed or there is no text element.
+            var alert = new Alert(Alert.AlertType.ERROR, "The provided XML file seems invalid.");
+            var result = alert.showAndWait();
+            if (result.isPresent()) {
+                return;
+            }
+        }
 
         interactionLogger.logThis(Map.of(
                 LoggerValues.EVENT, LoggerValues.CORPUS_OPENED_EVENT,
                 LoggerValues.CORPUS_FILE, file.getAbsolutePath())
         );
 
+        assert corpus != null;
         if (corpus.size() == 0) {
             return;
         }
