@@ -16,7 +16,7 @@ These resources can be found here: https://jobim.ofai.at/gitlab/mate.lajko/punca
 
 (Note: JPackage requires using Windows for this.)
 
-1. Download [JDK 15](https://jdk.java.net/15/), extract the zip file, and set the `JAVA_HOME` environmental variable to point to its location. For example, on the command line: `setx JAVA_HOME "C:/jdk-15"`.
+1. Download [JDK 15](https://jdk.java.net/15/), extract the zip file, and set the `JAVA_HOME` environmental variable to point to its location. For example, on the command line: `setx JAVA_HOME "C:\jdk-15"`.
 2. Download and install [Apache Maven](http://maven.apache.org/).
 3. Download and install [WiX](https://wixtoolset.org/releases/).  Note that it may be necessary to first install and/or enable the .NET Framework 3.5 (which in Windows 10 can be done from the Control Panel under "Programs and Features".)
 4. Look through the `jpackage` call in `build_app.bat`, near the end of the file, to see if there is anything you'd like to customize (like the Start Menu group or the company name).
