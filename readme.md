@@ -12,6 +12,20 @@ These resources can be found here: https://jobim.ofai.at/gitlab/mate.lajko/punca
 
 
 
+**Creating a Windows executable package using JPackage**
+
+(Note: JPackage requires using Windows for this.)
+
+[Download JDK 15](https://jdk.java.net/15/), extract the zip file, and set the JAVA_HOME environmental variable to point to it's location. For example, on the command line: `setx JAVA_HOME "C:/jdk-15"`.
+
+Look through the `jpackage` call in `build_app.bat`, near the end of the file, to see if there is anything you'd like to customize (like the Start Menu group or the company name).
+
+Run `mvn clean install -P jpackage`.
+
+You can find the installer in `target/installer/`
+
+
+
 **Building a JAR file:**
 
 1. Run `mvn compile package -P jar` from the project directory
