@@ -24,7 +24,7 @@ IF EXIST target\installer rmdir /S /Q target\installer
 
 xcopy /S /Q target\libs\* target\installer\input\libs\
 copy target\%MAIN_JAR% target\installer\input\libs\
-xcopy /S /Q target\%PUNCAT_RESOURCES%\* target\installer\input\libs\resources\
+xcopy /S /Q target\%PUNCAT_RESOURCES%\* target\installer\input\libs\puncat_resources\
 
 rem ------ REQUIRED MODULES ---------------------------------------------------
 rem Use jlink to detect all modules that are required to run the application.
