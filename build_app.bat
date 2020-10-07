@@ -80,6 +80,7 @@ call "%JAVA_HOME%\bin\jpackage" ^
   --runtime-image target/java-runtime ^
   --java-options -Xms1024m ^
   --java-options -Xmx2048m ^
+  --java-options -Dfile.encoding=UTF-8 ^
   --icon launch4j/icon.ico ^
   --app-version %APP_VERSION% ^
   --vendor "OFAI" ^
@@ -88,4 +89,5 @@ call "%JAVA_HOME%\bin\jpackage" ^
   --win-shortcut ^
   --win-menu ^
   --win-menu-group "OFAI" ^
+  --win-per-user-install ^
   --win-console
