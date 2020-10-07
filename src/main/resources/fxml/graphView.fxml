@@ -29,7 +29,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="at.ofai.punderstanding.puncat.controller.GraphController"
       alignment="CENTER" fx:id="container" spacing="5">
-    <HBox fx:id="buttonHBox" spacing="5" alignment="CENTER">
+    <HBox fx:id="buttonHBox" spacing="2" alignment="CENTER">
         <Button fx:id="firstButton" disable="true" onAction="#firstGraph">
             <tooltip>
                 <Tooltip text="Jump to the first set of relations"/>

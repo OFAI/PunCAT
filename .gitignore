@@ -3,8 +3,9 @@
 /target
 /logs
 /results
-/src/main/resources/resourcepaths.json
 
 
 /launch4j/out/
 /launch4j/puncat.jar
+
+temp.txt

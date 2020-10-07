@@ -33,6 +33,7 @@ import org.json.JSONTokener;
 
 public class ResourcePaths {
     private static final String resourceJsonFileName = "resourcepaths.json";
+    private static final String resourceFolder = "puncat_resources";
     public static Path germanet2ipa;
     public static Path wordnet2ipa;
     public static Path germanet;
@@ -51,7 +52,7 @@ public class ResourcePaths {
         }
 
         if (resourcePath == null) {
-            resourcePath = Paths.get(codePath.toString(), resourceJsonFileName).toString();
+            resourcePath = Paths.get(codePath.toString(), resourceFolder, resourceJsonFileName).toString();
         } else {
             if (!Paths.get(resourcePath).isAbsolute()) {
                 resourcePath = Paths.get(codePath.toString(), resourcePath).toString();
