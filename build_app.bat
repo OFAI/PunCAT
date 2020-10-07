@@ -45,7 +45,7 @@ set /p detected_modules=<temp.txt
 echo detected modules: %detected_modules%
 
 rem ------ MANUAL MODULES -----------------------------------------------------
-rem set manual_modules=jdk.crypto.ec
+set manual_modules=jdk.localedata,jdk.management,java.naming
 echo manual modules: %manual_modules%
 
 rem ------ RUNTIME IMAGE ------------------------------------------------------
@@ -57,8 +57,8 @@ rem works with dependencies that are not fully modularized, yet.
 echo creating java runtime image
 
 call "%JAVA_HOME%\bin\jlink" ^
-  --strip-native-commands ^
   --no-header-files ^
+  --strip-native-commands ^
   --no-man-pages ^
   --compress=2 ^
   --strip-debug ^
@@ -66,6 +66,10 @@ call "%JAVA_HOME%\bin\jlink" ^
   --output target/java-runtime
 
 IF EXIST temp.txt del temp.txt
+
+rem ------ workaround for missing modules -------------------------------------
+echo workaround for missing modules
+xcopy /q /y %JAVA_HOME%\lib\modules target\java-runtime\lib
 
 rem ------ PACKAGING ----------------------------------------------------------
 rem In the end we will find the package inside the target/installer directory.
@@ -89,5 +93,5 @@ call "%JAVA_HOME%\bin\jpackage" ^
   --win-shortcut ^
   --win-menu ^
   --win-menu-group "OFAI" ^
-  --win-per-user-install ^
-  --win-console
+  --win-console ^
+  --win-upgrade-uuid 0fe69768-30ac-4c2c-9354-f478128d5140
