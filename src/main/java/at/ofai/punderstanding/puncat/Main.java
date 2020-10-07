@@ -51,7 +51,7 @@ import com.opencsv.CSVWriter;
 import org.json.JSONArray;
 
 import at.ofai.punderstanding.puncat.component.SplashStage;
-import at.ofai.punderstanding.puncat.component.UsernameWindow;
+import at.ofai.punderstanding.puncat.component.LauncherWindow;
 import at.ofai.punderstanding.puncat.controller.MainController;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
 import at.ofai.punderstanding.puncat.logging.LoggerValues;
@@ -68,6 +68,7 @@ public class Main extends Application {
     private final StackPane mainViewContainer = new StackPane();
     private final ArrayList<GridPane> mainPaneList = new ArrayList<>();
     private final ArrayList<MainController> mainControllers = new ArrayList<>();
+    private String savePath;
     private InteractionLogger interactionLogger;
     private Stage stage;
     private String userName = "";
@@ -98,18 +99,21 @@ public class Main extends Application {
             interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
         });
 
-        var userNameStage = UsernameWindow.buildUsernameWindow();
-        userNameStage.setOnHidden(event -> {
-            this.userName = UsernameWindow.getUserName();
+        var launcherStage = LauncherWindow.buildUsernameWindow();
+        launcherStage.setOnHidden(event -> {
+            this.userName = LauncherWindow.getUserName();
+            this.savePath = LauncherWindow.getSavePath();
             this.build();
         });
-        userNameStage.show();
-        userNameStage.requestFocus();
+        launcherStage.show();
+        launcherStage.requestFocus();
     }
 
     private void build() {
         this.startupInstant = Instant.now().toEpochMilli();
-        System.setProperty("puncatlogfilename", "log_" + this.userName + "_" + this.startupInstant);
+        var logFilesPath = new File(savePath, "logs");
+        System.setProperty("puncatlogfilename",
+                new File(logFilesPath, "log_" + this.userName + "_" + this.startupInstant).toString());
 
         var splashStage = new SplashStage();
         splashStage.show();
@@ -339,7 +343,7 @@ public class Main extends Application {
         }
 
         String fileName = "results_" + this.userName + "_" + this.startupInstant + ".json";
-        File file = new File(System.getProperty("user.dir"), "results");
+        File file = new File(savePath, "results");
         if (!file.exists() && !file.mkdir()) {
             throw new RuntimeException("could not create results folder");
         }

@@ -23,10 +23,10 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
 
 <Configuration status="warn">
     <Appenders>
-        <File name="json_appender" fileName="logs/${sys:puncatlogfilename}.json">
+        <File name="json_appender" fileName="${sys:puncatlogfilename}.json">
             <JsonLayout complete="true" objectMessageAsJsonObject="true"/>
         </File>
-        <File name="simple_appender" fileName="logs/${sys:puncatlogfilename}.txt">
+        <File name="simple_appender" fileName="${sys:puncatlogfilename}.txt">
             <PatternLayout>
                 <Pattern>%d{DEFAULT_PERIOD} %m%n</Pattern>
             </PatternLayout>
