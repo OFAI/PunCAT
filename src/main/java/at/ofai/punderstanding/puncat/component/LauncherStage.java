@@ -40,23 +40,23 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 
-public class LauncherWindow {
+public class LauncherStage {
     private static final String icon = "/img/Computational_Pun-derstanding_head.png";
     private static final StringProperty userName = new SimpleStringProperty("");
     private static final StringProperty savePath = new SimpleStringProperty(
             Paths.get(System.getProperty("user.home"), "PunCAT").toFile().toString()
     );
 
-    public static Stage buildLauncherWindow() {
+    public static Stage buildLauncherStage() {
         var rootPane = new VBox();
         rootPane.setPadding(new Insets(5));
         rootPane.setAlignment(Pos.CENTER);
 
         var rootScene = new Scene(rootPane);
 
-        var rootStage = new Stage(StageStyle.UTILITY);
-        rootStage.getIcons().add(new Image(LauncherWindow.class.getResourceAsStream(icon)));
-        rootStage.setTitle("PunCAT Launcher");
+        var rootStage = new Stage(StageStyle.UNIFIED);
+        rootStage.getIcons().add(new Image(LauncherStage.class.getResourceAsStream(icon)));
+        rootStage.setTitle("");
         rootStage.setScene(rootScene);
         rootStage.setOnCloseRequest(event -> Platform.exit());
 

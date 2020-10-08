@@ -50,7 +50,7 @@ import javafx.stage.WindowEvent;
 import com.opencsv.CSVWriter;
 import org.json.JSONArray;
 
-import at.ofai.punderstanding.puncat.component.LauncherWindow;
+import at.ofai.punderstanding.puncat.component.LauncherStage;
 import at.ofai.punderstanding.puncat.component.SplashStage;
 import at.ofai.punderstanding.puncat.controller.MainController;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
@@ -96,10 +96,10 @@ public class Main extends Application {
             interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
         });
 
-        var launcherStage = LauncherWindow.buildLauncherWindow();
+        var launcherStage = LauncherStage.buildLauncherStage();
         launcherStage.setOnHidden(event -> {
-            this.userName = LauncherWindow.getUserName();
-            this.savePath = LauncherWindow.getSavePath();
+            this.userName = LauncherStage.getUserName();
+            this.savePath = LauncherStage.getSavePath();
             this.build();
         });
         launcherStage.show();
