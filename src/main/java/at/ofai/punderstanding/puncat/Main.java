@@ -50,8 +50,8 @@ import javafx.stage.WindowEvent;
 import com.opencsv.CSVWriter;
 import org.json.JSONArray;
 
-import at.ofai.punderstanding.puncat.component.SplashStage;
 import at.ofai.punderstanding.puncat.component.LauncherWindow;
+import at.ofai.punderstanding.puncat.component.SplashStage;
 import at.ofai.punderstanding.puncat.controller.MainController;
 import at.ofai.punderstanding.puncat.logging.InteractionLogger;
 import at.ofai.punderstanding.puncat.logging.LoggerValues;
@@ -78,14 +78,11 @@ public class Main extends Application {
     public static void main(String[] args) {
         if (args.length == 1) {
             ResourcePaths.resourcePath = args[0];
-            ResourcePaths.init();
-            launch();
-        } else if (args.length == 0) {
-            ResourcePaths.init();
-            launch();
-        } else {
+        } else if (args.length > 1) {
             throw new RuntimeException("Unexpected number of program arguments");
         }
+        ResourcePaths.init();
+        launch();
     }
 
     @Override
@@ -99,7 +96,7 @@ public class Main extends Application {
             interactionLogger.logThis(Map.of(LoggerValues.EVENT, LoggerValues.PUNCAT_CLOSED_EVENT));
         });
 
-        var launcherStage = LauncherWindow.buildUsernameWindow();
+        var launcherStage = LauncherWindow.buildLauncherWindow();
         launcherStage.setOnHidden(event -> {
             this.userName = LauncherWindow.getUserName();
             this.savePath = LauncherWindow.getSavePath();
@@ -131,8 +128,7 @@ public class Main extends Application {
             this.buildRootStage();
 
             this.buildMainPane(null);
-            this.activePane.set(this.mainPaneList.get(0));
-            this.activePane.get().setVisible(true);
+            this.setActivePane(this.mainPaneList.get(0));
 
             this.stage.show();
             splashStage.hide();
@@ -216,7 +212,9 @@ public class Main extends Application {
     }
 
     private void setActivePane(GridPane mainPane) {
-        this.activePane.get().setVisible(false);
+        if (this.activePane.get() != null) {
+            this.activePane.get().setVisible(false);
+        }
         this.activePane.set(mainPane);
         this.activePane.get().setVisible(true);
     }
@@ -255,84 +253,8 @@ public class Main extends Application {
         return menuBar;
     }
 
-    private MainController getControllerOfMainPane(GridPane pane) {
+    private MainController getMainPaneController(GridPane pane) {
         return this.mainControllers.get(this.mainPaneList.indexOf(pane));
-    }
-
-    private void firstPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        if (idx == 0) {
-            return;
-        }
-        this.activePane.get().setVisible(false);
-        this.activePane.set(this.mainPaneList.get(0));
-        this.activePane.get().setVisible(true);
-
-        var prevController = this.mainControllers.get(idx);
-        var currentController = this.getControllerOfMainPane(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
-                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
-    }
-
-    private void prevPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        if (idx == 0) {
-            return;
-        }
-        this.activePane.get().setVisible(false);
-        this.activePane.set(this.mainPaneList.get(idx - 1));
-        this.activePane.get().setVisible(true);
-
-        var prevController = this.mainControllers.get(idx);
-        var currentController = this.getControllerOfMainPane(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
-                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
-    }
-
-    private void nextPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        if (idx == this.mainPaneList.size() - 1) {
-            return;
-        }
-        this.activePane.get().setVisible(false);
-        this.activePane.set(this.mainPaneList.get(idx + 1));
-        this.activePane.get().setVisible(true);
-
-        var prevController = this.mainControllers.get(idx);
-        var currentController = this.getControllerOfMainPane(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
-                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
-    }
-
-    private void lastPane() {
-        int idx = this.mainPaneList.indexOf(this.activePane.get());
-
-        if (idx == this.mainPaneList.size() - 1) {
-            return;
-        }
-        this.activePane.get().setVisible(false);
-        this.activePane.set(this.mainPaneList.get(this.mainPaneList.size() - 1));
-        this.activePane.get().setVisible(true);
-
-        var prevController = this.mainControllers.get(idx);
-        var currentController = this.getControllerOfMainPane(this.activePane.get());
-
-        interactionLogger.logThis(Map.of(
-                LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
-                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
-                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
     }
 
     private void saveCandidatesToJson() {
@@ -394,6 +316,82 @@ public class Main extends Application {
                 LoggerValues.EVENT, LoggerValues.CSV_EXPORT_EVENT,
                 LoggerValues.CSV_PATH, path.toPath().toString().replace("\\", "/")
         ));
+    }
+
+    private void firstPane() {
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
+
+        if (idx == 0) {
+            return;
+        }
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(0));
+        this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getMainPaneController(this.activePane.get());
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.FIRST_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
+    }
+
+    private void prevPane() {
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
+
+        if (idx == 0) {
+            return;
+        }
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(idx - 1));
+        this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getMainPaneController(this.activePane.get());
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.PREVIOUS_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
+    }
+
+    private void nextPane() {
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
+
+        if (idx == this.mainPaneList.size() - 1) {
+            return;
+        }
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(idx + 1));
+        this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getMainPaneController(this.activePane.get());
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.NEXT_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
+    }
+
+    private void lastPane() {
+        int idx = this.mainPaneList.indexOf(this.activePane.get());
+
+        if (idx == this.mainPaneList.size() - 1) {
+            return;
+        }
+        this.activePane.get().setVisible(false);
+        this.activePane.set(this.mainPaneList.get(this.mainPaneList.size() - 1));
+        this.activePane.get().setVisible(true);
+
+        var prevController = this.mainControllers.get(idx);
+        var currentController = this.getMainPaneController(this.activePane.get());
+
+        interactionLogger.logThis(Map.of(
+                LoggerValues.EVENT, LoggerValues.LAST_TASK_BUTTON_CLICKED_EVENT,
+                LoggerValues.PREV_INSTANCE_ID, prevController.getCorpusInstanceId(),
+                LoggerValues.CURRENT_INSTANCE_ID, currentController.getCorpusInstanceId()));
     }
 
     static class SearchLoader extends Service<Search> {

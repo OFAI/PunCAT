@@ -26,7 +26,6 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -41,7 +40,6 @@ public class SenseModelSource implements SenseModel {
     private final BooleanProperty hasGermanetEquivalent = new SimpleBooleanProperty();
     private final net.sf.extjwnl.data.POS POS;
     private final BiMap<Integer, String> synonyms = HashBiMap.create();
-    private final TextFlow visualRepr = new TextFlow();
 
     public SenseModelSource(Synset synset) {
         this.setPronunciation("-");
@@ -63,7 +61,6 @@ public class SenseModelSource implements SenseModel {
                 new SimpleStringProperty("/").concat(this.pronunciationProperty()).concat("/"));
         synonyms.setText(" (" + String.join(", ", this.getSynonyms().values()) + ") ");
         description.setText(this.getDescription());
-        this.visualRepr.getChildren().addAll(pronunciation, synonyms, description);
     }
 
     public BiMap<Integer, String> getSynonyms() {

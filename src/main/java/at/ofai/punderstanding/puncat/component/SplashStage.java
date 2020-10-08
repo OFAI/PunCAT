@@ -38,7 +38,6 @@ import javafx.stage.StageStyle;
 
 
 public class SplashStage extends Stage {
-    //private static final String splashImg = "/img/Computational_Pun-derstanding_logo.svg";
     private static final String splashImg = "/img/Computational_Pun-derstanding_logo.png";
     private static final String icon = "/img/Computational_Pun-derstanding_head.png";
 
