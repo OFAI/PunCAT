@@ -40,11 +40,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import com.google.common.collect.BiMap;
@@ -156,10 +158,10 @@ public class CandidateController implements Initializable {
             }
         });
 
-        this.setContentStyle(punColumn, false);
-        this.setContentStyle(targetColumn, false);
-        this.setContentStyle(semColumn, true);
-        this.setContentStyle(phonColumn, true);
+        this.setTextContentStyle(punColumn);
+        this.setTextContentStyle(targetColumn);
+        this.setNumberContentStyle(semColumn);
+        this.setNumberContentStyle(phonColumn);
 
         semColumn.setGraphic(new Label("sem %") {{
             prefWidthProperty().bind(semColumn.widthProperty());
@@ -234,7 +236,7 @@ public class CandidateController implements Initializable {
         });
         this.phonChoiceBox.getSelectionModel().select(0);
 
-
+        this.candidateTable.setFixedCellSize(30);
     }
 
     private void setButtonCellValueFactory(TableColumn<CandidateModel, Void> buttonColumn) {
@@ -273,8 +275,12 @@ public class CandidateController implements Initializable {
         });
     }
 
-    private void setContentStyle(TableColumn<CandidateModel, String> tableColumn, boolean numberColumn) {
+    private void setTextContentStyle(TableColumn<CandidateModel, String> tableColumn) {
         tableColumn.setCellFactory(col -> new TableCell<>() {
+            {
+                this.setAlignment(Pos.CENTER);
+            }
+
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -286,12 +292,49 @@ public class CandidateController implements Initializable {
                     this.setText(item);
                     var candidate = getTableView().getItems().get(getIndex());
                     if (candidate.isCurrentCandidate()) {
-                        this.setAlignment(numberColumn ? Pos.CENTER_RIGHT : Pos.CENTER);
                         this.setStyle("-fx-font-weight: bold;");
                     } else {
-                        this.setAlignment(numberColumn ? Pos.CENTER_RIGHT : Pos.CENTER);
                         this.setStyle("-fx-font-weight: normal;");
                     }
+                }
+            }
+        });
+    }
+
+    private void setNumberContentStyle(TableColumn<CandidateModel, String> tableColumn) {
+        tableColumn.setCellFactory(col -> new TableCell<>() {
+            private final Label percentLabel = new Label("");
+            private final ProgressBar progressBar = new ProgressBar();
+            private final StackPane stackPane = new StackPane(progressBar, percentLabel);
+
+            {
+                this.progressBar.prefHeightProperty().bind(stackPane.heightProperty());
+                this.percentLabel.getStyleClass().add("outline");
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty) {
+                    this.setText(null);
+                    this.setGraphic(null);
+                } else {
+                    var candidate = getTableView().getItems().get(getIndex());
+                    if (candidate.isCurrentCandidate()) {
+                        this.setStyle("-fx-font-weight: bold;");
+                    } else {
+                        this.setStyle("-fx-font-weight: normal;");
+                    }
+                    try {
+                        this.progressBar.setProgress(Double.parseDouble(item) / 100);
+                        this.progressBar.setVisible(true);
+                    } catch (NumberFormatException e) {
+                        this.progressBar.setProgress(0);
+                        this.progressBar.setVisible(false);
+                    }
+                    this.percentLabel.setText(item);
+                    this.setGraphic(this.stackPane);
                 }
             }
         });

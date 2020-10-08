@@ -206,13 +206,19 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
 
     <profiles>
             <profile>
-                <!-- to build a jpackage installer for Windows, run 'mvn clean install -P jpackage' -->
+                <!-- to build a JPackage installer for Windows, run 'mvn clean install -P jpackage' on Windows -->
                 <id>jpackage</id>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.2.0</version>
+                    </dependency>
+                </dependencies>
                 <build>
                     <resources>
                         <resource>
                             <directory>src/main/resources</directory>
-                            <filtering>true</filtering>
                             <excludes>
                                 <exclude>puncat_resources/**</exclude>
                             </excludes>
@@ -220,6 +226,7 @@ along with PunCAT.  If not, see <https://www.gnu.org/licenses/>.
                     </resources>
                     <plugins>
                         <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-resources-plugin</artifactId>
                             <version>3.2.0</version>
                             <executions>

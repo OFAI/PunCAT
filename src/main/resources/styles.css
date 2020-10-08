@@ -71,13 +71,25 @@
 }
 
 .list-cell:filled:selected {
-    -fx-background: -fx-accent;
+    -fx-background: #0093ff;
     -fx-background-color: -fx-background, -fx-cell-focus-inner-border, -fx-background;
     -fx-text-fill: white;
 }
 
 .list-view:focused .list-cell:filled:selected {
-    -fx-background: -fx-accent;
+    -fx-background: #0093ff;
     -fx-background-color: -fx-background, -fx-cell-focus-inner-border, -fx-background;
     -fx-text-fill: white;
+}
+
+.progress-bar > .bar, .progress-bar > .track {
+    -fx-background-insets: 0;
+}
+
+.progress-bar {
+    -fx-accent: #33aaff;
+}
+
+.progress-bar .track {
+    -fx-background-color: transparent;
 }
