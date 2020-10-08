@@ -32,6 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -40,12 +41,13 @@ import javafx.stage.StageStyle;
 
 
 public class LauncherWindow {
+    private static final String icon = "/img/Computational_Pun-derstanding_head.png";
     private static final StringProperty userName = new SimpleStringProperty("");
     private static final StringProperty savePath = new SimpleStringProperty(
             Paths.get(System.getProperty("user.home"), "PunCAT").toFile().toString()
     );
 
-    public static Stage buildUsernameWindow() {
+    public static Stage buildLauncherWindow() {
         var rootPane = new VBox();
         rootPane.setPadding(new Insets(5));
         rootPane.setAlignment(Pos.CENTER);
@@ -53,6 +55,7 @@ public class LauncherWindow {
         var rootScene = new Scene(rootPane);
 
         var rootStage = new Stage(StageStyle.UTILITY);
+        rootStage.getIcons().add(new Image(LauncherWindow.class.getResourceAsStream(icon)));
         rootStage.setTitle("PunCAT Launcher");
         rootStage.setScene(rootScene);
         rootStage.setOnCloseRequest(event -> Platform.exit());
@@ -130,7 +133,11 @@ public class LauncherWindow {
     }
 
     private static boolean validSavePath() {
-        return Files.isWritable(Paths.get(savePath.get()));
+        if (Files.isWritable(Paths.get(savePath.get()))) {
+            return true;
+        } else {
+            return Paths.get(savePath.get()).toFile().mkdirs();
+        }
     }
 
     public static String getUserName() {
