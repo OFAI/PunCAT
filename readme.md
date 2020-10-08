@@ -14,7 +14,9 @@ These resources can be found here: https://jobim.ofai.at/gitlab/mate.lajko/punca
 
 **Creating a Windows executable package using JPackage**
 
-(Note: JPackage requires using Windows for this.)
+Note 1: JPackage requires using Windows for this.
+
+Note 2: You should start from a pristine clone of the Git repository.  The presence of extra files could corrupt the installer.
 
 1. Download [JDK 15](https://jdk.java.net/15/), extract the zip file, and set the `JAVA_HOME` environmental variable to point to its location. For example, on the command line: `setx JAVA_HOME "C:\jdk-15"`.
 2. Download and install [Apache Maven](http://maven.apache.org/).
