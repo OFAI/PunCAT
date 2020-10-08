@@ -69,7 +69,12 @@ IF EXIST temp.txt del temp.txt
 
 rem ------ workaround for missing modules -------------------------------------
 echo workaround for missing modules
-xcopy /q /y %JAVA_HOME%\lib\modules target\java-runtime\lib
+rem xcopy /q /y %JAVA_HOME%\lib\modules target\java-runtime\lib
+xcopy /S /Q /Y %JAVA_HOME%\bin\* target\java-runtime\bin
+xcopy /S /Q /Y %JAVA_HOME%\conf\* target\java-runtime\conf
+xcopy /S /Q /Y %JAVA_HOME%\legal\* target\java-runtime\legal
+xcopy /S /Q /Y %JAVA_HOME%\lib\* target\java-runtime\lib
+xcopy /S /Q /Y %JAVA_HOME%\release target\java-runtime
 
 rem ------ PACKAGING ----------------------------------------------------------
 rem In the end we will find the package inside the target/installer directory.
