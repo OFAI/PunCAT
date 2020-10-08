@@ -78,6 +78,7 @@ xcopy /S /Q /Y %JAVA_HOME%\release target\java-runtime
 
 rem ------ PACKAGING ----------------------------------------------------------
 rem In the end we will find the package inside the target/installer directory.
+rem Add the --win-console flag to enable console output.
 
 call "%JAVA_HOME%\bin\jpackage" ^
   --type %INSTALLER_TYPE% ^
@@ -98,5 +99,4 @@ call "%JAVA_HOME%\bin\jpackage" ^
   --win-shortcut ^
   --win-menu ^
   --win-menu-group "OFAI" ^
-  --win-console ^
   --win-upgrade-uuid 0fe69768-30ac-4c2c-9354-f478128d5140
