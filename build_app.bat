@@ -3,7 +3,7 @@
 rem Copyright 2019 Dirk Lemmermann
 rem Copyright 2019 Michael Paus
 rem Copyright 2020 Christian Studer
-rem Copyright 2020 VladDrakul1986
+rem Copyright 2020 VladDrakul
 rem Copyright 2020 Máté Lajkó
 rem
 rem Licensed under the Apache License, Version 2.0 (the "License");
