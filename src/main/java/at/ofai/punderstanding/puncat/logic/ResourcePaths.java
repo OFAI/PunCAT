@@ -33,7 +33,7 @@ import org.json.JSONTokener;
 
 public class ResourcePaths {
     private static final String resourceJsonFileName = "resourcepaths.json";
-    private static final String resourceFolder = "puncat_resources";
+    private static final String resourceFolder = ".";
     public static Path germanet2ipa;
     public static Path wordnet2ipa;
     public static Path germanet;
