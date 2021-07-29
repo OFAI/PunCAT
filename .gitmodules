@@ -1,3 +1,0 @@
-[submodule "src/main/resources/puncat_resources"]
-	path = src/main/resources/puncat_resources
-	url = gitlab@jobim.ofai.at:mate.lajko/puncat_resources.git
