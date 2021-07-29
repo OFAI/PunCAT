@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE corpus SYSTEM 'puncat.dtd'>
+<corpus lang="en" id="puncat-456">
+  <instance id="p4">
+    <img src="nemo.gif">
+    </img>
+    <text>
+      I know what that is. Sandy Plankton saw one. He said it was called... a <pun
+      first_lemma="butt" first_sense="butt%1:08:00::"
+      second_lemma="boat" second_sense="boat%1:06:00::">butt</pun>!
+  </text>
+  </instance>
+  <instance id="p5">
+    <text>
+      “Got a <pun
+      first_lemma="club" first_sense="club%1:06:04::"
+      second_lemma="club" second_sense="club%1:06:00::">club</pun>,” said Lias proudly. “Got a nail in it.”
+    </text>
+  </instance>
+    <instance id="p6">
+    <img src="animalcrackers.gif">
+    </img>
+    <text>
+      I was using the subjunctive instead of the past tense. Yes, we're a way past <pun
+      first_lemma="tense" first_sense="tense%1:10:00::"
+      second_lemma="tent" second_sense="tent%1:06:00::">tense</pun>; we're living in bungalows now.
+    </text>
+  </instance>
+</corpus>

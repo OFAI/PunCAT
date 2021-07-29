@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!ELEMENT corpus (instance+)>
+<!ATTLIST corpus lang CDATA #REQUIRED>
+<!ATTLIST corpus id ID #REQUIRED>
+
+<!ELEMENT instance (img?,text)>
+<!ATTLIST instance id ID #REQUIRED>
+
+<!ELEMENT img (keyword*)>
+<!ATTLIST img src CDATA #REQUIRED>
+
+<!ELEMENT keyword (#PCDATA)>
+
+<!ELEMENT text (#PCDATA|pun)*>
+
+<!ELEMENT pun (#PCDATA)>
+<!ATTLIST pun first_lemma CDATA #REQUIRED>
+<!ATTLIST pun second_lemma CDATA #REQUIRED>
+<!ATTLIST pun first_sense CDATA #REQUIRED>
+<!ATTLIST pun second_sense CDATA #REQUIRED>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE corpus SYSTEM 'puncat.dtd'>
+<corpus lang="en" id="puncat-123">
+  <instance id="p1">
+    <img src="alice.png">
+    </img>
+    <text>
+      ‘That’s the reason they’re called <pun
+      first_lemma="lesson" first_sense="lesson%1:04:01::"
+      second_lemma="lessen" second_sense="lessen%2:30:00::">lessons</pun>,’ the Gryphon remarked: ‘because they lessen from day to day.’
+  </text>
+  </instance>
+  <instance id="p2">
+    <text>
+      When they operated on him she prepared him for the operating table; and they had a joke about friend or <pun
+      first_lemma="enema" first_sense="enema%1:04:00::"
+      second_lemma="enemy" second_sense="enemy%1:18:00::">enema</pun>.
+    </text>
+  </instance>
+    <instance id="p3">
+    <img src="cloudy.gif">
+    </img>
+    <text>
+      Hold on, everyone. This ain't gonna be no <pun
+      first_lemma="picnic" first_sense="picnic%1:04:00::"
+      second_lemma="picnic" second_sense="picnic%1:13:00::">picnic</pun>.
+    </text>
+  </instance>
+</corpus>
