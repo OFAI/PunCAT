@@ -44,6 +44,11 @@ PunCAT may work with versions of GermaNet higher than 15.0, but this
 has not been tested.  If you use a more recent version, you must
 supply your own IPA transcriptions for the words in
 [`src/main/resources/ipa/germanet2ipaLowercase.csv`](src/main/resources/ipa/germanet2ipaLowercase.csv).
+(To produce this file, we used the GermaNet API to extract a list of
+all words in GermaNet and then ran it through
+[Phonetisaurus](https://github.com/AdolfVonKleist/Phonetisaurus) to
+get the transcriptions. You may wish to do something similar, though
+you could of course use a different grapheme-to-phoneme tool.)
 
 ## Running directly with Maven
 
