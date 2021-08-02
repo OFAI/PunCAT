@@ -56,7 +56,7 @@ Run `mvn clean javafx:run` from PunCAT's main directory.
 
 ## Creating and running a JAR
 
-Run `mvn compile package -P jar` from Puncat's main directory.  The
+Run `mvn compile package -P jar` from PunCAT's main directory.  The
 JAR, named `puncat.jar`, will be output in the `shade` directory.  You
 can copy this JAR to any machine with a Java runtime enivornment and
 run it as follows: `java -jar puncat.jar -Xms1g -Xmx2g`
